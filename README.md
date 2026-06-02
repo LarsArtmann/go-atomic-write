@@ -124,6 +124,31 @@ if fp.Matches(currentData) {
 | [`cespare/xxhash`](https://github.com/cespare/xxhash) | Fast non-cryptographic hash for fingerprinting |
 | [`gofrs/flock`](https://github.com/gofrs/flock) | Cross-platform file locking (`flock` on Unix, `LockFileEx` on Windows) |
 
+## Benchmarks
+
+xxhash64 vs `crypto/sha256` — 100K iterations per benchmark, single core.
+
+**Hardware:** AMD Ryzen AI MAX+ 395, Go 1.26.3, linux/amd64
+
+| Hash | Size | ns/op | Throughput | Allocations |
+|------|------|------:|----------:|:------------|
+| xxhash64 | 1 KB | 42 | 24,443 MB/s | 0 |
+| SHA-256 | 1 KB | 486 | 2,106 MB/s | 1 × 32 B |
+| xxhash64 | 10 KB | 383 | 26,708 MB/s | 0 |
+| SHA-256 | 10 KB | 4,253 | 2,408 MB/s | 1 × 32 B |
+| xxhash64 | 100 KB | 3,744 | 27,349 MB/s | 0 |
+| SHA-256 | 100 KB | 41,760 | 2,452 MB/s | 1 × 32 B |
+| xxhash64 | 1 MB | 37,954 | 27,628 MB/s | 0 |
+| SHA-256 | 1 MB | 429,268 | 2,443 MB/s | 1 × 32 B |
+
+**xxhash64 is ~11× faster** than SHA-256, zero allocations, and hits ~27 GB/s — effectively RAM bandwidth. No hardware accelerator exists or is needed; the hash is memory-bound, not compute-bound. SHA-256 results already include SHA-NI hardware acceleration.
+
+Run yourself:
+
+```bash
+cd lib/go-atomic-write && go test -bench=. -benchmem -benchtime=100000x
+```
+
 ## Platform support
 
 Works everywhere Go compiles. File locking uses:

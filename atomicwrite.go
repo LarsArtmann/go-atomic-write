@@ -1,17 +1,17 @@
 // Package atomicwrite provides TOCTOU-safe file writes using xxhash64
-// fingerprint verification, flock mutual exclusion, and atomic rename.
+// fingerprint verification, cross-platform file locking via gofrs/flock,
+// and atomic rename for crash safety.
 package atomicwrite
 
 import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
-	"syscall"
 
 	"github.com/cespare/xxhash/v2"
+	"github.com/gofrs/flock"
 )
 
 // ErrConcurrentModification indicates the file was modified by another
@@ -57,8 +57,9 @@ func FingerprintFile(path string) (Fingerprint, error) {
 
 // Write writes data to path with TOCTOU protection.
 // If fingerprint is non-zero, it verifies the file hasn't changed since the
-// fingerprint was computed, using flock for mutual exclusion and atomic rename
-// for crash safety. A zero-value fingerprint skips verification (first run).
+// fingerprint was computed, using cross-platform file locking (flock on Unix,
+// LockFileEx on Windows) and atomic rename for crash safety.
+// A zero-value fingerprint skips verification (first run).
 func Write(path string, data []byte, fingerprint Fingerprint) error {
 	const defaultFilePerm = fs.FileMode(0o644)
 
@@ -84,25 +85,17 @@ func Write(path string, data []byte, fingerprint Fingerprint) error {
 }
 
 func commitWithVerification(path, tmpPath string, fingerprint Fingerprint) error {
-	origF, err := os.Open(path) //nolint:gosec // path is caller-controlled
-	if err != nil {
+	fileLock := flock.New(path)
+
+	lockErr := fileLock.Lock()
+	if lockErr != nil {
 		cleanupTmp(tmpPath)
 
-		return fmt.Errorf("opening %s for verification: %w", path, err)
+		return fmt.Errorf("acquiring exclusive lock on %s: %w", path, lockErr)
 	}
-	defer func() {
-		_ = syscall.Flock(int(origF.Fd()), syscall.LOCK_UN)
-		_ = origF.Close()
-	}()
+	defer func() { _ = fileLock.Close() }()
 
-	err = syscall.Flock(int(origF.Fd()), syscall.LOCK_EX)
-	if err != nil {
-		cleanupTmp(tmpPath)
-
-		return fmt.Errorf("acquiring exclusive lock on %s: %w", path, err)
-	}
-
-	current, err := io.ReadAll(origF)
+	current, err := os.ReadFile(path) //nolint:gosec // path is caller-controlled
 	if err != nil {
 		cleanupTmp(tmpPath)
 

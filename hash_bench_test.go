@@ -2,7 +2,6 @@ package atomicwrite
 
 import (
 	"crypto/sha256"
-	"hash"
 	"testing"
 
 	"github.com/cespare/xxhash/v2"
@@ -28,8 +27,10 @@ func benchXxhash(b *testing.B, size int) {
 	for i := range data {
 		data[i] = byte(i % 256)
 	}
+
 	b.SetBytes(int64(size))
 	b.ResetTimer()
+
 	for range b.N {
 		_ = xxhash.Sum64(data)
 	}
@@ -40,8 +41,10 @@ func benchSHA256(b *testing.B, size int) {
 	for i := range data {
 		data[i] = byte(i % 256)
 	}
+
 	b.SetBytes(int64(size))
 	b.ResetTimer()
+
 	for range b.N {
 		h := sha256.New()
 		h.Write(data)
@@ -57,18 +60,21 @@ func benchXxhashStreaming(b *testing.B, size int) {
 	for i := range data {
 		data[i] = byte(i % 256)
 	}
+
 	const chunkSize = 4096
+
 	b.SetBytes(int64(size))
 	b.ResetTimer()
+
 	for range b.N {
 		h := xxhash.New()
+
 		for off := 0; off < len(data); off += chunkSize {
-			end := off + chunkSize
-			if end > len(data) {
-				end = len(data)
-			}
+			end := min(off+chunkSize, len(data))
+
 			h.Write(data[off:end])
 		}
+
 		_ = h.Sum(nil)
 	}
 }
@@ -78,18 +84,21 @@ func benchSHA256Streaming(b *testing.B, size int) {
 	for i := range data {
 		data[i] = byte(i % 256)
 	}
+
 	const chunkSize = 4096
+
 	b.SetBytes(int64(size))
 	b.ResetTimer()
+
 	for range b.N {
-		var h hash.Hash = sha256.New()
+		h := sha256.New()
+
 		for off := 0; off < len(data); off += chunkSize {
-			end := off + chunkSize
-			if end > len(data) {
-				end = len(data)
-			}
+			end := min(off+chunkSize, len(data))
+
 			h.Write(data[off:end])
 		}
+
 		_ = h.Sum(nil)
 	}
 }

@@ -1,72 +1,49 @@
-# Domain Language
+# Domain Language — go-atomic-write
 
-A **Unified Language** for `.` — shared across Customer, Product Owner, Developer, and AI.
+A **Unified Language** for `go-atomic-write` — shared across contributors, users, and AI.
 Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 
 Every term below should mean the **same thing** to everyone who reads it.
-If a word means something different to a developer than to a customer, define it here.
 
 ## Glossary
 
-| Term         | Definition               | Context                        |
-| ------------ | ------------------------ | ------------------------------ |
-| .            | The project/product name | What we call this system       |
-| Example Term | A placeholder definition | Replace with your actual terms |
-
-## Entities
-
-Objects with identity and lifecycle (e.g., User, Order, Account).
-
-<!-- Add your entities here:
 | Term | Definition | Context |
 |------|-----------|---------|
-| User | A person who interacts with the system | Customer-facing |
--->
+| Fingerprint | An xxhash64 digest (`[8]byte`) of file content at a point in time | Used to detect concurrent modification |
+| TOCTOU | Time-of-check-to-time-of-use — the vulnerability class this library addresses | Security concept |
+| Atomic Write | A write that either completes fully or leaves the original file unchanged | Crash safety guarantee |
+| Concurrent Modification | A file changed by another process between the fingerprint read and the write attempt | Error condition |
 
 ## Value Objects
 
-Immutable objects defined by attributes (e.g., Email, Money, Address).
-
-<!-- Add your value objects here:
 | Term | Definition | Context |
 |------|-----------|---------|
-| Email | A validated email address | Unique identifier for users |
--->
-
-## Events
-
-Things that happen in the domain (e.g., UserRegistered, PaymentProcessed).
-
-<!-- Add your events here:
-| Term | Definition | Context |
-|------|-----------|---------|
-| UserRegistered | A new user completed signup | Triggers welcome email |
--->
+| Fingerprint | An `[8]byte` xxhash64 digest representing file content at read time | Zero-value means "no prior file existed" |
+| `.tmp` file | Staging file written before atomic rename | Cleaned up on failure |
+| `.bak` file | Backup of previous file content before overwrite | Created on successful non-first writes, overwritten on subsequent writes |
 
 ## Commands
 
-Actions the system can perform (e.g., CreateUser, ProcessPayment).
-
-<!-- Add your commands here:
 | Term | Definition | Context |
 |------|-----------|---------|
-| CreateUser | Registers a new user account | Admin action |
--->
+| Write | Stage `.tmp` → lock → verify fingerprint → atomic rename | The main operation |
+| FingerprintFile | Compute an xxhash64 digest of a file's current content | Returns zero-value for nonexistent files |
+| FingerprintFromBytes | Compute an xxhash64 digest from raw bytes | Used when caller already has content in memory |
+
+## Events
+
+| Term | Definition | Context |
+|------|-----------|---------|
+| ErrConcurrentModification | The file was modified between fingerprint read and write attempt | Caller should re-read, merge, and retry |
+| Successful Write | `.tmp` renamed to target, `.bak` of previous content created | Target file is always consistent |
 
 ## Bounded Contexts
 
-Subsystems with distinct vocabulary (e.g., Billing vs. Shipping).
-
-<!-- Define contexts where the same word means different things:
-| Context | Description |
-|---------|------------|
-| Billing | Handles payments and invoices |
--->
+Single context — this is a focused library with one bounded context: **safe file writes**.
 
 ---
 
 > **How to use this file:**
->
 > - Keep terms concise — one clear sentence per definition
 > - Update when new domain concepts emerge
 > - Use these terms consistently in code, docs, and conversations

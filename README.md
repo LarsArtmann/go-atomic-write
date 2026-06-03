@@ -115,7 +115,7 @@ if fp.Matches(currentData) {
 - `ErrConcurrentModification` is a sentinel error you can check with `errors.Is`
 - Temp files (`.tmp`) are cleaned up on any failure
 - File permissions are preserved from the existing file (defaults to `0644` for new files)
-- A `.bak` of the previous content is created on successful writes (not on first write)
+- A `.bak` of the previous content is created on successful writes (not on first write); it is overwritten on each subsequent write
 
 ## Dependencies
 
@@ -146,7 +146,7 @@ xxhash64 vs `crypto/sha256` — 100K iterations per benchmark, single core.
 Run yourself:
 
 ```bash
-cd lib/go-atomic-write && go test -bench=. -benchmem -benchtime=100000x
+go test -bench=. -benchmem -benchtime=100000x
 ```
 
 ## Platform support

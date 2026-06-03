@@ -70,3 +70,4 @@ Both are intentional, minimal, and not candidates for replacement.
 - `ErrConcurrentModification` is a sentinel `errors.New` value — always check with `errors.Is`, not string matching
 - The `//nolint:gosec` comments on `os.ReadFile` calls are intentional — `path` is caller-controlled, not user input
 - `.tmp` files are in `.gitignore` — they won't appear in version control if created in a repo root
+- `.bak` files are NOT in `.gitignore` — callers writing inside a git repo should add `*.bak` to their `.gitignore` if needed

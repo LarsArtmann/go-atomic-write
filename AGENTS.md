@@ -10,12 +10,12 @@ Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerp
 
 ## Commands
 
-| Command | Purpose |
-|---------|---------|
-| `go test ./...` | Run all tests |
+| Command                      | Purpose                                  |
+| ---------------------------- | ---------------------------------------- |
+| `go test ./...`              | Run all tests                            |
 | `go test -bench=. -benchmem` | Run benchmarks (in `hash_bench_test.go`) |
-| `go vet ./...` | Static analysis |
-| `go build ./...` | Verify compilation |
+| `go vet ./...`               | Static analysis                          |
+| `go build ./...`             | Verify compilation                       |
 
 No Makefile, no flake.nix, no CI config. All commands are plain `go` toolchain.
 
@@ -23,11 +23,11 @@ No Makefile, no flake.nix, no CI config. All commands are plain `go` toolchain.
 
 Flat single-package layout — all source in the repository root:
 
-| File | Purpose |
-|------|---------|
-| `atomicwrite.go` | Entire public API (~130 LOC): `Fingerprint`, `Write`, `FingerprintFile`, `FingerprintFromBytes` |
-| `atomicwrite_test.go` | Unit + concurrency tests |
-| `hash_bench_test.go` | xxhash64 vs SHA-256 benchmarks |
+| File                  | Purpose                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| `atomicwrite.go`      | Entire public API (~130 LOC): `Fingerprint`, `Write`, `FingerprintFile`, `FingerprintFromBytes` |
+| `atomicwrite_test.go` | Unit + concurrency tests                                                                        |
+| `hash_bench_test.go`  | xxhash64 vs SHA-256 benchmarks                                                                  |
 
 ## Architecture & Data Flow
 
@@ -38,16 +38,17 @@ Caller reads file → computes Fingerprint → modifies data → calls Write()
 ```
 
 Key internal functions:
+
 - `Write()` — entry point; writes `.tmp`, branches on fingerprint presence
 - `commitWithVerification()` — acquires exclusive `flock`, re-reads target, verifies match, renames
 - `atomicRename()` — creates `.bak` of old file, renames `.tmp` to target (ignores `.bak` rename failure)
 
 ## Dependencies
 
-| Dependency | Purpose |
-|------------|---------|
+| Dependency          | Purpose                                                                        |
+| ------------------- | ------------------------------------------------------------------------------ |
 | `cespare/xxhash/v2` | Non-cryptographic hash for fingerprinting (chosen over SHA-256 for ~11× speed) |
-| `gofrs/flock` | Cross-platform file locking |
+| `gofrs/flock`       | Cross-platform file locking                                                    |
 
 Both are intentional, minimal, and not candidates for replacement.
 

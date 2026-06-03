@@ -4,20 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [0.1.1] - 2026-06-03
 
 ### Changed
 
+- **LICENSE changed from PROPRIETARY to MIT** — the README already stated MIT; the LICENSE file now matches
 - `.golangci.yml` now permits `github.com/cespare/xxhash/v2` and `github.com/gofrs/flock` in the `depguard` allow list (both are intentional runtime dependencies, not candidates for replacement)
 - Tests use `//nolint:gosec` annotations with rationale for `os.ReadFile`/`os.WriteFile` calls that operate exclusively on `t.TempDir()` paths
 - `TestConcurrentWriteRACE` now calls `t.Parallel()` to satisfy `paralleltest` and to actually run in parallel with other tests
-- Benchmark helpers `benchXxhash`, `benchSHA256`, `benchXxhashStreaming`, `benchSHA256Streaming` call `b.Helper()` so failures are attributed to the caller
+- Benchmark helpers call `b.Helper()` so failures are attributed to the caller
 - Variable names lengthened for `varnamelen` compliance: `fp` → `fingerprint`, `wg` → `waitGroup`, `h` → `hasher`, `mb` → `megabyte`
-- `noinlineerr` style: inline `if err := …; err != nil { … }` blocks in tests refactored to plain assignment plus `if`
+- Inline `if err := …; err != nil { … }` blocks in tests refactored to plain assignment plus `if` for `noinlineerr` compliance
+- Documentation formatting and accuracy fixes across README, CHANGELOG, CONTRIBUTING, DOMAIN_LANGUAGE, and AGENTS.md
 
 ### Fixed
 
 - `errcheck`: `h.Write` return value is now explicitly discarded (`_, _ = hasher.Write(…)`) in the streaming benchmark
+- `*.bak` added to `.gitignore` — backup files from atomic writes were showing as untracked
 
 ## [0.1.0] - 2026-06-02
 

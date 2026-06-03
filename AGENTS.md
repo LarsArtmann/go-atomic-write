@@ -63,11 +63,10 @@ Both are intentional, minimal, and not candidates for replacement.
 ## Gotchas
 
 - `.tmp` and `.bak` files are created alongside the target file (same directory) — callers need write permissions on the directory, not just the file
+- `.tmp` and `.bak` files are in `.gitignore`
 - `.bak` creation failure is silently ignored (`_ = os.Rename(path, path+".bak")`) — this is intentional; the old file may not exist on first write
 - `Fingerprint` is `[8]byte` (xxhash64), stored big-endian — do not compare with `string` or `[]byte` representations of hashes
 - `FingerprintFile` returns zero-value (not an error) for nonexistent files — this is the "first write" sentinel
 - File permissions are preserved from the existing file, defaulting to `0644` for new files
 - `ErrConcurrentModification` is a sentinel `errors.New` value — always check with `errors.Is`, not string matching
 - The `//nolint:gosec` comments on `os.ReadFile` calls are intentional — `path` is caller-controlled, not user input
-- `.tmp` files are in `.gitignore` — they won't appear in version control if created in a repo root
-- `.bak` files are NOT in `.gitignore` — callers writing inside a git repo should add `*.bak` to their `.gitignore` if needed

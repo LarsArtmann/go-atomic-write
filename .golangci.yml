@@ -135,6 +135,8 @@ linters:
                     allow:
                         - $gostd
                         - $module
+                        - github.com/cespare/xxhash/v2
+                        - github.com/gofrs/flock
         exhaustruct:
             exclude:
                 - os/exec.Cmd

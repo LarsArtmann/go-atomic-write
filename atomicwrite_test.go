@@ -15,7 +15,7 @@ func tempFile(t *testing.T, content string) string {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "testfile")
 
-	err := os.WriteFile(path, []byte(content), 0o644)
+	err := os.WriteFile(path, []byte(content), 0o644) //nolint:gosec // test fixture uses 0644 inside t.TempDir
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -27,17 +27,17 @@ func TestFingerprintFromBytes(t *testing.T) {
 	t.Parallel()
 
 	data := []byte("hello world")
-	fp := FingerprintFromBytes(data)
+	fingerprint := FingerprintFromBytes(data)
 
-	if fp.IsZero() {
+	if fingerprint.IsZero() {
 		t.Error("fingerprint should not be zero for non-empty data")
 	}
 
-	if !fp.Matches(data) {
+	if !fingerprint.Matches(data) {
 		t.Error("fingerprint should match the same data")
 	}
 
-	if fp.Matches([]byte("different")) {
+	if fingerprint.Matches([]byte("different")) {
 		t.Error("fingerprint should not match different data")
 	}
 }
@@ -61,16 +61,16 @@ func TestFingerprintFile(t *testing.T) {
 
 	path := tempFile(t, "content")
 
-	fp, err := FingerprintFile(path)
+	fingerprint, err := FingerprintFile(path)
 	if err != nil {
 		t.Fatalf("FingerprintFile: %v", err)
 	}
 
-	if fp.IsZero() {
+	if fingerprint.IsZero() {
 		t.Error("fingerprint should not be zero for existing file")
 	}
 
-	if !fp.Matches([]byte("content")) {
+	if !fingerprint.Matches([]byte("content")) {
 		t.Error("fingerprint should match file content")
 	}
 }
@@ -78,12 +78,12 @@ func TestFingerprintFile(t *testing.T) {
 func TestFingerprintFileNonexistent(t *testing.T) {
 	t.Parallel()
 
-	fp, err := FingerprintFile("/nonexistent/path/file")
+	fingerprint, err := FingerprintFile("/nonexistent/path/file")
 	if err != nil {
 		t.Fatalf("FingerprintFile nonexistent: %v", err)
 	}
 
-	if !fp.IsZero() {
+	if !fingerprint.IsZero() {
 		t.Error("nonexistent file should return zero fingerprint")
 	}
 }
@@ -99,7 +99,7 @@ func TestWriteFirstRun(t *testing.T) {
 		t.Fatalf("Write first run: %v", err)
 	}
 
-	data, readErr := os.ReadFile(path)
+	data, readErr := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
 	if readErr != nil {
 		t.Fatalf("reading file: %v", readErr)
 	}
@@ -108,7 +108,8 @@ func TestWriteFirstRun(t *testing.T) {
 		t.Errorf("content = %q, want %q", string(data), "hello")
 	}
 
-	if _, statErr := os.Stat(path + ".bak"); !os.IsNotExist(statErr) {
+	_, statErr := os.Stat(path + ".bak")
+	if !os.IsNotExist(statErr) {
 		t.Error("expected no .bak file on first run")
 	}
 }
@@ -118,14 +119,14 @@ func TestWriteWithFingerprint(t *testing.T) {
 
 	path := tempFile(t, "original")
 
-	fp := FingerprintFromBytes([]byte("original"))
+	fingerprint := FingerprintFromBytes([]byte("original"))
 
-	err := Write(path, []byte("updated"), fp)
+	err := Write(path, []byte("updated"), fingerprint)
 	if err != nil {
 		t.Fatalf("Write: %v", err)
 	}
 
-	data, readErr := os.ReadFile(path)
+	data, readErr := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
 	if readErr != nil {
 		t.Fatalf("reading file: %v", readErr)
 	}
@@ -140,23 +141,26 @@ func TestWriteRejectsConcurrentModification(t *testing.T) {
 
 	path := tempFile(t, "original")
 
-	fp := FingerprintFromBytes([]byte("original"))
+	fingerprint := FingerprintFromBytes([]byte("original"))
 
 	modified := "modified"
-	if err := os.WriteFile(path, []byte(modified), 0o644); err != nil {
+
+	err := os.WriteFile(path, []byte(modified), 0o644) //nolint:gosec // test fixture in t.TempDir
+	if err != nil {
 		t.Fatalf("modify file: %v", err)
 	}
 
-	err := Write(path, []byte("updated"), fp)
-	if err == nil {
+	writeErr := Write(path, []byte("updated"), fingerprint)
+	if writeErr == nil {
 		t.Fatal("expected error for concurrent modification, got nil")
 	}
 
-	if !errors.Is(err, ErrConcurrentModification) {
-		t.Errorf("expected ErrConcurrentModification, got: %v", err)
+	if !errors.Is(writeErr, ErrConcurrentModification) {
+		t.Errorf("expected ErrConcurrentModification, got: %v", writeErr)
 	}
 
-	if _, statErr := os.Stat(path + ".tmp"); statErr == nil {
+	_, statErr := os.Stat(path + ".tmp")
+	if statErr == nil {
 		t.Error("temp file should be cleaned up on error")
 	}
 }
@@ -166,15 +170,16 @@ func TestWritePreservesPermissions(t *testing.T) {
 
 	path := tempFile(t, "original")
 
-	if err := os.Chmod(path, 0o600); err != nil {
+	err := os.Chmod(path, 0o600)
+	if err != nil {
 		t.Fatalf("chmod: %v", err)
 	}
 
-	fp := FingerprintFromBytes([]byte("original"))
+	fingerprint := FingerprintFromBytes([]byte("original"))
 
-	err := Write(path, []byte("updated"), fp)
-	if err != nil {
-		t.Fatalf("Write: %v", err)
+	writeErr := Write(path, []byte("updated"), fingerprint)
+	if writeErr != nil {
+		t.Fatalf("Write: %v", writeErr)
 	}
 
 	info, statErr := os.Stat(path)
@@ -193,14 +198,14 @@ func TestWriteCreatesBackup(t *testing.T) {
 	originalContent := "original"
 	path := tempFile(t, originalContent)
 
-	fp := FingerprintFromBytes([]byte(originalContent))
+	fingerprint := FingerprintFromBytes([]byte(originalContent))
 
-	err := Write(path, []byte("updated"), fp)
+	err := Write(path, []byte("updated"), fingerprint)
 	if err != nil {
 		t.Fatalf("Write: %v", err)
 	}
 
-	backup, readErr := os.ReadFile(path + ".bak")
+	backup, readErr := os.ReadFile(path + ".bak") //nolint:gosec // test reads from t.TempDir
 	if readErr != nil {
 		t.Fatalf("read backup: %v", readErr)
 	}
@@ -215,42 +220,46 @@ func TestTempFileCleanedUpOnError(t *testing.T) {
 
 	path := tempFile(t, "original")
 
-	fp := FingerprintFromBytes([]byte("original"))
+	fingerprint := FingerprintFromBytes([]byte("original"))
 
-	if err := os.Remove(path); err != nil {
+	err := os.Remove(path)
+	if err != nil {
 		t.Fatalf("remove original: %v", err)
 	}
 
-	err := Write(path, []byte("updated"), fp)
-	if err == nil {
+	writeErr := Write(path, []byte("updated"), fingerprint)
+	if writeErr == nil {
 		t.Fatal("expected error when original file deleted during verification, got nil")
 	}
 
-	if _, statErr := os.Stat(filepath.Dir(path) + "/testfile.tmp"); statErr == nil {
+	_, statErr := os.Stat(filepath.Dir(path) + "/testfile.tmp")
+	if statErr == nil {
 		t.Error("temp file should be cleaned up on error")
 	}
 }
 
 func TestConcurrentWriteRACE(t *testing.T) {
+	t.Parallel()
+
 	content := "original"
 	path := tempFile(t, content)
 
 	var successes, conflicts atomic.Int32
 
-	var wg sync.WaitGroup
+	var waitGroup sync.WaitGroup
 
 	const writers = 5
 
 	for range writers {
-		wg.Go(func() {
-			fp, fpErr := FingerprintFile(path)
+		waitGroup.Go(func() {
+			fingerprint, fpErr := FingerprintFile(path)
 			if fpErr != nil {
 				t.Logf("FingerprintFile: %v", fpErr)
 
 				return
 			}
 
-			writeErr := Write(path, []byte("updated"), fp)
+			writeErr := Write(path, []byte("updated"), fingerprint)
 			if writeErr == nil {
 				successes.Add(1)
 			} else {
@@ -259,7 +268,7 @@ func TestConcurrentWriteRACE(t *testing.T) {
 		})
 	}
 
-	wg.Wait()
+	waitGroup.Wait()
 
 	total := successes.Load() + conflicts.Load()
 	if int(total) != writers {
@@ -283,7 +292,7 @@ func TestAtomicRenameReportsErrorOnFailure(t *testing.T) {
 	ghostPath := filepath.Join(dir, "nonexistent", "dir", "testfile")
 	tmpPath := filepath.Join(dir, "temp-file")
 
-	err := os.WriteFile(tmpPath, []byte("content"), 0o644)
+	err := os.WriteFile(tmpPath, []byte("content"), 0o644) //nolint:gosec // test fixture in t.TempDir
 	if err != nil {
 		t.Fatalf("write temp: %v", err)
 	}

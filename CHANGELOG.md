@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- `.golangci.yml` now permits `github.com/cespare/xxhash/v2` and `github.com/gofrs/flock` in the `depguard` allow list (both are intentional runtime dependencies, not candidates for replacement)
+- Tests use `//nolint:gosec` annotations with rationale for `os.ReadFile`/`os.WriteFile` calls that operate exclusively on `t.TempDir()` paths
+- `TestConcurrentWriteRACE` now calls `t.Parallel()` to satisfy `paralleltest` and to actually run in parallel with other tests
+- Benchmark helpers `benchXxhash`, `benchSHA256`, `benchXxhashStreaming`, `benchSHA256Streaming` call `b.Helper()` so failures are attributed to the caller
+- Variable names lengthened for `varnamelen` compliance: `fp` → `fingerprint`, `wg` → `waitGroup`, `h` → `hasher`, `mb` → `megabyte`
+- `noinlineerr` style: inline `if err := …; err != nil { … }` blocks in tests refactored to plain assignment plus `if`
+
+### Fixed
+
+- `errcheck`: `h.Write` return value is now explicitly discarded (`_, _ = hasher.Write(…)`) in the streaming benchmark
+
 ## [0.1.0] - 2026-06-02
 
 ### Added

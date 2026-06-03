@@ -10,12 +10,17 @@ Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerp
 
 ## Commands
 
-| Command                      | Purpose                                  |
-| ---------------------------- | ---------------------------------------- |
-| `go test ./...`              | Run all tests                            |
-| `go test -bench=. -benchmem` | Run benchmarks (in `hash_bench_test.go`) |
-| `go vet ./...`               | Static analysis                          |
-| `go build ./...`             | Verify compilation                       |
+| Command                            | Purpose                                                                |
+| ---------------------------------- | ---------------------------------------------------------------------- |
+| `go test ./...`                    | Run all tests                                                          |
+| `go test -race ./...`              | Run all tests with the race detector                                   |
+| `go test -bench=. -benchmem`       | Run benchmarks (in `hash_bench_test.go`)                               |
+| `go vet ./...`                     | Static analysis                                                        |
+| `go build ./...`                   | Verify compilation                                                     |
+| `golangci-lint run ./...`          | Run all configured linters — MUST exit with `0 issues` before merging |
+| `golangci-lint run ./... --fix`    | Auto-fix formatting/imports (gci, gofumpt, goimports, golines)         |
+
+`golangci-lint` config is the **gating quality check** of this project. The configuration lives in `.golangci.yml` and enables ~100 linters at their strictest defaults. Adding a new third-party import requires updating the `depguard.rules.main.allow` list.
 
 No Makefile, no flake.nix, no CI config. All commands are plain `go` toolchain.
 
@@ -69,4 +74,12 @@ Both are intentional, minimal, and not candidates for replacement.
 - `FingerprintFile` returns zero-value (not an error) for nonexistent files — this is the "first write" sentinel
 - File permissions are preserved from the existing file, defaulting to `0644` for new files
 - `ErrConcurrentModification` is a sentinel `errors.New` value — always check with `errors.Is`, not string matching
-- The `//nolint:gosec` comments on `os.ReadFile` calls are intentional — `path` is caller-controlled, not user input
+- The `//nolint:gosec` comments on `os.ReadFile` calls in `atomicwrite.go` are intentional — `path` is caller-controlled, not user input
+- The `//nolint:gosec` comments on `os.ReadFile`/`os.WriteFile` calls in `atomicwrite_test.go` are intentional — all paths are `t.TempDir()`-rooted and never user input
+- Lint is gating: a single `golangci-lint` issue blocks merging. Common pitfalls:
+  - Single-letter variables (`fp`, `wg`, `h`, `mb`) trigger `varnamelen` — use full words
+  - Inline `if err := …; err != nil` triggers `noinlineerr` — assign first, then check
+  - `b.Helper()` is required on every benchmark helper that takes `*testing.B` (thelper)
+  - 0o644 in tests triggers `gosec G306` — annotate with `//nolint:gosec` and rationale
+  - `os.ReadFile(path)` with a variable path triggers `gosec G304` — annotate with `//nolint:gosec` and rationale
+  - New third-party imports require updating `.golangci.yml` `depguard.rules.main.allow`

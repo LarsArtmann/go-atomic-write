@@ -23,6 +23,19 @@ func tempFile(t *testing.T, content string) string {
 	return path
 }
 
+func assertFileContent(t *testing.T, path, want string) {
+	t.Helper()
+
+	data, err := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
+	if err != nil {
+		t.Fatalf("reading file: %v", err)
+	}
+
+	if string(data) != want {
+		t.Errorf("content = %q, want %q", string(data), want)
+	}
+}
+
 func TestFingerprintFromBytes(t *testing.T) {
 	t.Parallel()
 
@@ -99,14 +112,7 @@ func TestWriteFirstRun(t *testing.T) {
 		t.Fatalf("Write first run: %v", err)
 	}
 
-	data, readErr := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
-	if readErr != nil {
-		t.Fatalf("reading file: %v", readErr)
-	}
-
-	if string(data) != "hello" {
-		t.Errorf("content = %q, want %q", string(data), "hello")
-	}
+	assertFileContent(t, path, "hello")
 
 	_, statErr := os.Stat(path + ".bak")
 	if !os.IsNotExist(statErr) {
@@ -126,14 +132,7 @@ func TestWriteWithFingerprint(t *testing.T) {
 		t.Fatalf("Write: %v", err)
 	}
 
-	data, readErr := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
-	if readErr != nil {
-		t.Fatalf("reading file: %v", readErr)
-	}
-
-	if string(data) != "updated" {
-		t.Errorf("content = %q, want %q", string(data), "updated")
-	}
+	assertFileContent(t, path, "updated")
 }
 
 func TestWriteRejectsConcurrentModification(t *testing.T) {
@@ -205,14 +204,7 @@ func TestWriteCreatesBackup(t *testing.T) {
 		t.Fatalf("Write: %v", err)
 	}
 
-	backup, readErr := os.ReadFile(path + ".bak") //nolint:gosec // test reads from t.TempDir
-	if readErr != nil {
-		t.Fatalf("read backup: %v", readErr)
-	}
-
-	if string(backup) != originalContent {
-		t.Errorf("backup = %q, want %q", string(backup), originalContent)
-	}
+	assertFileContent(t, path+".bak", originalContent)
 }
 
 func TestTempFileCleanedUpOnError(t *testing.T) {

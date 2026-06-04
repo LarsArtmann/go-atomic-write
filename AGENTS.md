@@ -10,15 +10,15 @@ Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerp
 
 ## Commands
 
-| Command                            | Purpose                                                                |
-| ---------------------------------- | ---------------------------------------------------------------------- |
-| `go test ./...`                    | Run all tests                                                          |
-| `go test -race ./...`              | Run all tests with the race detector                                   |
-| `go test -bench=. -benchmem`       | Run benchmarks (in `hash_bench_test.go`)                               |
-| `go vet ./...`                     | Static analysis                                                        |
-| `go build ./...`                   | Verify compilation                                                     |
-| `golangci-lint run ./...`          | Run all configured linters — MUST exit with `0 issues` before merging |
-| `golangci-lint run ./... --fix`    | Auto-fix formatting/imports (gci, gofumpt, goimports, golines)         |
+| Command                         | Purpose                                                               |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `go test ./...`                 | Run all tests                                                         |
+| `go test -race ./...`           | Run all tests with the race detector                                  |
+| `go test -bench=. -benchmem`    | Run benchmarks (in `hash_bench_test.go`)                              |
+| `go vet ./...`                  | Static analysis                                                       |
+| `go build ./...`                | Verify compilation                                                    |
+| `golangci-lint run ./...`       | Run all configured linters — MUST exit with `0 issues` before merging |
+| `golangci-lint run ./... --fix` | Auto-fix formatting/imports (gci, gofumpt, goimports, golines)        |
 
 `golangci-lint` config is the **gating quality check** of this project. The configuration lives in `.golangci.yml` and enables ~100 linters at their strictest defaults. Adding a new third-party import requires updating the `depguard.rules.main.allow` list.
 

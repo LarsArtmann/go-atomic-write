@@ -1,0 +1,273 @@
+{
+  "statistics": {
+    "detectionDate": "2026-06-05T12:46:42.220Z",
+    "formats": {
+      "markdown": {
+        "sources": {
+          "docs/planning/2026-06-03_16-19-full-code-review.md": {
+            "lines": 251,
+            "tokens": 3830,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/DOMAIN_LANGUAGE.md": {
+            "lines": 48,
+            "tokens": 791,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "README.md": {
+            "lines": 158,
+            "tokens": 1415,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "CONTRIBUTING.md": {
+            "lines": 31,
+            "tokens": 282,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "CODE_OF_CONDUCT.md": {
+            "lines": 37,
+            "tokens": 416,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "CHANGELOG.md": {
+            "lines": 36,
+            "tokens": 586,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "AGENTS.md": {
+            "lines": 80,
+            "tokens": 1254,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 641,
+          "tokens": 8574,
+          "sources": 7,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "go": {
+        "sources": {
+          "hash_bench_test.go": {
+            "lines": 111,
+            "tokens": 989,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 52,
+            "duplicatedTokens": 444,
+            "percentage": 46.85,
+            "percentageTokens": 44.89,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "atomicwrite_test.go": {
+            "lines": 295,
+            "tokens": 2213,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "atomicwrite.go": {
+            "lines": 126,
+            "tokens": 849,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 532,
+          "tokens": 4051,
+          "sources": 3,
+          "clones": 2,
+          "duplicatedLines": 26,
+          "duplicatedTokens": 222,
+          "percentage": 4.89,
+          "percentageTokens": 5.48,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "yaml": {
+        "sources": {
+          ".golangci.yml": {
+            "lines": 208,
+            "tokens": 1038,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 208,
+          "tokens": 1038,
+          "sources": 1,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 1381,
+      "tokens": 13663,
+      "sources": 11,
+      "clones": 2,
+      "duplicatedLines": 26,
+      "duplicatedTokens": 222,
+      "percentage": 1.88,
+      "percentageTokens": 1.62,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "go",
+      "lines": 13,
+      "fragment": "(b *testing.B, size int) {\n\tb.Helper()\n\n\tdata := make([]byte, size)\n\tfor i := range data {\n\t\tdata[i] = byte(i % 256)\n\t}\n\n\tb.SetBytes(int64(size))\n\tb.ResetTimer()\n\n\tfor range b.N {\n\t\thasher",
+      "tokens": 0,
+      "firstFile": {
+        "name": "hash_bench_test.go",
+        "start": 41,
+        "end": 53,
+        "startLoc": {
+          "line": 41,
+          "column": 12,
+          "position": 376
+        },
+        "endLoc": {
+          "line": 53,
+          "column": 7,
+          "position": 480
+        }
+      },
+      "secondFile": {
+        "name": "hash_bench_test.go",
+        "start": 25,
+        "end": 37,
+        "startLoc": {
+          "line": 25,
+          "column": 12,
+          "position": 252
+        },
+        "endLoc": {
+          "line": 37,
+          "column": 2,
+          "position": 356
+        }
+      }
+    },
+    {
+      "format": "go",
+      "lines": 15,
+      "fragment": "(b *testing.B, size int) {\n\tb.Helper()\n\n\tdata := make([]byte, size)\n\tfor i := range data {\n\t\tdata[i] = byte(i % 256)\n\t}\n\n\tconst chunkSize = 4096\n\n\tb.SetBytes(int64(size))\n\tb.ResetTimer()\n\n\tfor range b.N {\n\t\thasher := sha256",
+      "tokens": 0,
+      "firstFile": {
+        "name": "hash_bench_test.go",
+        "start": 88,
+        "end": 102,
+        "startLoc": {
+          "line": 88,
+          "column": 21,
+          "position": 785
+        },
+        "endLoc": {
+          "line": 102,
+          "column": 7,
+          "position": 903
+        }
+      },
+      "secondFile": {
+        "name": "hash_bench_test.go",
+        "start": 62,
+        "end": 76,
+        "startLoc": {
+          "line": 62,
+          "column": 21,
+          "position": 568
+        },
+        "endLoc": {
+          "line": 76,
+          "column": 7,
+          "position": 686
+        }
+      }
+    }
+  ]
+}

@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.0] - 2026-06-28
+
+### Fixed
+
+- **Removed `.bak` two-rename pattern** — the old `atomicRename` did `path→.bak` then `tmp→path`, opening a window where the target didn't exist. A concurrent reader could see `ENOENT`, and a crash between the two renames left the target missing. The library named "atomic-write" was not atomic. Now a single `os.Rename(tmp, path)` is one atomic syscall on POSIX and atomically replaces on Windows via `MoveFileEx`.
+- **Concurrent writer corruption** — `tmpPath` was computed before the lock (`path + ".tmp"`), so two concurrent `Write()` calls to the same target both truncated and wrote the same staging file, interleaving bytes. Now each writer gets a unique temp file via `crypto/rand` suffix (`path + "." + randomHex + ".tmp"`).
+- **Concurrency test couldn't catch the bug** — `TestConcurrentWriteRACE` used identical content from all writers, so byte interleaving was undetectable. Rewritten with 10 writers using divergent content (`writer-0` through `writer-9`) plus an integrity check verifying the final file is exactly one writer's payload.
+- **"Crash safety" doc claim was false** — no `fsync` was called anywhere. Now `writeAndSync()` opens the temp file, writes data, calls `file.Sync()`, and closes (with cleanup on error). On POSIX, the target directory is also `fsync`'d after rename via `syncDir()`. The package doc now says "atomic rename, and fsync for crash durability" — and means it.
+
+### Added
+
+- **`fsync` for crash durability** — temp file is fsync'd before rename; target directory is fsync'd after rename (POSIX only; Windows has no equivalent directory sync)
+- **Unique temp file names** — `crypto/rand` 4-byte hex suffix prevents concurrent writer staging-file corruption
+- **Platform-specific rename** — split into `rename_unix.go` (single `rename(2)` + directory `fsync`) and `rename_windows.go` (retry loop on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`, 5 retries with exponential backoff 1–16ms, matching Go's own `cmd/go` fix for issue 36568)
+- **`writeAndSync()`** — opens temp file, writes data, fsyncs, closes; cleans up temp file on any error
+- **`randomSuffix()`** — generates random hex suffix for unique temp file names
+- **`syncDir()`** — opens and fsyncs the target directory after rename (POSIX only)
+- **`TestWriteLeavesNoLeftoverFiles`** — verifies no `.bak` and no `.tmp` files remain after a successful write
+- **Status report** — full HTML dashboard at `docs/status/2026-06-28_03-32_atomicity-durability-overhaul.html`
+
+### Changed
+
+- Package doc: "atomic rename for crash safety" → "atomic rename, and fsync for crash durability"
+- `Write()` now stages to a unique temp file instead of a shared `path + ".tmp"`
+- `atomicRename()` no longer creates `.bak` files — single `os.Rename` replaces atomically
+- `TestConcurrentWriteRACE` rewritten: 10 writers, divergent content, integrity check
+- `TestTempFileCleanedUpOnError` uses `filepath.Glob` instead of hardcoded temp path
+- AGENTS.md, README.md updated: new architecture, data flow, file structure, platform-specific behavior, removed all `.bak` references
+- `go.sum` tidied — removed stale testify/go-spew/go-difflib/yaml.v3 checksums
+
+### Removed
+
+- `TestWriteCreatesBackup` — tested the `.bak` pattern as a feature; the pattern was a bug
+- `.bak` file creation — no longer created alongside the target
+
+### Caveats
+
+- Windows rename retry loop and `FlushFileBuffers` compile via build tags but are **untested on real Windows hardware**
+- No POSIX-equivalent directory fsync on Windows — the directory entry after rename may not be durable after a crash
+- No stale temp file cleanup — crashed writes leave `.tmp` files (unique names prevent interference but don't self-clean)
+
 ## [0.1.1] - 2026-06-03
 
 ### Changed

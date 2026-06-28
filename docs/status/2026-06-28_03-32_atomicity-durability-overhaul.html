@@ -74,9 +74,18 @@
           monospace;
       }
 
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      html { scroll-behavior: smooth; }
-      section[id], [id] { scroll-margin-top: 60px; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
 
       body {
         background: var(--surface);
@@ -88,8 +97,13 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-      a:focus-visible { outline-offset: -1px; }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
 
       .top-bar {
         background: var(--text);
@@ -105,7 +119,11 @@
         align-items: center;
       }
 
-      .layout { display: flex; gap: 2.5rem; padding: 2rem; }
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
       .sidebar {
         width: 220px;
         flex-shrink: 0;
@@ -116,7 +134,11 @@
         overflow-y: auto;
         display: none;
       }
-      .sidebar nav { display: flex; flex-direction: column; gap: 0; }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
       .sidebar .label {
         font-family: var(--font-mono);
         font-size: 0.68rem;
@@ -138,19 +160,30 @@
         line-height: 1.4;
         font-weight: 500;
       }
-      .sidebar a:hover, .sidebar a.active {
+      .sidebar a:hover,
+      .sidebar a.active {
         color: var(--accent);
         border-left-color: var(--accent);
         background: color-mix(in srgb, var(--accent) 8%, transparent);
       }
-      .main { flex: 1; min-width: 0; }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
 
-      h1, h2, h3, h4 {
+      h1,
+      h2,
+      h3,
+      h4 {
         font-family: var(--font-heading);
         font-weight: 800;
         letter-spacing: -0.02em;
       }
-      h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; margin: 0 0 0.6rem; }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
       h2 {
         font-size: 1.4rem;
         margin: 2.5rem 0 1rem;
@@ -167,9 +200,19 @@
         font-weight: 700;
         letter-spacing: 0.06em;
       }
-      h3 { font-size: 1.1rem; margin: 0 0 0.4rem; font-weight: 700; }
-      h4 { font-size: 0.98rem; margin: 0 0 0.3rem; font-weight: 700; }
-      p { margin: 0 0 1rem; }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
 
       .hero {
         padding: 1.5rem 0 1.5rem;
@@ -195,20 +238,34 @@
         margin: 0;
       }
 
-      .hero-shapes { position: relative; height: 80px; margin-bottom: 1rem; }
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
       .hero-shapes .circle {
-        position: absolute; top: 0; left: 0;
-        width: 56px; height: 56px;
-        background: var(--problem); border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
       }
       .hero-shapes .square {
-        position: absolute; top: 24px; left: 72px;
-        width: 48px; height: 48px;
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
         background: var(--solution);
       }
       .hero-shapes .tri {
-        position: absolute; top: 8px; left: 140px;
-        width: 0; height: 0;
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
         border-left: 28px solid transparent;
         border-right: 28px solid transparent;
         border-bottom: 48px solid var(--warning);
@@ -253,14 +310,18 @@
         border-left-color: var(--solution);
         background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
       }
-      .issue h3 { margin-bottom: 0.3rem; }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
       .issue .where {
         font-family: var(--font-mono);
         font-size: 0.78rem;
         color: var(--text-faint);
         margin: 0.2rem 0 0.6rem;
       }
-      .issue p:last-child { margin-bottom: 0; }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
 
       .severity {
         display: inline-block;
@@ -273,9 +334,15 @@
         margin-bottom: 0.6rem;
         color: var(--surface);
       }
-      .severity-critical { background: var(--problem); }
-      .severity-important { background: var(--warning); }
-      .severity-nice { background: var(--solution); }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
 
       .badge {
         display: inline-block;
@@ -288,11 +355,25 @@
         border: 1px solid var(--border-strong);
         color: var(--text-muted);
       }
-      .badge-critical { color: var(--problem); border-color: var(--problem); }
-      .badge-high { color: var(--warning); border-color: var(--warning); }
-      .badge-medium { color: var(--accent); border-color: var(--accent); }
-      .badge-low { color: var(--text-muted); }
-      .badge-fixed { color: var(--solution); border-color: var(--solution); }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
 
       .callout {
         margin: 0.8rem 0 0;
@@ -301,7 +382,10 @@
         background: color-mix(in srgb, var(--text) 5%, transparent);
         font-size: 0.9rem;
       }
-      .callout strong { display: inline-block; margin-right: 0.4rem; }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
       .callout-solution {
         border-left-color: var(--solution);
         background: color-mix(in srgb, var(--solution) 10%, transparent);
@@ -315,29 +399,44 @@
         background: color-mix(in srgb, var(--problem) 10%, transparent);
       }
 
-      .stat-grid, .scorecard {
+      .stat-grid,
+      .scorecard {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 0.75rem;
         margin: 1rem 0 1.5rem;
       }
-      .stat-card, .score-card {
+      .stat-card,
+      .score-card {
         background: var(--surface-raised);
         border: 1px solid var(--border);
         padding: 1.1rem 1rem;
         position: relative;
       }
-      .stat-card::before, .score-card::before {
+      .stat-card::before,
+      .score-card::before {
         content: "";
         position: absolute;
-        top: 0; left: 0; right: 0;
+        top: 0;
+        left: 0;
+        right: 0;
         height: 2px;
         background: var(--border-strong);
       }
-      .stat-bad::before, .score-bad::before { background: var(--problem); }
-      .stat-good::before, .score-good::before { background: var(--solution); }
-      .stat-warn::before, .score-warn::before { background: var(--warning); }
-      .stat-value, .score {
+      .stat-bad::before,
+      .score-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before,
+      .score-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before,
+      .score-warn::before {
+        background: var(--warning);
+      }
+      .stat-value,
+      .score {
         font-family: var(--font-heading);
         font-size: 2rem;
         font-weight: 800;
@@ -345,10 +444,20 @@
         letter-spacing: -0.03em;
         color: var(--text);
       }
-      .stat-bad .stat-value, .score-bad .score { color: var(--problem); }
-      .stat-good .stat-value, .score-good .score { color: var(--solution); }
-      .stat-warn .stat-value, .score-warn .score { color: var(--warning); }
-      .stat-label, .score-card .label {
+      .stat-bad .stat-value,
+      .score-bad .score {
+        color: var(--problem);
+      }
+      .stat-good .stat-value,
+      .score-good .score {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value,
+      .score-warn .score {
+        color: var(--warning);
+      }
+      .stat-label,
+      .score-card .label {
         font-family: var(--font-mono);
         font-size: 0.65rem;
         font-weight: 600;
@@ -358,7 +467,11 @@
         margin-top: 0.5rem;
       }
 
-      .strengths { display: grid; gap: 0.5rem; margin: 1rem 0 1.5rem; }
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
       .strength {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -373,10 +486,18 @@
         font-size: 1.1rem;
         line-height: 1.4;
       }
-      .strength .text strong { display: block; margin-bottom: 0.15rem; }
-      .strength .text span { color: var(--text-muted); font-size: 0.9rem; }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
 
-      .table-wrap { overflow-x: auto; }
+      .table-wrap {
+        overflow-x: auto;
+      }
       table {
         width: 100%;
         border-collapse: collapse;
@@ -399,7 +520,9 @@
         padding: 0.6rem 0.9rem;
         border-bottom: 1px solid var(--border);
       }
-      tr:hover td { background: var(--surface-raised); }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
 
       .compare-header {
         display: grid;
@@ -407,7 +530,8 @@
         gap: 0.75rem;
         margin: 1rem 0 0.5rem;
       }
-      .compare-before, .compare-after {
+      .compare-before,
+      .compare-after {
         font-family: var(--font-mono);
         font-size: 0.7rem;
         font-weight: 700;
@@ -416,15 +540,21 @@
         padding: 0.4rem 0.7rem;
         color: var(--surface);
       }
-      .compare-before { background: var(--problem); }
-      .compare-after { background: var(--solution); }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
       .compare-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 0.75rem;
         margin-bottom: 1rem;
       }
-      .compare-row pre { margin: 0; }
+      .compare-row pre {
+        margin: 0;
+      }
 
       pre {
         background: var(--surface-sunken);
@@ -436,20 +566,41 @@
         line-height: 1.65;
         overflow-x: auto;
       }
-      code { font-family: var(--font-mono); }
-      p code, li code, td code {
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
         font-size: 0.88em;
         background: var(--surface-sunken);
         padding: 0.1rem 0.35rem;
       }
-      .tok-keyword { color: var(--accent); }
-      .tok-type { color: var(--warning); }
-      .tok-string { color: var(--solution); }
-      .tok-comment { color: var(--text-faint); font-style: italic; }
-      .tok-func { color: #74a9ff; }
-      .tok-number { color: var(--accent); }
-      .tok-builtin { color: #4dd9ff; }
-      .tok-punct { color: var(--text-muted); }
+      .tok-keyword {
+        color: var(--accent);
+      }
+      .tok-type {
+        color: var(--warning);
+      }
+      .tok-string {
+        color: var(--solution);
+      }
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      }
+      .tok-number {
+        color: var(--accent);
+      }
+      .tok-builtin {
+        color: #4dd9ff;
+      }
+      .tok-punct {
+        color: var(--text-muted);
+      }
 
       .dep-tree {
         background: var(--surface-sunken);
@@ -462,9 +613,16 @@
         white-space: pre;
         overflow-x: auto;
       }
-      .dep-tree .root { color: var(--accent); font-weight: 700; }
-      .dep-tree .ok { color: var(--solution); }
-      .dep-tree .unwanted { color: var(--problem); }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
 
       .diagram {
         display: flex;
@@ -495,10 +653,23 @@
         color: var(--surface);
         border-color: var(--solution);
       }
-      .arrow { color: var(--text-faint); font-family: var(--font-mono); }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
 
-      .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
-      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
 
       .footer {
         margin-top: 2rem;
@@ -509,13 +680,33 @@
         font-family: var(--font-mono);
       }
 
-      @media (min-width: 1024px) { .sidebar { display: block; } }
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
       @media (max-width: 768px) {
-        .layout { flex-direction: column; padding: 1rem; }
-        .top-bar { padding: 0.6rem 1rem; flex-wrap: wrap; gap: 0.3rem; }
-        .grid-2, .grid-3 { grid-template-columns: 1fr; }
-        .compare-header, .compare-row { grid-template-columns: 1fr; }
-        .stat-grid, .scorecard { grid-template-columns: repeat(2, 1fr); }
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid,
+        .scorecard {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     </style>
   </head>
@@ -551,9 +742,9 @@
           <div class="hero-badge">Comprehensive Status Update</div>
           <h1>go-atomic-write &mdash; Atomicity &amp; Durability Overhaul</h1>
           <p class="hero-subtitle">
-            Full status of the rewrite that fixed the broken <code>.bak</code> rename pattern,
-            added unique temp files, fsync for crash durability, and platform-specific rename
-            with Windows retry logic.
+            Full status of the rewrite that fixed the broken <code>.bak</code> rename pattern, added
+            unique temp files, fsync for crash durability, and platform-specific rename with Windows
+            retry logic.
           </p>
         </div>
 
@@ -583,8 +774,8 @@
           <p>
             All 12 planned tasks are complete. <code>go build</code>, <code>go vet</code>,
             <code>go test -race</code>, <code>go test -bench</code>, and
-            <code>golangci-lint</code> all pass with zero issues. The library now delivers
-            on its core promise: truly atomic writes with real crash durability.
+            <code>golangci-lint</code> all pass with zero issues. The library now delivers on its
+            core promise: truly atomic writes with real crash durability.
           </p>
         </div>
 
@@ -596,77 +787,129 @@
             <div class="check">+</div>
             <div class="text">
               <strong>Dropped the <code>.bak</code> dance</strong>
-              <span>Removed the two-rename pattern (<code>path&rarr;.bak</code> then <code>tmp&rarr;path</code>) that broke POSIX atomicity. Now a single <code>os.Rename(tmp, path)</code> atomically replaces the target. <code>atomicwrite.go:114</code> &rarr; <code>rename_unix.go:11-18</code></span>
+              <span
+                >Removed the two-rename pattern (<code>path&rarr;.bak</code> then
+                <code>tmp&rarr;path</code>) that broke POSIX atomicity. Now a single
+                <code>os.Rename(tmp, path)</code> atomically replaces the target.
+                <code>atomicwrite.go:114</code> &rarr; <code>rename_unix.go:11-18</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>Unique temp file names</strong>
-              <span>Temp files now use <code>path + "." + randomHex + ".tmp"</code> via <code>crypto/rand</code> (4-byte suffix). Prevents concurrent writers from corrupting a shared staging file. <code>atomicwrite.go:73-78, randomSuffix()</code></span>
+              <span
+                >Temp files now use <code>path + "." + randomHex + ".tmp"</code> via
+                <code>crypto/rand</code> (4-byte suffix). Prevents concurrent writers from
+                corrupting a shared staging file.
+                <code>atomicwrite.go:73-78, randomSuffix()</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>fsync for crash durability</strong>
-              <span>New <code>writeAndSync()</code> function: opens temp file, writes data, calls <code>file.Sync()</code>, closes &mdash; with cleanup on any error. The "crash safety" doc claim is now actually true. <code>atomicwrite.go:134-160</code></span>
+              <span
+                >New <code>writeAndSync()</code> function: opens temp file, writes data, calls
+                <code>file.Sync()</code>, closes &mdash; with cleanup on any error. The "crash
+                safety" doc claim is now actually true. <code>atomicwrite.go:134-160</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>Platform split: rename_unix.go + rename_windows.go</strong>
-              <span>POSIX: single <code>rename(2)</code> + directory <code>fsync</code> via <code>syncDir()</code>. Windows: retry loop on <code>ERROR_ACCESS_DENIED</code>/<code>ERROR_SHARING_VIOLATION</code> (5 retries, exponential backoff 1&ndash;16ms). <code>rename_unix.go</code>, <code>rename_windows.go</code></span>
+              <span
+                >POSIX: single <code>rename(2)</code> + directory <code>fsync</code> via
+                <code>syncDir()</code>. Windows: retry loop on
+                <code>ERROR_ACCESS_DENIED</code>/<code>ERROR_SHARING_VIOLATION</code> (5 retries,
+                exponential backoff 1&ndash;16ms). <code>rename_unix.go</code>,
+                <code>rename_windows.go</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>Package doc fixed</strong>
-              <span>Changed from "atomic rename for crash safety" (a lie without fsync) to "atomic rename, and fsync for crash durability" (now true). <code>atomicwrite.go:1-3</code></span>
+              <span
+                >Changed from "atomic rename for crash safety" (a lie without fsync) to "atomic
+                rename, and fsync for crash durability" (now true).
+                <code>atomicwrite.go:1-3</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>TestWriteCreatesBackup removed, TestWriteLeavesNoLeftoverFiles added</strong>
-              <span>Removed the test that validated the bug as a feature. New test verifies no <code>.bak</code> and no <code>.tmp</code> files remain after a successful write. <code>atomicwrite_test.go:194-218</code></span>
+              <span
+                >Removed the test that validated the bug as a feature. New test verifies no
+                <code>.bak</code> and no <code>.tmp</code> files remain after a successful write.
+                <code>atomicwrite_test.go:194-218</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>TestConcurrentWriteRACE rewritten with divergent content + integrity check</strong>
-              <span>10 writers with distinct payloads (<code>writer-0</code> through <code>writer-9</code>). Final file content verified to be exactly one writer's payload &mdash; not interleaved bytes. The old test used identical content from all writers and could not catch corruption. <code>atomicwrite_test.go:233-279</code></span>
+              <strong
+                >TestConcurrentWriteRACE rewritten with divergent content + integrity check</strong
+              >
+              <span
+                >10 writers with distinct payloads (<code>writer-0</code> through
+                <code>writer-9</code>). Final file content verified to be exactly one writer's
+                payload &mdash; not interleaved bytes. The old test used identical content from all
+                writers and could not catch corruption.
+                <code>atomicwrite_test.go:233-279</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>TestTempFileCleanedUpOnError updated for unique names</strong>
-              <span>Uses <code>filepath.Glob</code> instead of hardcoded <code>testfile.tmp</code> path. <code>atomicwrite_test.go:227-231</code></span>
+              <span
+                >Uses <code>filepath.Glob</code> instead of hardcoded
+                <code>testfile.tmp</code> path. <code>atomicwrite_test.go:227-231</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>AGENTS.md fully updated</strong>
-              <span>New architecture diagram, file structure table, key functions list, data flow, gotchas. Removed all <code>.bak</code> references. Added <code>fsync</code>, unique temp, OS split, and <code>wsl_v5</code> lint gotcha. <code>AGENTS.md</code></span>
+              <span
+                >New architecture diagram, file structure table, key functions list, data flow,
+                gotchas. Removed all <code>.bak</code> references. Added <code>fsync</code>, unique
+                temp, OS split, and <code>wsl_v5</code> lint gotcha. <code>AGENTS.md</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>README.md fully updated</strong>
-              <span>How it works section now describes unique temp, fsync, atomic rename, directory fsync. Error contract updated. Platform support section expanded with POSIX vs Windows details. Removed <code>.bak</code> references and "~130 lines" claim. <code>README.md</code></span>
+              <span
+                >How it works section now describes unique temp, fsync, atomic rename, directory
+                fsync. Error contract updated. Platform support section expanded with POSIX vs
+                Windows details. Removed <code>.bak</code> references and "~130 lines" claim.
+                <code>README.md</code></span
+              >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>All quality gates green</strong>
-              <span><code>go build</code>, <code>go vet</code>, <code>go test -race -count=1</code>, <code>go test -bench</code>, <code>golangci-lint run</code> &mdash; all pass with zero issues.</span>
+              <span
+                ><code>go build</code>, <code>go vet</code>, <code>go test -race -count=1</code>,
+                <code>go test -bench</code>, <code>golangci-lint run</code> &mdash; all pass with
+                zero issues.</span
+              >
             </div>
           </div>
         </div>
@@ -678,11 +921,10 @@
           <h4>Windows durability &mdash; directory fsync is a no-op</h4>
           <p>
             File-level durability is handled: <code>file.Sync()</code> on Windows calls
-            <code>FlushFileBuffers</code>, which flushes the file's data to disk. However,
-            there is no POSIX-equivalent directory fsync on Windows &mdash; the directory
-            entry after rename is not explicitly synced. This is a known platform
-            limitation, documented in AGENTS.md, but not yet tested on an actual Windows
-            machine.
+            <code>FlushFileBuffers</code>, which flushes the file's data to disk. However, there is
+            no POSIX-equivalent directory fsync on Windows &mdash; the directory entry after rename
+            is not explicitly synced. This is a known platform limitation, documented in AGENTS.md,
+            but not yet tested on an actual Windows machine.
           </p>
           <div class="callout callout-warning">
             <strong>Status:</strong>
@@ -696,29 +938,28 @@
         <div class="card">
           <h4>Write benchmark (fsync overhead measurement)</h4>
           <p>
-            The original plan included a <code>Write</code> benchmark to measure fsync
-            overhead vs the old no-fsync path. Not yet written &mdash; benchmarks for
-            xxhash vs SHA-256 exist but no end-to-end <code>Write</code> benchmark exists.
+            The original plan included a <code>Write</code> benchmark to measure fsync overhead vs
+            the old no-fsync path. Not yet written &mdash; benchmarks for xxhash vs SHA-256 exist
+            but no end-to-end <code>Write</code> benchmark exists.
           </p>
         </div>
 
         <div class="card">
           <h4>Stale temp file cleanup</h4>
           <p>
-            Unique temp names prevent concurrent corruption, but if a process crashes
-            mid-write, the <code>.tmp</code> file remains forever. No cleanup-on-startup
-            logic exists yet. With unique names, stale files don't interfere with new
-            writes, but they accumulate.
+            Unique temp names prevent concurrent corruption, but if a process crashes mid-write, the
+            <code>.tmp</code> file remains forever. No cleanup-on-startup logic exists yet. With
+            unique names, stale files don't interfere with new writes, but they accumulate.
           </p>
         </div>
 
         <div class="card">
           <h4>context.Context support</h4>
           <p>
-            <code>Write()</code> blocks on <code>fsync</code>, which can take unbounded
-            time on slow/network filesystems. No <code>context.Context</code> parameter
-            exists for cancellation or timeout. This is a design decision, not an
-            oversight &mdash; see <a href="#question">#1 Open Question</a>.
+            <code>Write()</code> blocks on <code>fsync</code>, which can take unbounded time on
+            slow/network filesystems. No <code>context.Context</code> parameter exists for
+            cancellation or timeout. This is a design decision, not an oversight &mdash; see
+            <a href="#question">#1 Open Question</a>.
           </p>
         </div>
 
@@ -732,11 +973,10 @@
           <p>
             The original <code>atomicRename</code> did <code>os.Rename(path, path+".bak")</code>
             <em>then</em> <code>os.Rename(tmpPath, path)</code>. On POSIX, a single
-            <code>rename(2)</code> atomically swaps the inode &mdash; readers always see
-            either old or new content, never <code>ENOENT</code>. Splitting into two
-            renames opened a window where <code>path</code> didn't exist. A concurrent
-            reader (or a crash between the two calls) saw the file missing. The library
-            named "atomic-write" was not atomic.
+            <code>rename(2)</code> atomically swaps the inode &mdash; readers always see either old
+            or new content, never <code>ENOENT</code>. Splitting into two renames opened a window
+            where <code>path</code> didn't exist. A concurrent reader (or a crash between the two
+            calls) saw the file missing. The library named "atomic-write" was not atomic.
           </p>
           <div class="callout callout-solution">
             <strong>Fix:</strong>
@@ -751,9 +991,8 @@
           <p>
             <code>tmpPath</code> was computed <em>before</em> the lock. Two <code>Write()</code>
             calls to the same target both opened/truncated/wrote the same
-            <code>path.tmp</code>, interleaving bytes. The lock only guarded the
-            verify+rename, not the staging write. The winner then renamed a
-            possibly-corrupted file.
+            <code>path.tmp</code>, interleaving bytes. The lock only guarded the verify+rename, not
+            the staging write. The winner then renamed a possibly-corrupted file.
           </p>
           <div class="callout callout-solution">
             <strong>Fix:</strong>
@@ -767,17 +1006,15 @@
           <h3>The concurrency test couldn't catch the corruption bug</h3>
           <div class="where">atomicwrite_test.go:254 (old code)</div>
           <p>
-            <code>TestConcurrentWriteRACE</code> used identical content
-            (<code>"updated"</code>) from all 5 goroutines. Even if bytes were
-            interleaved, the result was the same string &mdash; the test would pass
-            on corrupted data. The test was structurally incapable of detecting the bug
-            it was supposed to guard against.
+            <code>TestConcurrentWriteRACE</code> used identical content (<code>"updated"</code>)
+            from all 5 goroutines. Even if bytes were interleaved, the result was the same string
+            &mdash; the test would pass on corrupted data. The test was structurally incapable of
+            detecting the bug it was supposed to guard against.
           </p>
           <div class="callout callout-solution">
             <strong>Fix:</strong>
-            10 writers with divergent content (<code>writer-0</code> &ndash;
-            <code>writer-9</code>) + integrity check verifying the final file is exactly
-            one writer's payload.
+            10 writers with divergent content (<code>writer-0</code> &ndash; <code>writer-9</code>)
+            + integrity check verifying the final file is exactly one writer's payload.
           </div>
         </div>
 
@@ -788,48 +1025,48 @@
           <div class="card card-warning">
             <h4>Test on actual Windows</h4>
             <p>
-              <code>rename_windows.go</code> compiles via build tags but has never run on
-              a real Windows machine. The retry loop, <code>ERROR_ACCESS_DENIED</code>
-              detection, and <code>MoveFileEx</code> behavior are all unverified.
+              <code>rename_windows.go</code> compiles via build tags but has never run on a real
+              Windows machine. The retry loop, <code>ERROR_ACCESS_DENIED</code> detection, and
+              <code>MoveFileEx</code> behavior are all unverified.
             </p>
           </div>
           <div class="card card-warning">
             <h4>Stale temp file accumulation</h4>
             <p>
               Crashed writes leave <code>.tmp</code> files forever. Unique names prevent
-              interference but don't clean up. Need a glob-and-remove on startup, or
-              document the expected cleanup pattern.
+              interference but don't clean up. Need a glob-and-remove on startup, or document the
+              expected cleanup pattern.
             </p>
           </div>
           <div class="card card-warning">
             <h4>No <code>Write</code> benchmark</h4>
             <p>
-              fsync adds real latency. We should benchmark <code>Write</code> end-to-end
-              to quantify the cost and establish a regression baseline.
+              fsync adds real latency. We should benchmark <code>Write</code> end-to-end to quantify
+              the cost and establish a regression baseline.
             </p>
           </div>
           <div class="card card-warning">
             <h4>No fuzz tests</h4>
             <p>
-              <code>writeAndSync</code> and <code>randomSuffix</code> handle arbitrary
-              data sizes and edge cases. Fuzz testing would catch panics or data corruption
-              on unusual inputs (empty data, very large data, concurrent access).
+              <code>writeAndSync</code> and <code>randomSuffix</code> handle arbitrary data sizes
+              and edge cases. Fuzz testing would catch panics or data corruption on unusual inputs
+              (empty data, very large data, concurrent access).
             </p>
           </div>
           <div class="card card-warning">
             <h4>No godoc examples</h4>
             <p>
-              <code>ExampleWrite</code>, <code>ExampleFingerprintFile</code> etc. would
-              make the package discoverable via <code>go doc</code> and
+              <code>ExampleWrite</code>, <code>ExampleFingerprintFile</code> etc. would make the
+              package discoverable via <code>go doc</code> and
               <a href="https://pkg.go.dev">pkg.go.dev</a>.
             </p>
           </div>
           <div class="card card-warning">
             <h4>Windows durability gap</h4>
             <p>
-              No directory fsync equivalent on Windows. The rename directory entry may
-              not be durable after a crash. Should be documented as a known limitation,
-              or addressed via <code>MOVEFILE_WRITE_THROUGH</code>.
+              No directory fsync equivalent on Windows. The rename directory entry may not be
+              durable after a crash. Should be documented as a known limitation, or addressed via
+              <code>MOVEFILE_WRITE_THROUGH</code>.
             </p>
           </div>
         </div>
@@ -852,98 +1089,137 @@
               <tr>
                 <td>1</td>
                 <td><span class="badge badge-critical">Critical</span></td>
-                <td>Test on actual Windows &mdash; verify retry loop, <code>MoveFileEx</code>, <code>FlushFileBuffers</code></td>
+                <td>
+                  Test on actual Windows &mdash; verify retry loop, <code>MoveFileEx</code>,
+                  <code>FlushFileBuffers</code>
+                </td>
                 <td>High</td>
                 <td>2h</td>
               </tr>
               <tr>
                 <td>2</td>
                 <td><span class="badge badge-critical">Critical</span></td>
-                <td>Add CI with Windows runner (GitHub Actions) &mdash; <code>go test</code> on <code>windows-latest</code></td>
+                <td>
+                  Add CI with Windows runner (GitHub Actions) &mdash; <code>go test</code> on
+                  <code>windows-latest</code>
+                </td>
                 <td>High</td>
                 <td>1h</td>
               </tr>
               <tr>
                 <td>3</td>
                 <td><span class="badge badge-high">High</span></td>
-                <td>Add <code>Write</code> benchmark &mdash; measure fsync overhead, establish regression baseline</td>
+                <td>
+                  Add <code>Write</code> benchmark &mdash; measure fsync overhead, establish
+                  regression baseline
+                </td>
                 <td>High</td>
                 <td>30m</td>
               </tr>
               <tr>
                 <td>4</td>
                 <td><span class="badge badge-high">High</span></td>
-                <td>Stale temp file cleanup &mdash; glob <code>*.tmp</code> on startup or after write</td>
+                <td>
+                  Stale temp file cleanup &mdash; glob <code>*.tmp</code> on startup or after write
+                </td>
                 <td>Med</td>
                 <td>30m</td>
               </tr>
               <tr>
                 <td>5</td>
                 <td><span class="badge badge-high">High</span></td>
-                <td>Add fuzz tests for <code>writeAndSync</code> &mdash; random data sizes, edge cases, empty data</td>
+                <td>
+                  Add fuzz tests for <code>writeAndSync</code> &mdash; random data sizes, edge
+                  cases, empty data
+                </td>
                 <td>Med</td>
                 <td>30m</td>
               </tr>
               <tr>
                 <td>6</td>
                 <td><span class="badge badge-high">High</span></td>
-                <td>Stress test: 100+ concurrent writers &mdash; verify no corruption under heavy contention</td>
+                <td>
+                  Stress test: 100+ concurrent writers &mdash; verify no corruption under heavy
+                  contention
+                </td>
                 <td>Med</td>
                 <td>20m</td>
               </tr>
               <tr>
                 <td>7</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Test very large files (multi-MB) through <code>writeAndSync</code> &mdash; verify no OOM</td>
+                <td>
+                  Test very large files (multi-MB) through <code>writeAndSync</code> &mdash; verify
+                  no OOM
+                </td>
                 <td>Low</td>
                 <td>15m</td>
               </tr>
               <tr>
                 <td>8</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Test temp file cleanup on <code>file.Sync()</code> failure &mdash; verify <code>.tmp</code> removed</td>
+                <td>
+                  Test temp file cleanup on <code>file.Sync()</code> failure &mdash; verify
+                  <code>.tmp</code> removed
+                </td>
                 <td>Low</td>
                 <td>15m</td>
               </tr>
               <tr>
                 <td>9</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Add godoc examples: <code>ExampleWrite</code>, <code>ExampleFingerprintFile</code></td>
+                <td>
+                  Add godoc examples: <code>ExampleWrite</code>, <code>ExampleFingerprintFile</code>
+                </td>
                 <td>Low</td>
                 <td>20m</td>
               </tr>
               <tr>
                 <td>10</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Test concurrent writes with different file permissions &mdash; verify perm preservation through unique temp</td>
+                <td>
+                  Test concurrent writes with different file permissions &mdash; verify perm
+                  preservation through unique temp
+                </td>
                 <td>Low</td>
                 <td>15m</td>
               </tr>
               <tr>
                 <td>11</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Investigate <code>MOVEFILE_WRITE_THROUGH</code> for Windows directory durability</td>
+                <td>
+                  Investigate <code>MOVEFILE_WRITE_THROUGH</code> for Windows directory durability
+                </td>
                 <td>Med</td>
                 <td>1h</td>
               </tr>
               <tr>
                 <td>12</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Document Windows durability limitation in README if <code>MOVEFILE_WRITE_THROUGH</code> not viable</td>
+                <td>
+                  Document Windows durability limitation in README if
+                  <code>MOVEFILE_WRITE_THROUGH</code> not viable
+                </td>
                 <td>Low</td>
                 <td>10m</td>
               </tr>
               <tr>
                 <td>13</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Consider <code>context.Context</code> support for <code>Write</code> &mdash; cancellation/timeout on slow filesystems</td>
+                <td>
+                  Consider <code>context.Context</code> support for <code>Write</code> &mdash;
+                  cancellation/timeout on slow filesystems
+                </td>
                 <td>Med</td>
                 <td>1h</td>
               </tr>
               <tr>
                 <td>14</td>
                 <td><span class="badge badge-medium">Medium</span></td>
-                <td>Add <code>FingerprintStream</code> for large files &mdash; avoid reading entire file into memory</td>
+                <td>
+                  Add <code>FingerprintStream</code> for large files &mdash; avoid reading entire
+                  file into memory
+                </td>
                 <td>Med</td>
                 <td>30m</td>
               </tr>
@@ -957,70 +1233,99 @@
               <tr>
                 <td>16</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Test that <code>commitWithVerification</code> properly cleans up on lock acquisition failure</td>
+                <td>
+                  Test that <code>commitWithVerification</code> properly cleans up on lock
+                  acquisition failure
+                </td>
                 <td>Low</td>
                 <td>15m</td>
               </tr>
               <tr>
                 <td>17</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Consider <code>WriteWithOptions</code> pattern for future options (fsync opt-out, custom temp dir)</td>
+                <td>
+                  Consider <code>WriteWithOptions</code> pattern for future options (fsync opt-out,
+                  custom temp dir)
+                </td>
                 <td>Low</td>
                 <td>30m</td>
               </tr>
               <tr>
                 <td>18</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Document <code>randomSuffix</code> collision probability (4 bytes = 2^32 &mdash; sufficient?)</td>
+                <td>
+                  Document <code>randomSuffix</code> collision probability (4 bytes = 2^32 &mdash;
+                  sufficient?)
+                </td>
                 <td>Low</td>
                 <td>5m</td>
               </tr>
               <tr>
                 <td>19</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Verify <code>syncDir</code> handles <code>/tmp</code> (tmpfs &mdash; fsync is a no-op but shouldn't error)</td>
+                <td>
+                  Verify <code>syncDir</code> handles <code>/tmp</code> (tmpfs &mdash; fsync is a
+                  no-op but shouldn't error)
+                </td>
                 <td>Low</td>
                 <td>10m</td>
               </tr>
               <tr>
                 <td>20</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Add test for directory fsync failure &mdash; should it return error or warn?</td>
+                <td>
+                  Add test for directory fsync failure &mdash; should it return error or warn?
+                </td>
                 <td>Low</td>
                 <td>15m</td>
               </tr>
               <tr>
                 <td>21</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Review if <code>commitWithVerification</code> should also fsync after re-reading target</td>
+                <td>
+                  Review if <code>commitWithVerification</code> should also fsync after re-reading
+                  target
+                </td>
                 <td>Low</td>
                 <td>10m</td>
               </tr>
               <tr>
                 <td>22</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Consider migration path for users upgrading from <code>.bak</code> version &mdash; old <code>.bak</code> files orphaned</td>
+                <td>
+                  Consider migration path for users upgrading from <code>.bak</code> version &mdash;
+                  old <code>.bak</code> files orphaned
+                </td>
                 <td>Low</td>
                 <td>15m</td>
               </tr>
               <tr>
                 <td>23</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Review if <code>flock</code> is still the right choice vs <code>syscall.Flock</code> directly</td>
+                <td>
+                  Review if <code>flock</code> is still the right choice vs
+                  <code>syscall.Flock</code> directly
+                </td>
                 <td>Low</td>
                 <td>20m</td>
               </tr>
               <tr>
                 <td>24</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Add <code>.gitignore</code> entry for <code>docs/status/</code> if reports shouldn't be committed</td>
+                <td>
+                  Add <code>.gitignore</code> entry for <code>docs/status/</code> if reports
+                  shouldn't be committed
+                </td>
                 <td>Low</td>
                 <td>2m</td>
               </tr>
               <tr>
                 <td>25</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Consider whether <code>.tmp</code> suffix should be configurable or remain hardcoded</td>
+                <td>
+                  Consider whether <code>.tmp</code> suffix should be configurable or remain
+                  hardcoded
+                </td>
                 <td>Low</td>
                 <td>10m</td>
               </tr>
@@ -1034,35 +1339,35 @@
         <div class="card card-problem">
           <h4>Should <code>Write()</code> accept a <code>context.Context</code>?</h4>
           <p>
-            <code>Write()</code> now calls <code>file.Sync()</code>, which flushes to disk.
-            On a local SSD this takes microseconds. On a network filesystem (NFS, SMB,
-            CephFS) or a slow disk, <code>fsync</code> can take <strong>seconds or even
-            minutes</strong>. There is no way for a caller to cancel or timeout a write.
+            <code>Write()</code> now calls <code>file.Sync()</code>, which flushes to disk. On a
+            local SSD this takes microseconds. On a network filesystem (NFS, SMB, CephFS) or a slow
+            disk, <code>fsync</code> can take <strong>seconds or even minutes</strong>. There is no
+            way for a caller to cancel or timeout a write.
           </p>
           <p>
             Adding <code>context.Context</code> is an API change. Go's convention is
-            <code>ctx</code> as the first parameter (<code>Write(ctx, path, data, fp)</code>),
-            which breaks every existing call site. Alternatively, a new function
-            <code>WriteContext</code> could be added alongside the existing
-            <code>Write</code>.
+            <code>ctx</code> as the first parameter (<code>Write(ctx, path, data, fp)</code>), which
+            breaks every existing call site. Alternatively, a new function
+            <code>WriteContext</code> could be added alongside the existing <code>Write</code>.
           </p>
           <p>
             The deeper question: <strong>does fsync even respect context?</strong>
-            <code>file.Sync()</code> calls <code>fsync(2)</code>, which is a blocking
-            syscall with no cancellation primitive. A context-based timeout would need
-            to run the write in a goroutine and abandon it on timeout &mdash; leaving
-            the temp file on disk. That's a leak, not a clean cancel.
+            <code>file.Sync()</code> calls <code>fsync(2)</code>, which is a blocking syscall with
+            no cancellation primitive. A context-based timeout would need to run the write in a
+            goroutine and abandon it on timeout &mdash; leaving the temp file on disk. That's a
+            leak, not a clean cancel.
           </p>
           <div class="callout callout-problem">
             <strong>Why I can't figure this out myself:</strong>
-            This is a product decision, not a technical one. It depends on who the
-            callers are and whether they run on local disks (no timeout needed) or
-            network filesystems (timeout critical). I don't know the deployment context.
+            This is a product decision, not a technical one. It depends on who the callers are and
+            whether they run on local disks (no timeout needed) or network filesystems (timeout
+            critical). I don't know the deployment context.
           </div>
         </div>
 
         <footer class="footer">
-          Generated 2026-06-28 03:32 &middot; All claims verified against source code &middot; go-atomic-write master branch
+          Generated 2026-06-28 03:32 &middot; All claims verified against source code &middot;
+          go-atomic-write master branch
         </footer>
       </main>
     </div>
@@ -1077,7 +1382,9 @@
           return l.getAttribute("href").slice(1);
         });
         var sections = ids
-          .map(function (id) { return document.getElementById(id); })
+          .map(function (id) {
+            return document.getElementById(id);
+          })
           .filter(Boolean);
         if (!sections.length) return;
         var observer = new IntersectionObserver(
@@ -1095,7 +1402,9 @@
           },
           { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
         );
-        sections.forEach(function (s) { observer.observe(s); });
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
       })();
     </script>
   </body>

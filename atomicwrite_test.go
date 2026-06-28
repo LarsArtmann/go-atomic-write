@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -191,7 +192,7 @@ func TestWritePreservesPermissions(t *testing.T) {
 	}
 }
 
-func TestWriteCreatesBackup(t *testing.T) {
+func TestWriteLeavesNoLeftoverFiles(t *testing.T) {
 	t.Parallel()
 
 	originalContent := "original"
@@ -204,7 +205,21 @@ func TestWriteCreatesBackup(t *testing.T) {
 		t.Fatalf("Write: %v", err)
 	}
 
-	assertFileContent(t, path+".bak", originalContent)
+	assertFileContent(t, path, "updated")
+
+	_, bakErr := os.Stat(path + ".bak")
+	if !os.IsNotExist(bakErr) {
+		t.Error("expected no .bak file after write")
+	}
+
+	tmpMatches, globErr := filepath.Glob(filepath.Join(filepath.Dir(path), "*.tmp"))
+	if globErr != nil {
+		t.Fatalf("glob: %v", globErr)
+	}
+
+	if len(tmpMatches) > 0 {
+		t.Errorf("expected no temp files after write, found: %v", tmpMatches)
+	}
 }
 
 func TestTempFileCleanedUpOnError(t *testing.T) {
@@ -224,25 +239,28 @@ func TestTempFileCleanedUpOnError(t *testing.T) {
 		t.Fatal("expected error when original file deleted during verification, got nil")
 	}
 
-	_, statErr := os.Stat(filepath.Dir(path) + "/testfile.tmp")
-	if statErr == nil {
-		t.Error("temp file should be cleaned up on error")
+	tmpMatches, globErr := filepath.Glob(filepath.Join(filepath.Dir(path), "testfile.*.tmp"))
+	if globErr != nil {
+		t.Fatalf("glob: %v", globErr)
+	}
+
+	if len(tmpMatches) > 0 {
+		t.Errorf("temp files should be cleaned up on error, found: %v", tmpMatches)
 	}
 }
 
 func TestConcurrentWriteRACE(t *testing.T) {
 	t.Parallel()
 
-	content := "original"
-	path := tempFile(t, content)
+	path := tempFile(t, "original")
 
 	var successes, conflicts atomic.Int32
 
 	var waitGroup sync.WaitGroup
 
-	const writers = 5
+	const writers = 10
 
-	for range writers {
+	for writerIndex := range writers {
 		waitGroup.Go(func() {
 			fingerprint, fpErr := FingerprintFile(path)
 			if fpErr != nil {
@@ -251,10 +269,12 @@ func TestConcurrentWriteRACE(t *testing.T) {
 				return
 			}
 
-			writeErr := Write(path, []byte("updated"), fingerprint)
+			payload := "writer-" + strconv.Itoa(writerIndex)
+
+			writeErr := Write(path, []byte(payload), fingerprint)
 			if writeErr == nil {
 				successes.Add(1)
-			} else {
+			} else if errors.Is(writeErr, ErrConcurrentModification) {
 				conflicts.Add(1)
 			}
 		})
@@ -269,11 +289,31 @@ func TestConcurrentWriteRACE(t *testing.T) {
 	}
 
 	if successes.Load() < 1 {
-		t.Error("expected at least one successful write")
+		t.Fatal("expected at least one successful write")
 	}
 
 	if conflicts.Load() < 1 {
-		t.Log("no conflicts detected — race window may be too narrow with only 5 writers")
+		t.Log("no conflicts detected — race window may be too narrow")
+	}
+
+	data, readErr := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
+	if readErr != nil {
+		t.Fatalf("reading final file: %v", readErr)
+	}
+
+	content := string(data)
+	validPayload := false
+
+	for writerIndex := range writers {
+		if content == "writer-"+strconv.Itoa(writerIndex) {
+			validPayload = true
+
+			break
+		}
+	}
+
+	if !validPayload {
+		t.Errorf("final content %q is not a valid writer payload — possible corruption", content)
 	}
 }
 

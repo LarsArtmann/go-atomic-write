@@ -1,10 +1,12 @@
 // Package atomicwrite provides TOCTOU-safe file writes using xxhash64
 // fingerprint verification, cross-platform file locking via gofrs/flock,
-// and atomic rename for crash safety.
+// atomic rename, and fsync for crash durability.
 package atomicwrite
 
 import (
+	"crypto/rand"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -55,10 +57,12 @@ func FingerprintFile(path string) (Fingerprint, error) {
 	return FingerprintFromBytes(data), nil
 }
 
-// Write writes data to path with TOCTOU protection.
+// Write writes data to path with TOCTOU protection and crash durability.
+// Data is staged to a unique temp file, fsync'd, then atomically renamed
+// over the target. The target directory is fsync'd after rename (POSIX).
 // If fingerprint is non-zero, it verifies the file hasn't changed since the
 // fingerprint was computed, using cross-platform file locking (flock on Unix,
-// LockFileEx on Windows) and atomic rename for crash safety.
+// LockFileEx on Windows) and atomic rename.
 // A zero-value fingerprint skips verification (first run).
 func Write(path string, data []byte, fingerprint Fingerprint) error {
 	const defaultFilePerm = fs.FileMode(0o644)
@@ -70,11 +74,16 @@ func Write(path string, data []byte, fingerprint Fingerprint) error {
 		perm = info.Mode().Perm()
 	}
 
-	tmpPath := path + ".tmp"
+	suffix, suffixErr := randomSuffix()
+	if suffixErr != nil {
+		return fmt.Errorf("generating temp file suffix: %w", suffixErr)
+	}
 
-	writeErr := os.WriteFile(tmpPath, data, perm)
-	if writeErr != nil {
-		return fmt.Errorf("writing temp file %s: %w", tmpPath, writeErr)
+	tmpPath := path + "." + suffix + ".tmp"
+
+	stageErr := writeAndSync(tmpPath, data, perm)
+	if stageErr != nil {
+		return stageErr
 	}
 
 	if !fingerprint.IsZero() {
@@ -111,12 +120,44 @@ func commitWithVerification(path, tmpPath string, fingerprint Fingerprint) error
 	return atomicRename(path, tmpPath)
 }
 
-func atomicRename(path, tmpPath string) error {
-	_ = os.Rename(path, path+".bak")
+func randomSuffix() (string, error) {
+	var buf [4]byte
 
-	err := os.Rename(tmpPath, path)
+	_, err := rand.Read(buf[:])
 	if err != nil {
-		return fmt.Errorf("renaming %s to %s: %w", tmpPath, path, err)
+		return "", fmt.Errorf("reading random bytes: %w", err)
+	}
+
+	return hex.EncodeToString(buf[:]), nil
+}
+
+func writeAndSync(tmpPath string, data []byte, perm fs.FileMode) error {
+	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm) //nolint:gosec // caller-controlled
+	if err != nil {
+		return fmt.Errorf("creating temp file %s: %w", tmpPath, err)
+	}
+
+	_, writeErr := file.Write(data)
+	if writeErr != nil {
+		_ = file.Close()
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("writing temp file %s: %w", tmpPath, writeErr)
+	}
+
+	syncErr := file.Sync()
+	if syncErr != nil {
+		_ = file.Close()
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("syncing temp file %s: %w", tmpPath, syncErr)
+	}
+
+	closeErr := file.Close()
+	if closeErr != nil {
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("closing temp file %s: %w", tmpPath, closeErr)
 	}
 
 	return nil

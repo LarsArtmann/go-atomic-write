@@ -1,6 +1,6 @@
 # go-atomic-write
 
-TOCTOU-safe file writes for Go — fingerprint verification, cross-platform file locking, and atomic rename.
+TOCTOU-safe file writes for Go — fingerprint verification, cross-platform file locking, atomic rename, and fsync for crash durability.
 
 ## Why
 
@@ -10,14 +10,16 @@ Writing a file safely is harder than it looks:
 - **Partial writes** — a crash mid-write leaves a corrupt file
 - **Concurrent writers** — multiple processes writing the same file
 
-This library solves all three in ~130 lines with a minimal dependency footprint.
+This library solves all three with a minimal dependency footprint.
 
 ## How it works
 
 1. **Fingerprint** — compute an xxhash64 digest when you read the file
-2. **Write to `.tmp`** — stage new content in a temp file
-3. **Lock + verify** — acquire an exclusive file lock (`flock` on Unix, `LockFileEx` on Windows), re-read the file, and verify the fingerprint still matches
-4. **Atomic rename** — rename the temp file to the target (creates `.bak` of the old content)
+2. **Write to unique `.tmp`** — stage new content in a uniquely-named temp file (prevents concurrent writers from corrupting each other)
+3. **fsync** — flush the temp file to disk for crash durability
+4. **Lock + verify** — acquire an exclusive file lock (`flock` on Unix, `LockFileEx` on Windows), re-read the file, and verify the fingerprint still matches
+5. **Atomic rename** — rename the temp file to the target (single `rename(2)` on POSIX, `MoveFileEx` on Windows)
+6. **fsync directory** — sync the directory entry to make the rename durable (POSIX)
 
 If the fingerprint doesn't match, `Write` returns `ErrConcurrentModification` — the caller should re-read and retry.
 
@@ -115,7 +117,7 @@ if fp.Matches(currentData) {
 - `ErrConcurrentModification` is a sentinel error you can check with `errors.Is`
 - Temp files (`.tmp`) are cleaned up on any failure
 - File permissions are preserved from the existing file (defaults to `0644` for new files)
-- A `.bak` of the previous content is created on successful writes (not on first write); it is overwritten on each subsequent write
+- Data is fsync'd before rename; the directory is fsync'd after (POSIX) for crash durability
 
 ## Dependencies
 
@@ -155,6 +157,11 @@ Works everywhere Go compiles. File locking uses:
 
 - `flock(2)` on Linux, macOS, BSD
 - `LockFileEx` on Windows
+
+Atomic rename and durability:
+
+- POSIX: single `rename(2)` (atomic replace) + `fsync` on the directory
+- Windows: `MoveFileEx` with `MOVEFILE_REPLACE_EXISTING`, retried on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION` (antivirus contention)
 
 ## License
 

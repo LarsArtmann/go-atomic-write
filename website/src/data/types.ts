@@ -1,0 +1,55 @@
+export const featureIconKeys = [
+  "shield",
+  "lightning",
+  "lock",
+  "refresh",
+  "database",
+  "folder",
+] as const;
+export type FeatureIcon = (typeof featureIconKeys)[number];
+
+export interface Feature {
+  icon: FeatureIcon;
+  title: string;
+  desc: string;
+}
+
+export interface StepCard {
+  step: string;
+  stepColor: "accent" | "amber";
+  title: string;
+  desc: string;
+  code?: string;
+}
+
+export type ComparisonVariant = "os.WriteFile" | "DIY" | "go-atomic-write";
+
+export interface ComparisonItem {
+  variant: ComparisonVariant;
+  pros: string[];
+  cons: string[];
+  accent: boolean;
+}
+
+export const useCaseIconKeys = ["cog", "chart", "refresh", "bolt", "check"] as const;
+export type UseCaseIcon = (typeof useCaseIconKeys)[number];
+
+export interface UseCase {
+  title: string;
+  desc: string;
+  icon: UseCaseIcon;
+}
+
+export const uiIconKeys = [
+  "arrow-external",
+  "arrow-right",
+  "github",
+  "menu",
+  "close",
+  "sun",
+  "moon",
+  "star",
+] as const;
+export type UIIcon = (typeof uiIconKeys)[number];
+
+export type IconName = FeatureIcon | UseCaseIcon | UIIcon;

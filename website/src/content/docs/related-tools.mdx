@@ -1,0 +1,27 @@
+---
+title: Related Tools
+description: Tools that complement go-atomic-write in your Go toolchain.
+---
+
+## gogenfilter
+
+[gogenfilter](https://github.com/LarsArtmann/gogenfilter) detects and filters auto-generated Go code files. Built for linters, static analysis tools, and CI pipelines.
+
+### Why It Complements go-atomic-write
+
+| Tool                | What It Does                                   | Scope           |
+| ------------------- | ---------------------------------------------- | --------------- |
+| **go-atomic-write** | Crash-safe, race-free file writes              | File durability |
+| **gogenfilter**     | Detect and filter auto-generated Go code files | Code quality    |
+
+## gofrs/flock
+
+[gofrs/flock](https://github.com/gofrs/flock) provides cross-platform file locking. go-atomic-write uses it internally for `flock` on Unix and `LockFileEx` on Windows.
+
+You can use `flock` directly if you need finer-grained locking control without the full write-verify-rename cycle.
+
+## cespare/xxhash
+
+[cespare/xxhash](https://github.com/cespare/xxhash) is the fastest Go implementation of xxhash. go-atomic-write uses it for fingerprinting at ~27 GB/s.
+
+If you need content-addressable storage or deduplication, xxhash64 is an excellent non-cryptographic choice.

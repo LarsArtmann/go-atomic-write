@@ -1,0 +1,21 @@
+---
+import { steps } from '../data/sections';
+import SectionHeader from './SectionHeader.astro';
+---
+
+<SectionHeader title="How it works." subtitle="Four phases. No window for corruption." />
+
+<div class="grid gap-4 text-left sm:grid-cols-2">
+  {steps.map((step) => (
+    <div class="p-6 rounded-xl border border-border bg-bg-card">
+      <div class="flex items-center gap-3 mb-3">
+        <div class={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-mono font-bold ${step.stepColor === 'accent' ? 'bg-accent-dim text-accent' : 'bg-amber/10 text-amber'}`}>{step.step}</div>
+        <h3 class="font-semibold text-text-primary">{step.title}</h3>
+      </div>
+      <p class="text-sm text-text-muted mb-3">{step.desc}</p>
+      {step.code && (
+        <code class="block bg-code-inline-bg px-2 py-1.5 rounded text-xs text-accent/80 font-mono">{step.code}</code>
+      )}
+    </div>
+  ))}
+</div>

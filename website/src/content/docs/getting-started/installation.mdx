@@ -1,0 +1,64 @@
+---
+title: Installation
+description: Install go-atomic-write in your Go project.
+---
+
+## Requirements
+
+- Go 1.26 or later
+- An active Go module (`go.mod`)
+
+## Install
+
+Run this in your project directory:
+
+```bash
+go get github.com/larsartmann/go-atomic-write@latest
+```
+
+## Quick Usage
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"os"
+
+	atomicwrite "github.com/larsartmann/go-atomic-write"
+)
+
+func main() {
+	path := "/path/to/config.json"
+
+	data, err := os.ReadFile(path)
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
+	fp := atomicwrite.FingerprintFromBytes(data)
+
+	newData := []byte(`{"updated": true}`)
+
+	err = atomicwrite.Write(path, newData, fp)
+	if errors.Is(err, atomicwrite.ErrConcurrentModification) {
+		fmt.Println("file was modified concurrently — re-read and retry")
+		return
+	}
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+## Verify Installation
+
+```bash
+go list -m github.com/larsartmann/go-atomic-write
+```
+
+## Next Steps
+
+- Follow the [Quick Start](/getting-started/quick-start/) for complete examples
+- Learn about [Error Handling](/guides/error-handling/) for concurrent modification detection
+- See [Platform Support](/guides/platform-support/) for OS-specific behavior

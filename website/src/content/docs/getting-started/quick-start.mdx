@@ -1,0 +1,96 @@
+---
+title: Quick Start
+description: Get started with go-atomic-write in under a minute.
+---
+
+## The Read-Modify-Write Pattern
+
+Every safe file write follows three steps: read, fingerprint, write.
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"os"
+
+	atomicwrite "github.com/larsartmann/go-atomic-write"
+)
+
+func main() {
+	path := "/path/to/config.json"
+
+	// 1. Read + fingerprint
+	data, err := os.ReadFile(path)
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
+	fp := atomicwrite.FingerprintFromBytes(data)
+
+	// 2. Modify
+	newData := []byte(`{"updated": true}`)
+
+	// 3. Write with TOCTOU protection
+	err = atomicwrite.Write(path, newData, fp)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+## First Write (No Existing File)
+
+Pass a zero-value `Fingerprint` to skip verification:
+
+```go
+err := atomicwrite.Write(path, data, atomicwrite.Fingerprint{})
+```
+
+## Detecting Concurrent Modification
+
+If the file changed between your read and write, `Write` returns `ErrConcurrentModification`:
+
+```go
+err := atomicwrite.Write(path, newData, fp)
+if errors.Is(err, atomicwrite.ErrConcurrentModification) {
+	// Re-read the file, merge changes, and retry
+	data, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	fp = atomicwrite.FingerprintFromBytes(data)
+	err = atomicwrite.Write(path, mergedData, fp)
+}
+```
+
+## Fingerprinting Helpers
+
+```go
+// From raw bytes
+fp := atomicwrite.FingerprintFromBytes([]byte("content"))
+
+// From a file path (returns zero Fingerprint if file doesn't exist)
+fp, err := atomicwrite.FingerprintFile(path)
+
+// Check if it represents no prior file
+if fp.IsZero() {
+	// First run — no file existed
+}
+
+// Check if content matches
+if fp.Matches(currentData) {
+	// File hasn't changed
+}
+```
+
+## How It Works
+
+1. **Fingerprint** — compute an xxhash64 digest when you read the file
+2. **Write to unique `.tmp`** — stage new content in a uniquely-named temp file
+3. **fsync** — flush the temp file to disk for crash durability
+4. **Lock + verify** — acquire an exclusive file lock, re-read the file, verify the fingerprint
+5. **Atomic rename** — rename the temp file to the target
+6. **fsync directory** — sync the directory entry (POSIX)
+
+If the fingerprint doesn't match, `Write` returns `ErrConcurrentModification` — the caller should re-read and retry.

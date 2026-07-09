@@ -1,16 +1,38 @@
-# go-atomic-write
+<h1 align="center">go-atomic-write</h1>
 
-TOCTOU-safe file writes for Go — fingerprint verification, cross-platform file locking, atomic rename, and fsync for crash durability.
+<p align="center"><strong>Crash-safe, race-free file writes for Go.</strong></p>
 
-## Why
+<p align="center">
+<a href="https://pkg.go.dev/github.com/larsartmann/go-atomic-write"><img src="https://pkg.go.dev/badge/github.com/larsartmann/go-atomic-write.svg" alt="Go Reference"></a>
+<a href="https://goreportcard.com/report/github.com/larsartmann/go-atomic-write"><img src="https://goreportcard.com/badge/github.com/larsartmann/go-atomic-write" alt="Go Report Card"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+</p>
+
+<p align="center">
+<a href="https://pkg.go.dev/github.com/larsartmann/go-atomic-write">API Reference</a>
+</p>
+
+---
+
+Every `os.WriteFile` call has three failure modes that silently corrupt data. This library eliminates all three with a minimal dependency footprint — fingerprint verification, cross-platform file locking, atomic rename, and fsync for crash durability.
+
+## Why?
 
 Writing a file safely is harder than it looks:
 
-- **TOCTOU races** — between reading and writing, another process can modify the file
-- **Partial writes** — a crash mid-write leaves a corrupt file
-- **Concurrent writers** — multiple processes writing the same file
+- **TOCTOU races** — between reading and writing, another process can modify the file. You overwrite their changes without knowing.
+- **Partial writes** — a crash mid-write leaves a corrupt, half-written file. The old content is gone.
+- **Concurrent writers** — two processes write the same file. Bytes interleave. Data is lost.
 
-This library solves all three with a minimal dependency footprint.
+`os.WriteFile` handles none of these. A naive write-to-temp-then-rename handles one. **go-atomic-write handles all three.**
+
+## Comparison
+
+| Approach            | TOCTOU-safe | Crash-durable | Concurrent-safe |   Dependencies    |
+| ------------------- | :---------: | :-----------: | :-------------: | :---------------: |
+| `os.WriteFile`      |             |               |                 |       None        |
+| DIY write + rename  |             |    Partial    |                 |       None        |
+| **go-atomic-write** |      ✓      |       ✓       |        ✓        | 2 (xxhash, flock) |
 
 ## How it works
 
@@ -22,6 +44,14 @@ This library solves all three with a minimal dependency footprint.
 6. **fsync directory** — sync the directory entry to make the rename durable (POSIX)
 
 If the fingerprint doesn't match, `Write` returns `ErrConcurrentModification` — the caller should re-read and retry.
+
+## Use cases
+
+- **Configuration files** — read-modify-write cycles where another process might edit the same config
+- **State and checkpoint files** — database state, job progress, session stores — corruption means data loss
+- **Log and data rotation** — append or replace files without readers seeing partial content
+- **Cache invalidation** — write-through caches that must never serve a half-written file
+- **CI/CD tooling** — generated manifests, lock files, build artifacts written under concurrent pipelines
 
 ## Install
 
@@ -111,6 +141,15 @@ if fp.Matches(currentData) {
 | `Write(path, data, fp)`      | Writes data with TOCTOU protection                       |
 | `ErrConcurrentModification`  | Sentinel error: file changed between read and write      |
 
+## Design decisions
+
+- **xxhash64 over SHA-256** — the fingerprint detects changes, not attackers. xxhash64 is ~11× faster, zero allocations, and hits ~27 GB/s. SHA-NI hardware acceleration is already included in the SHA-256 numbers.
+- **Unique temp files via `crypto/rand`** — each writer gets a uniquely-named staging file (`path + "." + randomHex + ".tmp"`), preventing concurrent writers from corrupting a shared temp file.
+- **`flock`, not mutexes** — file locks protect across processes, not just goroutines. `flock(2)` on Unix, `LockFileEx` on Windows.
+- **Single `rename(2)` on POSIX** — one atomic syscall replaces the target. No two-rename window where the file could be missing.
+- **fsync before and after** — temp file is synced before rename (data durability); target directory is synced after rename (metadata durability, POSIX only).
+- **Minimal dependencies** — only [xxhash](https://github.com/cespare/xxhash) for hashing and [flock](https://github.com/gofrs/flock) for locking. Both are intentional and not candidates for replacement.
+
 ## Error contract
 
 - All errors are wrapped with `fmt.Errorf` and `%w` — use `errors.Is` / `errors.As` to inspect
@@ -162,6 +201,15 @@ Atomic rename and durability:
 
 - POSIX: single `rename(2)` (atomic replace) + `fsync` on the directory
 - Windows: `MoveFileEx` with `MOVEFILE_REPLACE_EXISTING`, retried on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION` (antivirus contention)
+
+## API stability
+
+This library follows [Go module versioning](https://go.dev/doc/modules/version-numbers):
+
+- **Pre-v1.0.0** (`v0.x.y`): The API may change between minor versions. We minimize breaking changes, but reserve the right to rename or adjust public symbols based on user feedback.
+- **Post-v1.0.0**: Standard Go compatibility guarantees apply. No breaking changes without a major version bump.
+
+The core `Write` / `Fingerprint` API is stable and unlikely to change.
 
 ## License
 

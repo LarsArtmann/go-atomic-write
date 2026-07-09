@@ -1,0 +1,70 @@
+---
+title: Error Handling
+description: Detecting concurrent modification and handling errors safely.
+---
+
+## Error Wrapping
+
+All errors are wrapped with `fmt.Errorf` and `%w`. Use `errors.Is` / `errors.As` to inspect:
+
+```go
+err := atomicwrite.Write(path, newData, fp)
+if err != nil {
+	if errors.Is(err, atomicwrite.ErrConcurrentModification) {
+		// File was modified between your read and write
+	}
+	// Other errors: I/O, permission, lock acquisition, etc.
+}
+```
+
+## ErrConcurrentModification
+
+This sentinel error means another process modified the file between your fingerprint read and your write attempt. The temp file is cleaned up automatically.
+
+```go
+err := atomicwrite.Write(path, newData, fp)
+if errors.Is(err, atomicwrite.ErrConcurrentModification) {
+	// Strategy: re-read, merge, retry
+	for retry := 0; retry < 3; retry++ {
+		data, readErr := os.ReadFile(path)
+		if readErr != nil {
+			return readErr
+		}
+
+		fp = atomicwrite.FingerprintFromBytes(data)
+		mergedData := merge(data, newData)
+
+		err = atomicwrite.Write(path, mergedData, fp)
+		if !errors.Is(err, atomicwrite.ErrConcurrentModification) {
+			break
+		}
+	}
+}
+```
+
+## Error Categories
+
+| Error                       | Meaning                                    | Temp file cleaned? |
+| --------------------------- | ------------------------------------------ | :----------------: |
+| `ErrConcurrentModification` | File changed since fingerprint             |        Yes         |
+| I/O error during staging    | Failed to create/write/sync temp file      |        Yes         |
+| Lock acquisition error      | Failed to acquire `flock`/`LockFileEx`     |        Yes         |
+| Rename error                | Failed to atomically rename temp to target |  No (temp exists)  |
+
+## Cleanup Guarantees
+
+- Temp files (`.tmp`) are cleaned up on any failure during staging or verification
+- Temp file names include a random hex suffix (`path + "." + randomHex + ".tmp"`) so concurrent writers never share a staging file
+- On crash, temp files may remain (unique names prevent interference but don't self-clean)
+
+## Permission Preservation
+
+File permissions are preserved from the existing file. New files default to `0644`:
+
+```go
+// If /path/to/file exists with 0600, the new file will also be 0600
+err := atomicwrite.Write("/path/to/file", data, fp)
+
+// If /path/to/new-file doesn't exist, it's created with 0644
+err := atomicwrite.Write("/path/to/new-file", data, atomicwrite.Fingerprint{})
+```

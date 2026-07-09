@@ -1,0 +1,60 @@
+---
+title: Platform Support
+description: OS-specific behavior for file locking, atomic rename, and durability.
+---
+
+## Works Everywhere Go Compiles
+
+The library uses platform-specific implementations for locking and rename, unified behind the same API.
+
+## File Locking
+
+| Platform          | Mechanism    |
+| ----------------- | ------------ |
+| Linux, macOS, BSD | `flock(2)`   |
+| Windows           | `LockFileEx` |
+
+Locks are exclusive (write lock) and protect across processes, not just goroutines.
+
+## Atomic Rename
+
+### POSIX (Linux, macOS, BSD)
+
+Single `rename(2)` call — atomically replaces the target. No window where the file doesn't exist.
+
+After rename, the target directory is `fsync`'d via `syncDir()` to make the rename durable across power loss.
+
+### Windows
+
+`MoveFileEx` with `MOVEFILE_REPLACE_EXISTING`. Retried up to 5 times with exponential backoff (1-16ms) on:
+
+- `ERROR_ACCESS_DENIED`
+- `ERROR_SHARING_VIOLATION`
+
+These errors are common when antivirus software or open handles briefly block the rename. The retry loop matches Go's own `cmd/go` fix for [issue 36568](https://go.dev/issues/36568).
+
+## fsync and Crash Durability
+
+| Stage              | POSIX                                    | Windows                              |
+| ------------------ | ---------------------------------------- | ------------------------------------ |
+| Temp file data     | `fsync` before rename                    | `FlushFileBuffers` via `file.Sync()` |
+| Directory metadata | `fsync` on parent directory after rename | No-op (no POSIX-equivalent)          |
+
+On Windows, directory fsync is a no-op because there is no POSIX-equivalent directory sync concept. File data durability is handled by `FlushFileBuffers` via `file.Sync()`.
+
+## Known Caveats
+
+### Windows
+
+- The rename retry loop and `FlushFileBuffers` compile via build tags but are **untested on real Windows hardware**
+- No directory fsync — the directory entry after rename may not be durable after a crash
+
+### POSIX
+
+- No stale temp file cleanup — crashed writes leave `.tmp` files (unique names prevent interference but don't self-clean)
+
+## Temp File Placement
+
+Temp files are created **alongside the target file** (same directory), not in `/tmp`. This ensures the rename is atomic (same filesystem). Callers need write permissions on the **directory**, not just the file.
+
+Temp file naming: `path + "." + randomHex + ".tmp"` where `randomHex` is 4 bytes from `crypto/rand`.

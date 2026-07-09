@@ -1,0 +1,72 @@
+---
+title: Contributing
+description: How to contribute to go-atomic-write.
+---
+
+## Development Setup
+
+**Requirements:** Go 1.26+
+
+```bash
+git clone https://github.com/larsartmann/go-atomic-write.git
+cd go-atomic-write
+go mod download
+```
+
+## Building
+
+```bash
+go build ./...
+```
+
+## Testing
+
+```bash
+# Run all tests
+go test ./...
+
+# With race detector
+go test -race ./...
+```
+
+## Linting
+
+Uses golangci-lint with ~100 linters at their strictest defaults. Configuration lives in `.golangci.yml`.
+
+```bash
+# Run all configured linters — MUST exit with 0 issues before merging
+golangci-lint run ./...
+
+# Auto-fix formatting/imports
+golangci-lint run ./... --fix
+```
+
+## CI
+
+All pull requests must pass:
+
+- `go build ./...` — compiles cleanly
+- `go test -race ./...` — tests pass with race detection
+- `go vet ./...` — no vet warnings
+- `golangci-lint run ./...` — no lint issues
+
+## Code Style
+
+- Standard `testing` package — no testify or other test utilities
+- `t.Parallel()` on most tests
+- `t.TempDir()` for filesystem isolation
+- Early returns over nested conditionals
+- Strong types over runtime checks
+- Single-letter variables trigger `varnamelen` — use full words
+- Inline `if err` triggers `noinlineerr` — assign first, then check
+
+## Adding Dependencies
+
+Adding a new third-party import requires updating the `depguard.rules.main.allow` list in `.golangci.yml`.
+
+## Pull Requests
+
+- Ensure all tests pass: `go test -race ./...`
+- Ensure linting passes: `golangci-lint run ./...`
+- Add tests for new functionality
+- Keep changes focused and atomic

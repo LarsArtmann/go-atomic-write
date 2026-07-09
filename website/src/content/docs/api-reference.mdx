@@ -1,0 +1,78 @@
+---
+title: API Reference
+description: Public API for go-atomic-write.
+---
+
+## Core Types
+
+### Fingerprint
+
+An xxhash64 digest of file content at read time. A zero-value `Fingerprint` indicates no prior file existed.
+
+```go
+type Fingerprint [8]byte
+```
+
+#### Methods
+
+```go
+// Returns true if the fingerprint represents no prior file
+func (fp Fingerprint) IsZero() bool
+
+// Returns true if the given content produces the same fingerprint
+func (fp Fingerprint) Matches(content []byte) bool
+```
+
+## Functions
+
+### FingerprintFromBytes
+
+Computes an xxhash64 `Fingerprint` from raw content.
+
+```go
+func FingerprintFromBytes(data []byte) Fingerprint
+```
+
+### FingerprintFile
+
+Computes an xxhash64 `Fingerprint` from a file's current content. Returns a zero-value `Fingerprint` if the file does not exist.
+
+```go
+func FingerprintFile(path string) (Fingerprint, error)
+```
+
+### Write
+
+Writes data to path with TOCTOU protection and crash durability. Data is staged to a unique temp file, fsync'd, then atomically renamed over the target. The target directory is fsync'd after rename (POSIX).
+
+If fingerprint is non-zero, it verifies the file hasn't changed since the fingerprint was computed, using cross-platform file locking and atomic rename. A zero-value fingerprint skips verification (first run).
+
+```go
+func Write(path string, data []byte, fingerprint Fingerprint) error
+```
+
+## Errors
+
+### ErrConcurrentModification
+
+Sentinel error indicating the file was modified by another process between the fingerprint read and the write attempt. Always check with `errors.Is`.
+
+```go
+var ErrConcurrentModification = errors.New("file was modified concurrently since read")
+```
+
+## API Summary
+
+| Symbol                       | Description                                              |
+| ---------------------------- | -------------------------------------------------------- |
+| `Fingerprint`                | `[8]byte` — xxhash64 digest of file content at read time |
+| `Fingerprint.IsZero()`       | Returns `true` for zero-value (no prior file)            |
+| `Fingerprint.Matches(data)`  | Returns `true` if data produces the same fingerprint     |
+| `FingerprintFromBytes(data)` | Computes fingerprint from raw bytes                      |
+| `FingerprintFile(path)`      | Computes fingerprint from a file (zero if nonexistent)   |
+| `Write(path, data, fp)`      | Writes data with TOCTOU protection                       |
+| `ErrConcurrentModification`  | Sentinel error: file changed between read and write      |
+
+## Full API on pkg.go.dev
+
+For the complete, always-up-to-date API documentation, see [pkg.go.dev](https://pkg.go.dev/github.com/larsartmann/go-atomic-write).

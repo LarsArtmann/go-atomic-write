@@ -3,111 +3,64 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    systems.url = "github:nix-systems/default";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs }:
-    let
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-    {
-      apps = forAllSystems (
-        system:
+    inputs@{ self, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import inputs.systems;
+
+      imports = [ inputs.treefmt-nix.flakeModule ];
+
+      perSystem =
+        { config, pkgs, ... }:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          mkApp =
+            name: runtimeInputs: text:
+            {
+              type = "app";
+              program = "${
+                pkgs.writeShellApplication {
+                  inherit name runtimeInputs text;
+                }
+              }/bin/${name}";
+            };
         in
         {
-          dev = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "dev";
-                runtimeInputs = with pkgs; [ nodejs ];
-                text = ''
-                  npm run dev
-                '';
-              }
-            }/bin/dev";
+          apps = {
+            dev = mkApp "dev" [ pkgs.nodejs ] "npm run dev";
+            build = mkApp "build" [ pkgs.nodejs ] "npm run build";
+            preview = mkApp "preview" [ pkgs.nodejs ] "npm run preview";
+            deploy = mkApp "deploy" [
+              pkgs.nodejs
+              pkgs.firebase-tools
+            ] ''
+              npm run build
+              firebase deploy --only hosting
+            '';
           };
 
-          build = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "build";
-                runtimeInputs = with pkgs; [ nodejs ];
-                text = ''
-                  npm run build
-                '';
-              }
-            }/bin/build";
+          devShells.default = pkgs.mkShellNoCC {
+            packages = builtins.attrValues {
+              inherit (pkgs) nodejs firebase-tools;
+            };
           };
 
-          preview = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "preview";
-                runtimeInputs = with pkgs; [ nodejs ];
-                text = ''
-                  npm run preview
-                '';
-              }
-            }/bin/preview";
-          };
+          treefmt.programs.nixfmt.enable = true;
 
-          deploy = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "deploy";
-                runtimeInputs = with pkgs; [
-                  nodejs
-                  firebase-tools
-                ];
-                text = ''
-                  npm run build
-                  firebase deploy --only hosting
-                '';
-              }
-            }/bin/deploy";
-          };
-        }
-      );
-
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              nodejs
-              firebase-tools
-            ];
-          };
-        }
-      );
-
-      checks = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          format = pkgs.runCommand "format-check" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
-            nixfmt --check ${./flake.nix} && touch $out
-          '';
-        }
-      );
-
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+          checks.format = config.treefmt.build.check self;
+        };
     };
 }

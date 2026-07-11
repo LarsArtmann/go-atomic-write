@@ -1,4 +1,4 @@
-import type { StepCard, ComparisonItem, UseCase } from "./types";
+import type { StepCard, ComparisonItem, UseCase, ComparisonMatrix } from "./types";
 
 export const steps: StepCard[] = [
   {
@@ -61,6 +61,19 @@ export const comparisons: ComparisonItem[] = [
     ],
   },
 ];
+
+export const comparisonMatrix: ComparisonMatrix = {
+  columns: ["os.WriteFile", "DIY", "go-atomic-write"],
+  rows: [
+    { feature: "TOCTOU-safe", values: ["no", "no", "yes"] },
+    { feature: "Crash-durable (fsync)", values: ["no", "no", "yes"] },
+    { feature: "Concurrent-write safe", values: ["no", "no", "yes"] },
+    { feature: "Atomic rename", values: ["no", "partial", "yes"] },
+    { feature: "Fingerprint verification", values: ["no", "no", "yes"] },
+    { feature: "Cross-platform locking", values: ["no", "no", "yes"] },
+    { feature: "Dependencies", values: ["0", "0", "2"] },
+  ],
+};
 
 export const useCases: UseCase[] = [
   {

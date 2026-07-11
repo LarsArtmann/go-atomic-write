@@ -31,6 +31,18 @@ export interface ComparisonItem {
   accent: boolean;
 }
 
+export type MatrixValue = "yes" | "no" | string;
+
+export interface MatrixRow {
+  feature: string;
+  values: [MatrixValue, MatrixValue, MatrixValue];
+}
+
+export interface ComparisonMatrix {
+  columns: [ComparisonVariant, ComparisonVariant, ComparisonVariant];
+  rows: MatrixRow[];
+}
+
 export const useCaseIconKeys = ["cog", "chart", "refresh", "bolt", "check"] as const;
 export type UseCaseIcon = (typeof useCaseIconKeys)[number];
 

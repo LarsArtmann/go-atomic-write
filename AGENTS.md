@@ -5,7 +5,7 @@
 Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerprint verification, cross-platform file locking (`flock`/`LockFileEx`), atomic rename, and fsync for crash durability.
 
 - **Module:** `github.com/larsartmann/go-atomic-write`
-- **Go version:** 1.26.3
+- **Go version:** 1.26.4
 - **Main branch:** `master` (configured in `git-town.toml`)
 
 ## Commands
@@ -22,7 +22,7 @@ Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerp
 
 `golangci-lint` config is the **gating quality check** of this project. The configuration lives in `.golangci.yml` and enables ~100 linters at their strictest defaults. Adding a new third-party import requires updating the `depguard.rules.main.allow` list.
 
-No Makefile, no flake.nix, no CI config. All commands are plain `go` toolchain.
+No Makefile, no CI config. All commands are plain `go` toolchain.
 
 ## Structure
 
@@ -35,6 +35,46 @@ Flat single-package layout — all source in the repository root:
 | `rename_windows.go`   | Windows `atomicRename` (retry on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`)               |
 | `atomicwrite_test.go` | Unit + concurrency + integrity tests                                                            |
 | `hash_bench_test.go`  | xxhash64 vs SHA-256 benchmarks                                                                  |
+
+## Website
+
+Marketing website and documentation built with Astro + Starlight + Tailwind v4. Deployed to Firebase Hosting.
+
+- **Live URL:** `https://atomicwrite.lars.software` (DNS pending) / `https://atomicwrite.web.app` (live now)
+- **Alt domain:** `https://go-atomic-write.lars.software` (DNS pending)
+- **Firebase project:** `lars-software`
+- **Firebase hosting site:** `atomicwrite`
+- **Accent color:** Emerald (`#10b981`) — distinct from gogenfilter's cyan
+
+### Website Commands
+
+| Command                                                                | Purpose                          |
+| ---------------------------------------------------------------------- | -------------------------------- |
+| `cd website && npm run dev`                                            | Local dev server                 |
+| `cd website && npm run build`                                          | Production build to `dist/`      |
+| `cd website && npm run typecheck`                                      | TypeScript + Astro type checking |
+| `cd website && npm run preview`                                        | Preview production build locally |
+| `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase               |
+
+Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
+
+### Website Structure
+
+| Path                            | Purpose                                                               |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `website/astro.config.mjs`      | Astro config: Starlight, fonts, sitemap                               |
+| `website/src/pages/index.astro` | Landing page                                                          |
+| `website/src/components/`       | 14 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, etc.) |
+| `website/src/data/`             | Typed content: config, features, sections, hero-code                  |
+| `website/src/content/docs/`     | 9 Starlight documentation pages                                       |
+| `website/src/styles/`           | global.css (emerald theme) + starlight.css                            |
+| `website/public/`               | favicon, manifest, robots.txt, JS (theme, animations, copy-code)      |
+| `website/firebase.json`         | Hosting config with security headers                                  |
+| `website/.firebaserc`           | Firebase project + hosting target                                     |
+
+### DNS
+
+CNAME records for `atomicwrite` and `go-atomic-write` subdomains are defined in `/home/lars/projects/domains/lars.software.tf`. Both point to `atomicwrite.web.app`. Terraform apply requires a Namecheap API key that is not stored in this repo.
 
 ## Architecture & Data Flow
 

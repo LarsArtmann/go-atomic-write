@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-<a href="https://pkg.go.dev/github.com/larsartmann/go-atomic-write">API Reference</a>
+<a href="https://atomicwrite.lars.software">Documentation</a> · <a href="https://pkg.go.dev/github.com/larsartmann/go-atomic-write">API Reference</a>
 </p>
 
 ---

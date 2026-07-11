@@ -4,16 +4,16 @@ import Icon from './Icon.astro';
 import SectionHeader from './SectionHeader.astro';
 ---
 
-<SectionHeader title="Built for real workloads." subtitle="Drop it into any read-modify-write cycle." />
+<SectionHeader eyebrow="Use Cases" title="Built for real workloads." subtitle="Drop it into any read-modify-write cycle." />
 
-<div class="grid gap-4 sm:grid-cols-3">
+<div class="grid gap-3 sm:grid-cols-3">
   {useCases.map((useCase) => (
-    <div class="p-5 rounded-xl border border-border bg-bg-card text-center">
-      <div class="mx-auto mb-2 text-text-secondary w-fit">
-        <Icon name={useCase.icon} size={24} />
+    <div class="p-6 rounded-xl border border-border bg-bg-card backdrop-blur-sm text-center hover:border-border-hover transition-all duration-200 hover:-translate-y-0.5">
+      <div class="mx-auto mb-3 text-accent w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center">
+        <Icon name={useCase.icon} size={20} />
       </div>
       <h3 class="font-semibold text-text-primary text-sm mb-1">{useCase.title}</h3>
-      <p class="text-xs text-text-muted">{useCase.desc}</p>
+      <p class="text-xs text-text-muted leading-relaxed">{useCase.desc}</p>
     </div>
   ))}
 </div>

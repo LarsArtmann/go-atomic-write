@@ -4,7 +4,7 @@
 
 <p align="center">
 <a href="https://pkg.go.dev/github.com/larsartmann/go-atomic-write"><img src="https://pkg.go.dev/badge/github.com/larsartmann/go-atomic-write.svg" alt="Go Reference"></a>
-<a href="https://goreportcard.com/report/github.com/larsartmann/go-atomic-write"><img src="https://goreportcard.com/badge/github.com/larsartmann/go-atomic-write" alt="Go Report Card"></a>
+
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 

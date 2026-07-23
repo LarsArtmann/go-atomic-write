@@ -51,6 +51,18 @@ If fingerprint is non-zero, it verifies the file hasn't changed since the finger
 func Write(path string, data []byte, fingerprint Fingerprint) error
 ```
 
+### WriteFunc
+
+Writes to path via a streaming callback with TOCTOU protection and crash durability. The callback receives a buffered writer (64KB buffer) and may stream content incrementally without holding the full payload in memory. The temp file is fsync'd before atomic rename.
+
+If fingerprint is non-zero, it verifies the file hasn't changed since the fingerprint was computed. A zero-value fingerprint skips verification.
+
+Use `WriteFunc` instead of `Write` when the content is large or produced incrementally (e.g., JSON encoders, diagram renderers).
+
+```go
+func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error
+```
+
 ## Errors
 
 ### ErrConcurrentModification
@@ -71,6 +83,7 @@ var ErrConcurrentModification = errors.New("file was modified concurrently since
 | `FingerprintFromBytes(data)` | Computes fingerprint from raw bytes                      |
 | `FingerprintFile(path)`      | Computes fingerprint from a file (zero if nonexistent)   |
 | `Write(path, data, fp)`      | Writes data with TOCTOU protection                       |
+| `WriteFunc(path, fn, fp)`    | Streams content via callback with TOCTOU protection      |
 | `ErrConcurrentModification`  | Sentinel error: file changed between read and write      |
 
 ## Full API on pkg.go.dev

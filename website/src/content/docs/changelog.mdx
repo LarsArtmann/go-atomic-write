@@ -3,6 +3,19 @@ title: Changelog
 description: All notable changes to go-atomic-write.
 ---
 
+## [0.3.0] — 2026-07-23
+
+### Added
+
+- **`WriteFunc(path, fn, fingerprint)`** — streaming atomic writes via a callback. The callback receives a `bufio.Writer` (64KB buffer) so callers can stream large or incrementally-produced content (JSON encoders, diagram renderers, etc.) without holding the full payload in memory. The temp file is fsync'd before atomic rename, and TOCTOU fingerprint verification works identically to `Write`.
+- **Comprehensive `WriteFunc` tests** — first run, overwrite, large stream (400KB across 100 chunks), callback error cleanup, permission preservation, and no-leftover-files verification
+
+### Changed
+
+- Benchmark data generation extracted into a shared `benchData` helper — eliminates duplicated `make([]byte, size)` + fill-by-index across 4 benchmark functions
+- `.gitattributes` added for cross-platform line-ending normalization
+- Full marketing website launched with Astro + Starlight + Tailwind v4 at [atomicwrite.lars.software](https://atomicwrite.lars.software)
+
 ## [0.2.0] — 2026-06-28
 
 ### Fixed

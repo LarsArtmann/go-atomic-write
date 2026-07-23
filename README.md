@@ -109,6 +109,18 @@ if errors.Is(err, atomicwrite.ErrConcurrentModification) {
 }
 ```
 
+### Streaming large content with WriteFunc
+
+When content is large or produced incrementally (JSON encoders, diagram renderers),
+use `WriteFunc` to stream via a callback instead of holding the full payload in memory:
+
+```go
+err := atomicwrite.WriteFunc(path, func(w io.Writer) error {
+    enc := json.NewEncoder(w)
+    return enc.Encode(largeObject)
+}, fp)
+```
+
 ### Fingerprinting a file
 
 ```go
@@ -139,6 +151,7 @@ if fp.Matches(currentData) {
 | `FingerprintFromBytes(data)` | Computes fingerprint from raw bytes                      |
 | `FingerprintFile(path)`      | Computes fingerprint from a file (zero if nonexistent)   |
 | `Write(path, data, fp)`      | Writes data with TOCTOU protection                       |
+| `WriteFunc(path, fn, fp)`    | Streams content via callback with TOCTOU protection      |
 | `ErrConcurrentModification`  | Sentinel error: file changed between read and write      |
 
 ## Design decisions

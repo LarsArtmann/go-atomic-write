@@ -4,11 +4,13 @@
 package atomicwrite
 
 import (
+	"bufio"
 	"crypto/rand"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 
@@ -91,6 +93,91 @@ func Write(path string, data []byte, fingerprint Fingerprint) error {
 	}
 
 	return atomicRename(path, tmpPath)
+}
+
+// writeFuncBufferSize is the default buffer size for streaming writes.
+const writeFuncBufferSize = 65536
+
+// WriteFunc writes to path via a streaming callback with TOCTOU protection
+// and crash durability. The callback receives a buffered writer (64KB buffer)
+// and may stream content incrementally without holding the full payload in
+// memory. The temp file is fsync'd before atomic rename.
+//
+// If fingerprint is non-zero, it verifies the file hasn't changed since the
+// fingerprint was computed. A zero-value fingerprint skips verification.
+//
+// Use WriteFunc instead of Write when the content is large or produced
+// incrementally (e.g., JSON encoders, diagram renderers).
+func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error {
+	const defaultFilePerm = fs.FileMode(0o644)
+
+	perm := defaultFilePerm
+
+	info, err := os.Stat(path)
+	if err == nil {
+		perm = info.Mode().Perm()
+	}
+
+	suffix, suffixErr := randomSuffix()
+	if suffixErr != nil {
+		return fmt.Errorf("generating temp file suffix: %w", suffixErr)
+	}
+
+	tmpPath := path + "." + suffix + ".tmp"
+
+	stageErr := writeFuncAndSync(tmpPath, fn, perm)
+	if stageErr != nil {
+		return stageErr
+	}
+
+	if !fingerprint.IsZero() {
+		return commitWithVerification(path, tmpPath, fingerprint)
+	}
+
+	return atomicRename(path, tmpPath)
+}
+
+func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode) error {
+	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm) //nolint:gosec // caller-controlled
+	if err != nil {
+		return fmt.Errorf("creating temp file %s: %w", tmpPath, err)
+	}
+
+	bw := bufio.NewWriterSize(file, writeFuncBufferSize)
+
+	writeErr := fn(bw)
+
+	flushErr := bw.Flush()
+
+	syncErr := file.Sync()
+
+	closeErr := file.Close()
+
+	if writeErr != nil {
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("writing temp file %s: %w", tmpPath, writeErr)
+	}
+
+	if flushErr != nil {
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("flushing temp file %s: %w", tmpPath, flushErr)
+	}
+
+	if syncErr != nil {
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("syncing temp file %s: %w", tmpPath, syncErr)
+	}
+
+	if closeErr != nil {
+		_ = os.Remove(tmpPath)
+
+		return fmt.Errorf("closing temp file %s: %w", tmpPath, closeErr)
+	}
+
+	return nil
 }
 
 func commitWithVerification(path, tmpPath string, fingerprint Fingerprint) error {

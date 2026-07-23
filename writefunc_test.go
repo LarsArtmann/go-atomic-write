@@ -1,6 +1,7 @@
 package atomicwrite
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -94,7 +95,8 @@ func TestWriteFunc_CallbackError(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "failed.json")
 
-	wantErr := fmt.Errorf("boom")
+	wantErr := errors.New("boom")
+
 	err := WriteFunc(path, func(w io.Writer) error {
 		return wantErr
 	}, Fingerprint{})

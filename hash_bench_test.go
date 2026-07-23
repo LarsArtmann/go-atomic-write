@@ -22,13 +22,21 @@ const (
 	megabyte = 1024 * 1024
 )
 
+// benchData generates a deterministic byte pattern of the given size for hashing benchmarks.
+// Fills by index, not append, so the makezero lint about non-zero length is intentional.
+func benchData(size int) []byte {
+	data := make([]byte, size) //nolint:makezero // pre-allocated buffer filled by index, not append
+	for index := range data {
+		data[index] = byte(index % 256)
+	}
+
+	return data
+}
+
 func benchXxhash(b *testing.B, size int) {
 	b.Helper()
 
-	data := make([]byte, size)
-	for i := range data {
-		data[i] = byte(i % 256)
-	}
+	data := benchData(size)
 
 	b.SetBytes(int64(size))
 	b.ResetTimer()
@@ -41,10 +49,7 @@ func benchXxhash(b *testing.B, size int) {
 func benchSHA256(b *testing.B, size int) {
 	b.Helper()
 
-	data := make([]byte, size)
-	for i := range data {
-		data[i] = byte(i % 256)
-	}
+	data := benchData(size)
 
 	b.SetBytes(int64(size))
 	b.ResetTimer()
@@ -62,10 +67,7 @@ func BenchmarkSHA256_Streaming_1MB(b *testing.B)   { benchSHA256Streaming(b, meg
 func benchXxhashStreaming(b *testing.B, size int) {
 	b.Helper()
 
-	data := make([]byte, size)
-	for i := range data {
-		data[i] = byte(i % 256)
-	}
+	data := benchData(size)
 
 	const chunkSize = 4096
 
@@ -88,10 +90,7 @@ func benchXxhashStreaming(b *testing.B, size int) {
 func benchSHA256Streaming(b *testing.B, size int) {
 	b.Helper()
 
-	data := make([]byte, size)
-	for i := range data {
-		data[i] = byte(i % 256)
-	}
+	data := benchData(size)
 
 	const chunkSize = 4096
 

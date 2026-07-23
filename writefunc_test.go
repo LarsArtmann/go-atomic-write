@@ -10,6 +10,8 @@ import (
 	"testing"
 )
 
+var errTestCallback = errors.New("test callback failure")
+
 func TestWriteFunc_FirstRun(t *testing.T) {
 	t.Parallel()
 
@@ -17,9 +19,12 @@ func TestWriteFunc_FirstRun(t *testing.T) {
 	path := filepath.Join(dir, "output.json")
 
 	err := WriteFunc(path, func(w io.Writer) error {
-		_, err := fmt.Fprintf(w, `{"hello":"world"}`)
+		_, writeErr := fmt.Fprintf(w, `{"hello":"world"}`)
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
 
-		return err
+		return nil
 	}, Fingerprint{})
 	if err != nil {
 		t.Fatalf("WriteFunc failed: %v", err)
@@ -35,18 +40,24 @@ func TestWriteFunc_Overwrite(t *testing.T) {
 	path := filepath.Join(dir, "output.json")
 
 	err := WriteFunc(path, func(w io.Writer) error {
-		_, err := w.Write([]byte("first"))
+		_, writeErr := w.Write([]byte("first"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
 
-		return err
+		return nil
 	}, Fingerprint{})
 	if err != nil {
 		t.Fatalf("first WriteFunc: %v", err)
 	}
 
 	err = WriteFunc(path, func(w io.Writer) error {
-		_, err := w.Write([]byte("second"))
+		_, writeErr := w.Write([]byte("second"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
 
-		return err
+		return nil
 	}, Fingerprint{})
 	if err != nil {
 		t.Fatalf("second WriteFunc: %v", err)
@@ -66,9 +77,9 @@ func TestWriteFunc_LargeStream(t *testing.T) {
 
 	err := WriteFunc(path, func(w io.Writer) error {
 		for range wantChunks {
-			_, err := w.Write([]byte(chunk))
-			if err != nil {
-				return err
+			_, writeErr := w.Write([]byte(chunk))
+			if writeErr != nil {
+				return fmt.Errorf("writing chunk: %w", writeErr)
 			}
 		}
 
@@ -78,9 +89,9 @@ func TestWriteFunc_LargeStream(t *testing.T) {
 		t.Fatalf("WriteFunc failed: %v", err)
 	}
 
-	data, err := os.ReadFile(path) //nolint:gosec // test
-	if err != nil {
-		t.Fatal(err)
+	data, readErr := os.ReadFile(path) //nolint:gosec // test temp dir
+	if readErr != nil {
+		t.Fatal(readErr)
 	}
 
 	want := strings.Repeat(chunk, wantChunks)
@@ -95,20 +106,20 @@ func TestWriteFunc_CallbackError(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "failed.json")
 
-	wantErr := errors.New("boom")
-
-	err := WriteFunc(path, func(w io.Writer) error {
-		return wantErr
+	err := WriteFunc(path, func(_ io.Writer) error {
+		return errTestCallback
 	}, Fingerprint{})
 	if err == nil {
 		t.Fatal("expected error from callback")
 	}
 
-	if _, statErr := os.Stat(path); statErr == nil {
+	_, statErr := os.Stat(path)
+	if statErr == nil {
 		t.Error("temp file should be cleaned up on callback error")
 	}
 
-	if _, statErr := os.Stat(path + ".*.tmp"); statErr == nil {
+	matches, globErr := filepath.Glob(path + ".*.tmp")
+	if globErr == nil && len(matches) > 0 {
 		t.Error("temp file should not linger")
 	}
 }
@@ -120,31 +131,37 @@ func TestWriteFunc_PreservesPermissions(t *testing.T) {
 	path := filepath.Join(dir, "perm.txt")
 
 	err := WriteFunc(path, func(w io.Writer) error {
-		_, err := w.Write([]byte("first"))
+		_, writeErr := w.Write([]byte("first"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
 
-		return err
+		return nil
 	}, Fingerprint{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = os.Chmod(path, 0o600)
-	if err != nil {
-		t.Fatal(err)
+	chmodErr := os.Chmod(path, 0o600)
+	if chmodErr != nil {
+		t.Fatal(chmodErr)
 	}
 
 	err = WriteFunc(path, func(w io.Writer) error {
-		_, err := w.Write([]byte("second"))
+		_, writeErr := w.Write([]byte("second"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
 
-		return err
+		return nil
 	}, Fingerprint{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	info, err := os.Stat(path)
-	if err != nil {
-		t.Fatal(err)
+	info, statErr := os.Stat(path)
+	if statErr != nil {
+		t.Fatal(statErr)
 	}
 
 	if info.Mode().Perm() != 0o600 {
@@ -159,17 +176,20 @@ func TestWriteFunc_LeavesNoLeftoverFiles(t *testing.T) {
 	path := filepath.Join(dir, "clean.txt")
 
 	err := WriteFunc(path, func(w io.Writer) error {
-		_, err := w.Write([]byte("data"))
+		_, writeErr := w.Write([]byte("data"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
 
-		return err
+		return nil
 	}, Fingerprint{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		t.Fatal(err)
+	entries, readErr := os.ReadDir(dir)
+	if readErr != nil {
+		t.Fatal(readErr)
 	}
 
 	for _, entry := range entries {

@@ -67,32 +67,17 @@ func FingerprintFile(path string) (Fingerprint, error) {
 // LockFileEx on Windows) and atomic rename.
 // A zero-value fingerprint skips verification (first run).
 func Write(path string, data []byte, fingerprint Fingerprint) error {
-	const defaultFilePerm = fs.FileMode(0o644)
-
-	perm := defaultFilePerm
-
-	info, err := os.Stat(path)
-	if err == nil {
-		perm = info.Mode().Perm()
+	tmpPath, perm, err := prepareTempPath(path)
+	if err != nil {
+		return err
 	}
-
-	suffix, suffixErr := randomSuffix()
-	if suffixErr != nil {
-		return fmt.Errorf("generating temp file suffix: %w", suffixErr)
-	}
-
-	tmpPath := path + "." + suffix + ".tmp"
 
 	stageErr := writeAndSync(tmpPath, data, perm)
 	if stageErr != nil {
 		return stageErr
 	}
 
-	if !fingerprint.IsZero() {
-		return commitWithVerification(path, tmpPath, fingerprint)
-	}
-
-	return atomicRename(path, tmpPath)
+	return commitOrRename(path, tmpPath, fingerprint)
 }
 
 // writeFuncBufferSize is the default buffer size for streaming writes.
@@ -109,6 +94,22 @@ const writeFuncBufferSize = 65536
 // Use WriteFunc instead of Write when the content is large or produced
 // incrementally (e.g., JSON encoders, diagram renderers).
 func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error {
+	tmpPath, perm, err := prepareTempPath(path)
+	if err != nil {
+		return err
+	}
+
+	stageErr := writeFuncAndSync(tmpPath, fn, perm)
+	if stageErr != nil {
+		return stageErr
+	}
+
+	return commitOrRename(path, tmpPath, fingerprint)
+}
+
+// prepareTempPath computes the file mode (preserving the existing file's
+// mode or using the default) and returns a unique temp file path alongside it.
+func prepareTempPath(path string) (string, fs.FileMode, error) {
 	const defaultFilePerm = fs.FileMode(0o644)
 
 	perm := defaultFilePerm
@@ -120,16 +121,15 @@ func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint)
 
 	suffix, suffixErr := randomSuffix()
 	if suffixErr != nil {
-		return fmt.Errorf("generating temp file suffix: %w", suffixErr)
+		return "", 0, fmt.Errorf("generating temp file suffix: %w", suffixErr)
 	}
 
-	tmpPath := path + "." + suffix + ".tmp"
+	return path + "." + suffix + ".tmp", perm, nil
+}
 
-	stageErr := writeFuncAndSync(tmpPath, fn, perm)
-	if stageErr != nil {
-		return stageErr
-	}
-
+// commitOrRename verifies fingerprint and renames, or skips verification when
+// the fingerprint is the zero sentinel for a first write.
+func commitOrRename(path, tmpPath string, fingerprint Fingerprint) error {
 	if !fingerprint.IsZero() {
 		return commitWithVerification(path, tmpPath, fingerprint)
 	}

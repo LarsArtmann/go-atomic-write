@@ -59,14 +59,11 @@ func FingerprintFile(path string) (Fingerprint, error) {
 	return FingerprintFromBytes(data), nil
 }
 
-// Write writes data to path with TOCTOU protection and crash durability.
-// Data is staged to a unique temp file, fsync'd, then atomically renamed
-// over the target. The target directory is fsync'd after rename (POSIX).
-// If fingerprint is non-zero, it verifies the file hasn't changed since the
-// fingerprint was computed, using cross-platform file locking (flock on Unix,
-// LockFileEx on Windows) and atomic rename.
-// A zero-value fingerprint skips verification (first run).
-func Write(path string, data []byte, fingerprint Fingerprint) error {
+// Write writes data to path with crash durability (fsync + atomic rename).
+// It does NOT perform TOCTOU verification — use WriteVerified for that.
+// Use Write when concurrent modification is not a concern (e.g., temp files,
+// first-time creation, or single-writer scenarios).
+func Write(path string, data []byte) error {
 	tmpPath, perm, err := prepareTempPath(path)
 	if err != nil {
 		return err
@@ -77,23 +74,40 @@ func Write(path string, data []byte, fingerprint Fingerprint) error {
 		return stageErr
 	}
 
-	return commitOrRename(path, tmpPath, fingerprint)
+	return atomicRename(path, tmpPath)
 }
 
-// writeFuncBufferSize is the default buffer size for streaming writes.
-const writeFuncBufferSize = 65536
-
-// WriteFunc writes to path via a streaming callback with TOCTOU protection
-// and crash durability. The callback receives a buffered writer (64KB buffer)
-// and may stream content incrementally without holding the full payload in
-// memory. The temp file is fsync'd before atomic rename.
+// WriteVerified writes data to path with TOCTOU protection and crash durability.
+// Data is staged to a unique temp file, fsync'd, then verified against the
+// fingerprint before atomic rename.
 //
-// If fingerprint is non-zero, it verifies the file hasn't changed since the
-// fingerprint was computed. A zero-value fingerprint skips verification.
+// The fingerprint must be computed via FingerprintFile before reading/modifying
+// the file. A zero-value fingerprint indicates the file should not yet exist;
+// the write will fail with ErrConcurrentModification if another process creates
+// it first. This prevents the silent-skip footgun where a caller forgets to
+// compute a fingerprint.
+func WriteVerified(path string, data []byte, fingerprint Fingerprint) error {
+	tmpPath, perm, err := prepareTempPath(path)
+	if err != nil {
+		return err
+	}
+
+	stageErr := writeAndSync(tmpPath, data, perm)
+	if stageErr != nil {
+		return stageErr
+	}
+
+	return commitVerified(path, tmpPath, fingerprint)
+}
+
+// WriteFunc writes to path via a streaming callback with crash durability.
+// The callback receives a buffered writer (64KB buffer) and may stream content
+// incrementally without holding the full payload in memory.
+// It does NOT perform TOCTOU verification — use WriteFuncVerified for that.
 //
 // Use WriteFunc instead of Write when the content is large or produced
 // incrementally (e.g., JSON encoders, diagram renderers).
-func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error {
+func WriteFunc(path string, fn func(w io.Writer) error) error {
 	tmpPath, perm, err := prepareTempPath(path)
 	if err != nil {
 		return err
@@ -104,7 +118,23 @@ func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint)
 		return stageErr
 	}
 
-	return commitOrRename(path, tmpPath, fingerprint)
+	return atomicRename(path, tmpPath)
+}
+
+// WriteFuncVerified writes to path via a streaming callback with TOCTOU
+// protection and crash durability. See WriteVerified for fingerprint semantics.
+func WriteFuncVerified(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error {
+	tmpPath, perm, err := prepareTempPath(path)
+	if err != nil {
+		return err
+	}
+
+	stageErr := writeFuncAndSync(tmpPath, fn, perm)
+	if stageErr != nil {
+		return stageErr
+	}
+
+	return commitVerified(path, tmpPath, fingerprint)
 }
 
 // prepareTempPath computes the file mode (preserving the existing file's
@@ -127,15 +157,12 @@ func prepareTempPath(path string) (string, fs.FileMode, error) {
 	return path + "." + suffix + ".tmp", perm, nil
 }
 
-// commitOrRename verifies fingerprint and renames, or skips verification when
-// the fingerprint is the zero sentinel for a first write.
-func commitOrRename(path, tmpPath string, fingerprint Fingerprint) error {
-	if !fingerprint.IsZero() {
-		return commitWithVerification(path, tmpPath, fingerprint)
-	}
+// writeFuncBufferSize is the default buffer size for streaming writes.
+const writeFuncBufferSize = 65536
 
-	return atomicRename(path, tmpPath)
-}
+// commitVerified always performs TOCTOU verification under an exclusive lock.
+// A zero fingerprint means the file should not exist yet; if it appears
+// concurrently, that is a conflict.
 
 func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode) error {
 	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm) //nolint:gosec // caller-controlled
@@ -180,7 +207,7 @@ func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode
 	return nil
 }
 
-func commitWithVerification(path, tmpPath string, fingerprint Fingerprint) error {
+func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 	fileLock := flock.New(path)
 
 	lockErr := fileLock.Lock()
@@ -190,6 +217,21 @@ func commitWithVerification(path, tmpPath string, fingerprint Fingerprint) error
 		return fmt.Errorf("acquiring exclusive lock on %s: %w", path, lockErr)
 	}
 	defer func() { _ = fileLock.Close() }()
+
+	if fingerprint.IsZero() {
+		// Caller confirmed the file did not exist. Verify it still doesn't.
+		if _, err := os.Stat(path); err == nil {
+			cleanupTmp(tmpPath)
+
+			return fmt.Errorf("%w: %s was created concurrently", ErrConcurrentModification, path)
+		} else if !os.IsNotExist(err) {
+			cleanupTmp(tmpPath)
+
+			return fmt.Errorf("stating %s for verification: %w", path, err)
+		}
+
+		return atomicRename(path, tmpPath)
+	}
 
 	current, err := os.ReadFile(path) //nolint:gosec // path is caller-controlled
 	if err != nil {

@@ -25,7 +25,7 @@ func TestWriteFunc_FirstRun(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatalf("WriteFunc failed: %v", err)
 	}
@@ -46,7 +46,7 @@ func TestWriteFunc_Overwrite(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatalf("first WriteFunc: %v", err)
 	}
@@ -58,7 +58,7 @@ func TestWriteFunc_Overwrite(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatalf("second WriteFunc: %v", err)
 	}
@@ -84,7 +84,7 @@ func TestWriteFunc_LargeStream(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatalf("WriteFunc failed: %v", err)
 	}
@@ -108,7 +108,7 @@ func TestWriteFunc_CallbackError(t *testing.T) {
 
 	err := WriteFunc(path, func(_ io.Writer) error {
 		return errTestCallback
-	}, Fingerprint{})
+	})
 	if err == nil {
 		t.Fatal("expected error from callback")
 	}
@@ -137,7 +137,7 @@ func TestWriteFunc_PreservesPermissions(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,7 +154,7 @@ func TestWriteFunc_PreservesPermissions(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +182,7 @@ func TestWriteFunc_LeavesNoLeftoverFiles(t *testing.T) {
 		}
 
 		return nil
-	}, Fingerprint{})
+	})
 	if err != nil {
 		t.Fatal(err)
 	}

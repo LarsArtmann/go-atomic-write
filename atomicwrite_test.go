@@ -108,7 +108,7 @@ func TestWriteFirstRun(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "testfile")
 
-	err := Write(path, []byte("hello"), Fingerprint{})
+	err := Write(path, []byte("hello"))
 	if err != nil {
 		t.Fatalf("Write first run: %v", err)
 	}
@@ -128,7 +128,7 @@ func TestWriteWithFingerprint(t *testing.T) {
 
 	fingerprint := FingerprintFromBytes([]byte("original"))
 
-	err := Write(path, []byte("updated"), fingerprint)
+	err := WriteVerified(path, []byte("updated"), fingerprint)
 	if err != nil {
 		t.Fatalf("Write: %v", err)
 	}
@@ -150,7 +150,7 @@ func TestWriteRejectsConcurrentModification(t *testing.T) {
 		t.Fatalf("modify file: %v", err)
 	}
 
-	writeErr := Write(path, []byte("updated"), fingerprint)
+	writeErr := WriteVerified(path, []byte("updated"), fingerprint)
 	if writeErr == nil {
 		t.Fatal("expected error for concurrent modification, got nil")
 	}
@@ -177,7 +177,7 @@ func TestWritePreservesPermissions(t *testing.T) {
 
 	fingerprint := FingerprintFromBytes([]byte("original"))
 
-	writeErr := Write(path, []byte("updated"), fingerprint)
+	writeErr := WriteVerified(path, []byte("updated"), fingerprint)
 	if writeErr != nil {
 		t.Fatalf("Write: %v", writeErr)
 	}
@@ -200,7 +200,7 @@ func TestWriteLeavesNoLeftoverFiles(t *testing.T) {
 
 	fingerprint := FingerprintFromBytes([]byte(originalContent))
 
-	err := Write(path, []byte("updated"), fingerprint)
+	err := WriteVerified(path, []byte("updated"), fingerprint)
 	if err != nil {
 		t.Fatalf("Write: %v", err)
 	}
@@ -234,7 +234,7 @@ func TestTempFileCleanedUpOnError(t *testing.T) {
 		t.Fatalf("remove original: %v", err)
 	}
 
-	writeErr := Write(path, []byte("updated"), fingerprint)
+	writeErr := WriteVerified(path, []byte("updated"), fingerprint)
 	if writeErr == nil {
 		t.Fatal("expected error when original file deleted during verification, got nil")
 	}
@@ -271,7 +271,7 @@ func TestConcurrentWriteRACE(t *testing.T) {
 
 			payload := "writer-" + strconv.Itoa(writerIndex)
 
-			writeErr := Write(path, []byte(payload), fingerprint)
+			writeErr := WriteVerified(path, []byte(payload), fingerprint)
 			if writeErr == nil {
 				successes.Add(1)
 			} else if errors.Is(writeErr, ErrConcurrentModification) {

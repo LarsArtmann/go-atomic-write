@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Changed
+
+- **BREAKING: `Write` / `WriteFunc` API split** (`atomicwrite.go`) — the previous `Write(path, data, fingerprint)` mixed two distinct intents behind a zero-value `Fingerprint{}`, which silently skipped TOCTOU verification (a footgun). The API is now split by intent:
+  - `Write(path, data)` / `WriteFunc(path, fn)` — plain atomic write, no TOCTOU check (the common case).
+  - `WriteVerified(path, data, fingerprint)` / `WriteFuncVerified(path, fn, fingerprint)` — atomic write WITH fingerprint verification. A zero-value fingerprint here means "the file must NOT already exist" — a concurrent creation is treated as a conflict and fails, rather than being silently ignored.
+- This is a source-incompatible change: every call site passing `Fingerprint{}` to skip verification migrates to `Write`/`WriteFunc`; every call site passing a real fingerprint migrates to the `*Verified` variant. All in-repo consumers were updated.
+
+### Migration
+
+| Before                                       | After                             |
+| -------------------------------------------- | --------------------------------- |
+| `Write(path, data, Fingerprint{})`           | `Write(path, data)`               |
+| `Write(path, data, fp)` (real fingerprint)   | `WriteVerified(path, data, fp)`   |
+| `WriteFunc(path, fn, Fingerprint{})`         | `WriteFunc(path, fn)`             |
+| `WriteFunc(path, fn, fp)` (real fingerprint) | `WriteFuncVerified(path, fn, fp)` |
+
 ## [0.3.0] - 2026-07-23
 
 ### Added

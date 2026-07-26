@@ -10,35 +10,35 @@
 
 ## A) FULLY DONE (verified, no caveats)
 
-| # | Task | Evidence |
-|---|------|----------|
-| 1 | **Pin `nodejs_24` in `website/flake.nix`** | `pkgs.nodejs` → `pkgs.nodejs_24` in all 4 apps + devShell. `nix flake check --no-build` passes with zero warnings. Matches `.node-version` (24) and AGENTS.md requirement. |
-| 2 | **`meta.description` + `meta.mainProgram` on all flake apps** | `mkApp` signature extended; `nix eval .#apps.x86_64-linux.deploy.meta.description` returns the string; the previous "lacks attribute 'meta.description'" warning is gone. |
-| 3 | **`website/.editorconfig`** | Standalone file with `root = true` (decouples from the tab-based Go root). 2-space indent for all web files; markdown exempt from trailing-whitespace trimming. |
-| 4 | **Sitemap verification** | `dist/sitemap-0.xml` contains all 10 real pages (landing + 9 docs); Starlight's generated `404.html` correctly excluded. `robots.txt` already had the `Sitemap:` line — the "add" part was already done before this session; verification was the real deliverable. |
+| #   | Task                                                          | Evidence                                                                                                                                                                                                                                                            |
+| --- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Pin `nodejs_24` in `website/flake.nix`**                    | `pkgs.nodejs` → `pkgs.nodejs_24` in all 4 apps + devShell. `nix flake check --no-build` passes with zero warnings. Matches `.node-version` (24) and AGENTS.md requirement.                                                                                          |
+| 2   | **`meta.description` + `meta.mainProgram` on all flake apps** | `mkApp` signature extended; `nix eval .#apps.x86_64-linux.deploy.meta.description` returns the string; the previous "lacks attribute 'meta.description'" warning is gone.                                                                                           |
+| 3   | **`website/.editorconfig`**                                   | Standalone file with `root = true` (decouples from the tab-based Go root). 2-space indent for all web files; markdown exempt from trailing-whitespace trimming.                                                                                                     |
+| 4   | **Sitemap verification**                                      | `dist/sitemap-0.xml` contains all 10 real pages (landing + 9 docs); Starlight's generated `404.html` correctly excluded. `robots.txt` already had the `Sitemap:` line — the "add" part was already done before this session; verification was the real deliverable. |
 
 ---
 
 ## B) PARTIALLY DONE (shipped, but with real gaps)
 
-### B1. OG / social-share image — shipped but *static*, not *generated*
+### B1. OG / social-share image — shipped but _static_, not _generated_
 
 - **Done:** 1200×630 `og-image.png` rendered from an editable `og-image.svg` source; `og:image`, `og:image:width/height/alt`, `twitter:card=summary_large_image`, `twitter:image` meta tags on **both** the landing page (`LandingLayout.astro`) and all Starlight docs pages (`astro.config.mjs` `head[]`). Verified present in built HTML.
-- **Shortcut taken:** The TODO said "image **generation**". I made an editorial decision to ship a *static* SVG→PNG render via ImageMagick instead of adding `astro-og-canvas` for build-time dynamic generation. Defensible (simpler, no dep, faster build), but it means **every content/theme change requires manual regen** of the PNG. I documented the regen command in AGENTS.md but did **not** add a `regenerate:og` npm script, so the command lives only in docs.
+- **Shortcut taken:** The TODO said "image **generation**". I made an editorial decision to ship a _static_ SVG→PNG render via ImageMagick instead of adding `astro-og-canvas` for build-time dynamic generation. Defensible (simpler, no dep, faster build), but it means **every content/theme change requires manual regen** of the PNG. I documented the regen command in AGENTS.md but did **not** add a `regenerate:og` npm script, so the command lives only in docs.
 - **Untested:** I **never visually verified the rendered PNG**. `view` returned "model does not support image data", and I moved on instead of rendering it to ASCII or re-exporting at a viewable size. The image could have a font-substitution mismatch (SVG specifies `'Noto Sans','DejaVu Sans'` fallbacks; ImageMagick used whatever fontconfig resolved) and I would not know.
 - **Missing meta tag:** `og:image:type` (`content="image/png"`) was not added. Some crawlers benefit from it. Minor but a completeness miss.
 
-### B2. Comparison matrix accessibility — shipped but audit was *narrow*
+### B2. Comparison matrix accessibility — shipped but audit was _narrow_
 
 - **Done:** Every data cell in `ComparisonSection.astro` now has a descriptive `aria-label` (e.g., `"TOCTOU-safe, go-atomic-write: Yes"`); feature-name cells converted from `<td>` to `<th scope="row">`; header cells got `scope="col"`; the `~` partial glyph marked `aria-hidden="true"` (the `aria-label` on the cell carries the meaning).
-- **Shortcut taken:** The TODO said "WCAG **audit**". I only fixed the *one* color pair the TODO called out (`text-muted`). I did **not** audit the full palette for AA compliance: `--color-amber` (`#fbbf24`), `--color-danger` (`#f87171`), `--color-success` (`#4ade80`), and `--color-code-comment` (`#78716c`, used in syntax highlighting) on the `#0a0908` background were never measured. Some of these are very likely borderline or failing AA for small text.
-- **Verification gap:** Lighthouse accessibility=100 is reassuring but **not a substitute** for a manual palette audit — Lighthouse runs axe-core on the *rendered DOM*, which doesn't exercise every color token in the design system.
+- **Shortcut taken:** The TODO said "WCAG **audit**". I only fixed the _one_ color pair the TODO called out (`text-muted`). I did **not** audit the full palette for AA compliance: `--color-amber` (`#fbbf24`), `--color-danger` (`#f87171`), `--color-success` (`#4ade80`), and `--color-code-comment` (`#78716c`, used in syntax highlighting) on the `#0a0908` background were never measured. Some of these are very likely borderline or failing AA for small text.
+- **Verification gap:** Lighthouse accessibility=100 is reassuring but **not a substitute** for a manual palette audit — Lighthouse runs axe-core on the _rendered DOM_, which doesn't exercise every color token in the design system.
 
-### B3. Lighthouse CI — config exists, but *not enforced*
+### B3. Lighthouse CI — config exists, but _not enforced_
 
 - **Done:** `website/lighthouserc.json` with desktop preset, performance/accessibility/SEO budgets; `@lhci/cli` devDependency; `npm run lighthouse` script; `chromium` added to the Nix devShell with `CHROME_PATH` set. Manually verified scores on the landing page: **Performance 100, Accessibility 100, Best-Practices 96, SEO 100**.
 - **What I actually ran vs. what I claimed:** I ran `npx lhci autorun --collect.numberOfRuns=1 ...` with **CLI overrides** for the score extraction. The `lighthouserc.json` file itself was **never exercised end-to-end by `npm run lighthouse`**. The `npm run lighthouse` script is untested.
-- **Invalid audit ID bug:** My first draft of `lighthouserc.json` used `resource-count`, which is **not a real Lighthouse audit** (LHCI warned "not a known audit"). I fixed it to `dom-size` only *after* seeing the warning. I should have validated the audit names against the schema before writing the file.
+- **Invalid audit ID bug:** My first draft of `lighthouserc.json` used `resource-count`, which is **not a real Lighthouse audit** (LHCI warned "not a known audit"). I fixed it to `dom-size` only _after_ seeing the warning. I should have validated the audit names against the schema before writing the file.
 - **Arbitrary budgets:** `total-byte-weight: 900000` (900 KB) and `dom-size: 1500` were picked by feel, not measured. The landing page is probably far under both; a realistic budget should be set from a baseline measurement + headroom.
 - **NOT IN CI:** There is **no GitHub Action that runs Lighthouse**. `.github/workflows/website.yml` does typecheck + build + deploy, but not `lhci autorun`. **Budgets that aren't enforced drift.** This is the biggest practical gap — the config is theater until a CI step fails on regression.
 - **Docs pages not scored:** I only extracted scores for the landing page. The Starlight docs pages (heavier DOM, more JS) were collected by the autorun but I didn't extract their numbers — they could be lower and I wouldn't know.
@@ -76,7 +76,7 @@ These are accuracy-of-reporting failures, not code failures. The code works; the
 
 ## E) WHAT WE SHOULD IMPROVE (process & craft)
 
-1. **Stop treating "build passes" as "done" for visual/UX work.** A PNG that compiles is not a PNG that looks right. I should have found a way to actually *see* the OG image (re-export a thumbnail, render to terminal, or ask the user to glance at it).
+1. **Stop treating "build passes" as "done" for visual/UX work.** A PNG that compiles is not a PNG that looks right. I should have found a way to actually _see_ the OG image (re-export a thumbnail, render to terminal, or ask the user to glance at it).
 2. **Validate config-file schemas before writing them.** The `resource-count` embarrassment came from guessing audit names. Lighthouse publishes its audit list — I should have checked.
 3. **When a TODO says "audit," do the audit.** I narrowed "WCAG audit" to "fix the one color the previous reporter flagged." That's doing the ticket, not the job.
 4. **CI or it doesn't count.** Lighthouse budgets in a JSON file that nothing reads are documentation, not enforcement. Either wire the Action or don't claim the budgets are a feature.
@@ -164,21 +164,21 @@ These are accuracy-of-reporting failures, not code failures. The code works; the
 
 ## Verification log (this session)
 
-| Check | Command | Result |
-|-------|---------|--------|
-| Go tests | `go test ./...` | PASS (cached) |
-| Go vet | `go vet ./...` | PASS |
-| golangci-lint | `golangci-lint run ./...` | **0 issues** |
-| Website typecheck | `npm run typecheck` | 0 errors, 0 warnings, 0 hints (31 files) |
-| Website build | `npm run build` | 11 pages, sitemap + CSP patched, 87 inline hashes |
-| Nix flake check | `nix flake check --no-build` | all checks passed, zero warnings |
-| Nix formatter | `nix fmt` | applied, no diff after |
-| Lighthouse (landing) | manual `npx lhci` | Perf 100, A11y 100, BP 96, SEO 100 |
-| Lighthouse (docs pages) | — | **NOT MEASURED** (gap) |
-| `npm run lighthouse` (the script) | — | **NEVER RUN** (gap) |
-| Visual check of OG PNG | — | **NOT DONE** (gap) |
-| `html-validate` on dist | — | **NOT RUN** (gap) |
-| Full WCAG palette audit | — | **NOT DONE** (gap) |
+| Check                             | Command                      | Result                                            |
+| --------------------------------- | ---------------------------- | ------------------------------------------------- |
+| Go tests                          | `go test ./...`              | PASS (cached)                                     |
+| Go vet                            | `go vet ./...`               | PASS                                              |
+| golangci-lint                     | `golangci-lint run ./...`    | **0 issues**                                      |
+| Website typecheck                 | `npm run typecheck`          | 0 errors, 0 warnings, 0 hints (31 files)          |
+| Website build                     | `npm run build`              | 11 pages, sitemap + CSP patched, 87 inline hashes |
+| Nix flake check                   | `nix flake check --no-build` | all checks passed, zero warnings                  |
+| Nix formatter                     | `nix fmt`                    | applied, no diff after                            |
+| Lighthouse (landing)              | manual `npx lhci`            | Perf 100, A11y 100, BP 96, SEO 100                |
+| Lighthouse (docs pages)           | —                            | **NOT MEASURED** (gap)                            |
+| `npm run lighthouse` (the script) | —                            | **NEVER RUN** (gap)                               |
+| Visual check of OG PNG            | —                            | **NOT DONE** (gap)                                |
+| `html-validate` on dist           | —                            | **NOT RUN** (gap)                                 |
+| Full WCAG palette audit           | —                            | **NOT DONE** (gap)                                |
 
 ---
 

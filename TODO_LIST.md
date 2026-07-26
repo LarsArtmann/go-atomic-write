@@ -32,15 +32,15 @@
 
 ## Medium Impact
 
-| Task                                                      | Status | Impact | Effort | Evidence |
-| --------------------------------------------------------- | ------ | ------ | ------ | -------- |
+| Task                                                          | Status | Impact | Effort | Evidence |
+| ------------------------------------------------------------- | ------ | ------ | ------ | -------- |
 | _(none open — previously-Medium items cleared on 2026-07-26)_ |        |        |        |          |
 
 ## Low Impact
 
-| Task                                                        | Status | Impact | Effort | Evidence |
-| ----------------------------------------------------------- | ------ | ------ | ------ | -------- |
-| _(none open — previously-Low items cleared on 2026-07-26)_  |        |        |        |          |
+| Task                                                       | Status | Impact | Effort | Evidence |
+| ---------------------------------------------------------- | ------ | ------ | ------ | -------- |
+| _(none open — previously-Low items cleared on 2026-07-26)_ |        |        |        |          |
 
 ---
 

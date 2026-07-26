@@ -62,21 +62,21 @@ Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 
 ### Website Structure
 
-| Path                            | Purpose                                                                        |
-| ------------------------------- | ------------------------------------------------------------------------------ |
-| `website/astro.config.mjs`      | Astro config: Starlight, fonts, sitemap                                        |
-| `website/src/pages/index.astro` | Landing page                                                                   |
-| `website/src/components/`       | 14 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, etc.)          |
-| `website/src/data/`             | Typed content: config, features, sections, hero-code                           |
-| `website/src/content/docs/`     | 9 Starlight documentation pages                                                |
-| `website/src/styles/`           | global.css (emerald theme) + starlight.css                                     |
+| Path                            | Purpose                                                                                                                            |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `website/astro.config.mjs`      | Astro config: Starlight, fonts, sitemap                                                                                            |
+| `website/src/pages/index.astro` | Landing page                                                                                                                       |
+| `website/src/components/`       | 14 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, etc.)                                                              |
+| `website/src/data/`             | Typed content: config, features, sections, hero-code                                                                               |
+| `website/src/content/docs/`     | 9 Starlight documentation pages                                                                                                    |
+| `website/src/styles/`           | global.css (emerald theme) + starlight.css                                                                                         |
 | `website/public/`               | favicon.svg, favicon.ico, og-image.svg (source) + og-image.png (1200×630), manifest, robots.txt, JS (theme, animations, copy-code) |
-| `website/firebase.json`         | Hosting config with security headers                                           |
-| `website/.firebaserc`           | Firebase project + hosting target                                              |
-| `website/lighthouserc.json`     | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)   |
-| `website/.editorconfig`         | Standalone editor config for the website subtree (2-space indent, `root = true`) |
-| `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` (postbuild) |
-| `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)                  |
+| `website/firebase.json`         | Hosting config with security headers                                                                                               |
+| `website/.firebaserc`           | Firebase project + hosting target                                                                                                  |
+| `website/lighthouserc.json`     | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)                                                       |
+| `website/.editorconfig`         | Standalone editor config for the website subtree (2-space indent, `root = true`)                                                   |
+| `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` (postbuild)                                                     |
+| `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)                                                                      |
 
 ### DNS
 

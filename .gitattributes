@@ -7,3 +7,5 @@ reports/** linguist-generated
 *.woff2 binary
 # Binary files should not be diffed or merged
 *.ico binary
+# Binary files should not be diffed or merged
+*.png binary

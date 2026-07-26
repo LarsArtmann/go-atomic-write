@@ -8,7 +8,7 @@ description: Detecting concurrent modification and handling errors safely.
 All errors are wrapped with `fmt.Errorf` and `%w`. Use `errors.Is` / `errors.As` to inspect:
 
 ```go
-err := atomicwrite.Write(path, newData, fp)
+err := atomicwrite.WriteVerified(path, newData, fingerprint)
 if err != nil {
 	if errors.Is(err, atomicwrite.ErrConcurrentModification) {
 		// File was modified between your read and write
@@ -19,10 +19,11 @@ if err != nil {
 
 ## ErrConcurrentModification
 
-This sentinel error means another process modified the file between your fingerprint read and your write attempt. The temp file is cleaned up automatically.
+This sentinel error means another process modified the file between your fingerprint read
+and your write attempt. The temp file is cleaned up automatically.
 
 ```go
-err := atomicwrite.Write(path, newData, fp)
+err := atomicwrite.WriteVerified(path, newData, fingerprint)
 if errors.Is(err, atomicwrite.ErrConcurrentModification) {
 	// Strategy: re-read, merge, retry
 	for retry := 0; retry < 3; retry++ {
@@ -31,10 +32,14 @@ if errors.Is(err, atomicwrite.ErrConcurrentModification) {
 			return readErr
 		}
 
-		fp = atomicwrite.FingerprintFromBytes(data)
+		fingerprint, fingerprintErr := atomicwrite.FingerprintFile(path)
+		if fingerprintErr != nil {
+			return fingerprintErr
+		}
+
 		mergedData := merge(data, newData)
 
-		err = atomicwrite.Write(path, mergedData, fp)
+		err = atomicwrite.WriteVerified(path, mergedData, fingerprint)
 		if !errors.Is(err, atomicwrite.ErrConcurrentModification) {
 			break
 		}
@@ -63,8 +68,8 @@ File permissions are preserved from the existing file. New files default to `064
 
 ```go
 // If /path/to/file exists with 0600, the new file will also be 0600
-err := atomicwrite.Write("/path/to/file", data, fp)
+err := atomicwrite.WriteVerified("/path/to/file", data, fingerprint)
 
-// If /path/to/new-file doesn't exist, it's created with 0644
-err := atomicwrite.Write("/path/to/new-file", data, atomicwrite.Fingerprint{})
+// If /path/to/new-file doesn't exist, use plain Write — it's created with 0644
+err := atomicwrite.Write("/path/to/new-file", data)
 ```

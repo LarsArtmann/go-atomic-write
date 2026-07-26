@@ -18,7 +18,7 @@ func main() {
 
     newData := []byte(\`{"updated": true}\`)
 
-    err := atomicwrite.Write(path, newData, fp)
+    err := atomicwrite.WriteVerified(path, newData, fp)
     // err == ErrConcurrentModification if someone
     // else wrote between your read and write
     _ = err

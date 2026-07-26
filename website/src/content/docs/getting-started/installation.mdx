@@ -32,15 +32,14 @@ import (
 func main() {
 	path := "/path/to/config.json"
 
-	data, err := os.ReadFile(path)
-	if err != nil && !os.IsNotExist(err) {
+	fingerprint, err := atomicwrite.FingerprintFile(path)
+	if err != nil {
 		panic(err)
 	}
-	fp := atomicwrite.FingerprintFromBytes(data)
 
 	newData := []byte(`{"updated": true}`)
 
-	err = atomicwrite.Write(path, newData, fp)
+	err = atomicwrite.WriteVerified(path, newData, fingerprint)
 	if errors.Is(err, atomicwrite.ErrConcurrentModification) {
 		fmt.Println("file was modified concurrently — re-read and retry")
 		return

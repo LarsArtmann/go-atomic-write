@@ -13,7 +13,7 @@ export const steps: StepCard[] = [
     stepColor: "accent",
     title: "Stage + fsync",
     desc: "Write new content to a unique temp file, then fsync for durability.",
-    code: "atomicwrite.Write(path, data, fp)",
+    code: "atomicwrite.WriteVerified(path, data, fp)",
   },
   {
     step: "3",

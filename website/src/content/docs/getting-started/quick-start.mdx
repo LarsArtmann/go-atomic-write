@@ -26,13 +26,16 @@ func main() {
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
-	fp := atomicwrite.FingerprintFromBytes(data)
+	fingerprint, err := atomicwrite.FingerprintFile(path)
+	if err != nil {
+		panic(err)
+	}
 
 	// 2. Modify
 	newData := []byte(`{"updated": true}`)
 
 	// 3. Write with TOCTOU protection
-	err = atomicwrite.Write(path, newData, fp)
+	err = atomicwrite.WriteVerified(path, newData, fingerprint)
 	if err != nil {
 		panic(err)
 	}
@@ -41,26 +44,47 @@ func main() {
 
 ## First Write (No Existing File)
 
-Pass a zero-value `Fingerprint` to skip verification:
+Use plain `Write` when there is no prior content to protect — it is crash-durable but
+skips fingerprint verification:
 
 ```go
-err := atomicwrite.Write(path, data, atomicwrite.Fingerprint{})
+err := atomicwrite.Write(path, data)
+```
+
+> For verified writes, a zero-value `Fingerprint{}` means "the file must NOT already
+> exist" — `WriteVerified` fails with `ErrConcurrentModification` if another process
+> creates it first.
+
+## Skip No-Op Rewrites
+
+`WriteIfChanged` writes only when content differs from disk. Perfect for config files
+and code generators that must not produce spurious diffs on re-runs:
+
+```go
+changed, err := atomicwrite.WriteIfChanged(path, newData)
+if changed {
+	fmt.Println("file updated")
+}
 ```
 
 ## Detecting Concurrent Modification
 
-If the file changed between your read and write, `Write` returns `ErrConcurrentModification`:
+If the file changed between your read and write, `WriteVerified` returns
+`ErrConcurrentModification`:
 
 ```go
-err := atomicwrite.Write(path, newData, fp)
+err := atomicwrite.WriteVerified(path, newData, fingerprint)
 if errors.Is(err, atomicwrite.ErrConcurrentModification) {
 	// Re-read the file, merge changes, and retry
 	data, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
-	fp = atomicwrite.FingerprintFromBytes(data)
-	err = atomicwrite.Write(path, mergedData, fp)
+	fingerprint, err = atomicwrite.FingerprintFile(path)
+	if err != nil {
+		panic(err)
+	}
+	err = atomicwrite.WriteVerified(path, mergedData, fingerprint)
 }
 ```
 
@@ -93,4 +117,5 @@ if fp.Matches(currentData) {
 5. **Atomic rename** — rename the temp file to the target
 6. **fsync directory** — sync the directory entry (POSIX)
 
-If the fingerprint doesn't match, `Write` returns `ErrConcurrentModification` — the caller should re-read and retry.
+If the fingerprint doesn't match, `WriteVerified` returns `ErrConcurrentModification` —
+the caller should re-read and retry.

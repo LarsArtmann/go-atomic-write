@@ -3,11 +3,17 @@ title: API Reference
 description: Public API for go-atomic-write.
 ---
 
+The API is **split by intent**: plain atomic writes (`Write`, `WriteFunc`) for the
+common case, and `*Verified` variants (`WriteVerified`, `WriteFuncVerified`) when you
+need TOCTOU protection against concurrent modification. `WriteIfChanged` is the
+idempotent primitive for config writers and code generators.
+
 ## Core Types
 
 ### Fingerprint
 
-An xxhash64 digest of file content at read time. A zero-value `Fingerprint` indicates no prior file existed.
+An xxhash64 digest of file content at read time. A zero-value `Fingerprint`
+indicates no prior file existed.
 
 ```go
 type Fingerprint [8]byte
@@ -23,7 +29,79 @@ func (fp Fingerprint) IsZero() bool
 func (fp Fingerprint) Matches(content []byte) bool
 ```
 
-## Functions
+## Write functions
+
+### Write
+
+Writes data to `path` with crash durability (fsync + atomic rename). It does **not**
+perform TOCTOU verification — use `WriteVerified` for that.
+
+Use `Write` when concurrent modification is not a concern (temp files, first-time
+creation, single-writer scenarios).
+
+```go
+func Write(path string, data []byte) error
+```
+
+### WriteVerified
+
+Writes data to `path` with TOCTOU protection **and** crash durability. Data is staged
+to a unique temp file, fsync'd, then verified against the fingerprint before atomic
+rename.
+
+The fingerprint must be computed via `FingerprintFile` before reading/modifying the
+file. A **zero-value fingerprint** indicates the file should not yet exist; the write
+fails with `ErrConcurrentModification` if another process creates it first. This
+prevents the silent-skip footgun where a caller forgets to compute a fingerprint.
+
+```go
+func WriteVerified(path string, data []byte, fingerprint Fingerprint) error
+```
+
+### WriteIfChanged
+
+Writes data to `path` only if it differs from the current on-disk content. Returns
+`changed=true` if the file was written, `false` if the content was identical and the
+write was skipped.
+
+This is the idiomatic primitive for config-file writers and code generators that must
+not produce spurious diffs on re-runs: no content change means no file mutation, no
+mtime bump, no file-watcher trigger.
+
+Race-safe for existing files: if another process modifies the file between the
+fingerprint check and the atomic rename, returns `ErrConcurrentModification`. First-write
+(file does not exist) uses a plain atomic write — there is no prior content to protect.
+
+```go
+func WriteIfChanged(path string, data []byte) (changed bool, err error)
+```
+
+## Streaming write functions
+
+### WriteFunc
+
+Writes to `path` via a streaming callback with crash durability. The callback receives
+a buffered writer (64KB buffer) and may stream content incrementally without holding the
+full payload in memory. It does **not** perform TOCTOU verification — use
+`WriteFuncVerified` for that.
+
+Use `WriteFunc` instead of `Write` when the content is large or produced incrementally
+(e.g. JSON encoders, diagram renderers).
+
+```go
+func WriteFunc(path string, fn func(w io.Writer) error) error
+```
+
+### WriteFuncVerified
+
+Writes to `path` via a streaming callback with TOCTOU protection **and** crash
+durability. See `WriteVerified` for fingerprint semantics.
+
+```go
+func WriteFuncVerified(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error
+```
+
+## Fingerprinting helpers
 
 ### FingerprintFromBytes
 
@@ -35,56 +113,49 @@ func FingerprintFromBytes(data []byte) Fingerprint
 
 ### FingerprintFile
 
-Computes an xxhash64 `Fingerprint` from a file's current content. Returns a zero-value `Fingerprint` if the file does not exist.
+Computes an xxhash64 `Fingerprint` from a file's current content. Returns a zero-value
+`Fingerprint` if the file does not exist.
 
 ```go
 func FingerprintFile(path string) (Fingerprint, error)
-```
-
-### Write
-
-Writes data to path with TOCTOU protection and crash durability. Data is staged to a unique temp file, fsync'd, then atomically renamed over the target. The target directory is fsync'd after rename (POSIX).
-
-If fingerprint is non-zero, it verifies the file hasn't changed since the fingerprint was computed, using cross-platform file locking and atomic rename. A zero-value fingerprint skips verification (first run).
-
-```go
-func Write(path string, data []byte, fingerprint Fingerprint) error
-```
-
-### WriteFunc
-
-Writes to path via a streaming callback with TOCTOU protection and crash durability. The callback receives a buffered writer (64KB buffer) and may stream content incrementally without holding the full payload in memory. The temp file is fsync'd before atomic rename.
-
-If fingerprint is non-zero, it verifies the file hasn't changed since the fingerprint was computed. A zero-value fingerprint skips verification.
-
-Use `WriteFunc` instead of `Write` when the content is large or produced incrementally (e.g., JSON encoders, diagram renderers).
-
-```go
-func WriteFunc(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error
 ```
 
 ## Errors
 
 ### ErrConcurrentModification
 
-Sentinel error indicating the file was modified by another process between the fingerprint read and the write attempt. Always check with `errors.Is`.
+Sentinel error indicating the file was modified by another process between the
+fingerprint read and the write attempt. Always check with `errors.Is`.
 
 ```go
 var ErrConcurrentModification = errors.New("file was modified concurrently since read")
 ```
 
+## Choosing the right function
+
+| If you...                                              | Use                                |
+| ------------------------------------------------------ | ---------------------------------- |
+| Just want a crash-durable write                        | `Write`                            |
+| Must detect concurrent modification                    | `WriteVerified`                    |
+| Write config/codegen output and skip no-op re-runs     | `WriteIfChanged`                   |
+| Stream large or incrementally-produced content         | `WriteFunc`                        |
+| Stream content AND need TOCTOU protection              | `WriteFuncVerified`                |
+
 ## API Summary
 
-| Symbol                       | Description                                              |
-| ---------------------------- | -------------------------------------------------------- |
-| `Fingerprint`                | `[8]byte` — xxhash64 digest of file content at read time |
-| `Fingerprint.IsZero()`       | Returns `true` for zero-value (no prior file)            |
-| `Fingerprint.Matches(data)`  | Returns `true` if data produces the same fingerprint     |
-| `FingerprintFromBytes(data)` | Computes fingerprint from raw bytes                      |
-| `FingerprintFile(path)`      | Computes fingerprint from a file (zero if nonexistent)   |
-| `Write(path, data, fp)`      | Writes data with TOCTOU protection                       |
-| `WriteFunc(path, fn, fp)`    | Streams content via callback with TOCTOU protection      |
-| `ErrConcurrentModification`  | Sentinel error: file changed between read and write      |
+| Symbol                          | Description                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| `Fingerprint`                   | `[8]byte` — xxhash64 digest of file content at read time |
+| `Fingerprint.IsZero()`          | Returns `true` for zero-value (no prior file)            |
+| `Fingerprint.Matches(data)`     | Returns `true` if data produces the same fingerprint     |
+| `FingerprintFromBytes(data)`    | Computes fingerprint from raw bytes                      |
+| `FingerprintFile(path)`         | Computes fingerprint from a file (zero if nonexistent)   |
+| `Write(path, data)`             | Crash-durable atomic write (no TOCTOU check)             |
+| `WriteVerified(path, data, fp)` | Atomic write with TOCTOU fingerprint verification        |
+| `WriteIfChanged(path, data)`    | Idempotent write — skips when content matches disk       |
+| `WriteFunc(path, fn)`           | Streams content via callback (no TOCTOU check)           |
+| `WriteFuncVerified(path, fn, fp)` | Streams content via callback with TOCTOU verification  |
+| `ErrConcurrentModification`     | Sentinel error: file changed between read and write      |
 
 ## Full API on pkg.go.dev
 

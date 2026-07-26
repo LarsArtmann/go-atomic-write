@@ -26,10 +26,7 @@ func main() {
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
-	fingerprint, err := atomicwrite.FingerprintFile(path)
-	if err != nil {
-		panic(err)
-	}
+	fingerprint := atomicwrite.FingerprintFromBytes(data)
 
 	// 2. Modify
 	newData := []byte(`{"updated": true}`)

@@ -27,6 +27,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 | `WriteFunc(path, fn, Fingerprint{})`         | `WriteFunc(path, fn)`             |
 | `WriteFunc(path, fn, fp)` (real fingerprint) | `WriteFuncVerified(path, fn, fp)` |
 
+### Fixed (website & docs)
+
+- **Website docs taught the removed API** — `api-reference.mdx`, `getting-started/quick-start.mdx` (4 examples), `getting-started/installation.mdx`, `guides/error-handling.mdx`, the landing-page hero code (`hero-code.ts`), and the "How it works" steps (`sections.ts`) all used the removed `Write(path, data, fingerprint)` 3-arg signature. Rewritten to the current `Write` / `WriteVerified` / `WriteIfChanged` / `WriteFunc` / `WriteFuncVerified` split.
+- **Dual changelog split brain** — `website/src/content/docs/changelog.mdx` duplicated root `CHANGELOG.md` and had already diverged (no `[Unreleased]`, old signatures). The website page is now **generated** from the root file by `website/scripts/sync-changelog.mjs` (single source of truth, wired into `prebuild`/`predev`).
+- **`docs/DOMAIN_LANGUAGE.md` documented the removed `.bak` pattern** as a value object and event. Corrected to reflect single-rename atomicity and the full write-API split.
+- **`pulse-dot` animation ignored `prefers-reduced-motion`** — the reduced-motion media query only targeted `[data-animate]`. Now disables `.animate-pulse-dot` too (accessibility: vestibular disorders).
+
+### Added (website & CI)
+
+- **Hash-based Content Security Policy** — `website/scripts/fix-csp.mjs` post-build patcher injects a per-file CSP `<meta>` into every built HTML page. Inline scripts are allow-listed by SHA-256 hash (no `'unsafe-inline'` for `script-src`); `style-src 'unsafe-inline'` is retained for Tailwind's inlined critical CSS.
+- **CI/CD pipelines** — `.github/workflows/ci.yml` (Go `vet` + `build` + `test -race` + `golangci-lint`) and `.github/workflows/website.yml` (`typecheck` + `build` on every change; deploy to Firebase Hosting `live` channel on `master`).
+- **Changelog sync hook** — `npm run sync:changelog` and automatic `prebuild`/`predev` generation of the website changelog page.
+
+### Changed (website & docs)
+
+- **`CONTRIBUTING.md`** — added a `website/` section (build/dev/deploy commands, the generated-changelog note), corrected the stale "No flake.nix" claim (the website has one), and documented `golangci-lint` as the gating check.
+
+### Removed (website)
+
+- **Dead website code** — unused `comparisons` array (`sections.ts`), unused `ComparisonItem` interface (`types.ts`), and the unused `fade-in-up` keyframe + theme variable (`global.css`). `comparisonMatrix` (which IS rendered) is retained.
+
 ## [0.3.0] - 2026-07-23
 
 ### Added

@@ -13,15 +13,17 @@
 | 🔵 `BLOCKED`     | Cannot proceed, external dependency or decision needed.     |
 | 🟢 `DONE`        | Completed. Remove from this list and log in `CHANGELOG.md`. |
 
+> The previously-High items (dead website code, pulse-dot reduced-motion, CSP,
+> CI/CD pipelines, the 404 warning) were completed on 2026-07-26 — see
+> `CHANGELOG.md` `[Unreleased]`. The recurring `404 was not found` build line is a
+> **benign Starlight route-generation log** (Starlight ships its own `404.html`);
+> adding a custom `404.astro` causes a route collision and is NOT the fix.
+
 ## High Impact
 
-| Task                                                                                          | Status    | Impact | Effort | Evidence                                                                                |
-| --------------------------------------------------------------------------------------------- | --------- | ------ | ------ | --------------------------------------------------------------------------------------- |
-| Remove dead website code: `comparisons` array, `ComparisonItem` interface, `fade-in-up` anim | 🔴 `TODO` | High   | 20min  | `website/src/data/sections.ts:34`, `website/src/data/types.ts:27`, `website/src/styles/global.css:39,95` — none referenced by components |
-| Fix pulse-dot ignoring `prefers-reduced-motion`                                               | 🔴 `TODO` | High   | 10min  | `website/src/styles/global.css:123` — block targets only `[data-animate]`, not `.animate-pulse-dot` (accessibility: vestibular disorders) |
-| Create CI/CD pipelines (Go CI + website deploy)                                               | 🔴 `TODO` | High   | 3h     | No `.github/workflows/` directory exists (verified)                                     |
-| Re-add Content Security Policy to website build                                               | 🔴 `TODO` | High   | 2h     | `website/astro.config.mjs` has no CSP (verified); needs `scripts/fix-csp.mjs` patcher; build script update |
-| Fix the recurring `404 was not found` build warning                                           | 🔴 `TODO` | High   | 30min  | No `website/src/pages/404.astro` exists; warning emitted every build                     |
+| Task | Status | Impact | Effort | Evidence |
+| ---- | ------ | ------ | ------ | -------- |
+| _(none open — previously-High items cleared on 2026-07-26)_ | | | | |
 
 ## Medium Impact
 
@@ -38,7 +40,8 @@
 | Task                                                       | Status    | Impact | Effort | Evidence                                                                              |
 | ---------------------------------------------------------- | --------- | ------ | ------ | ------------------------------------------------------------------------------------- |
 | Verify sitemap + add `robots.txt` sitemap reference        | 🔴 `TODO` | Low    | 15min  | `website/public/robots.txt` exists; verify all 11 pages in sitemap                    |
-| Add `firebase.json` long-term cache headers (CSS/JS)       | 🔴 `TODO` | Low    | 20min  | `website/firebase.json` has security headers but no 1-year immutable cache for assets |
+| `website/flake.nix`: pin `nodejs_24` (not `pkgs.nodejs`)   | 🔴 `TODO` | Low    | 5min   | `website/flake.nix:43-57` uses `pkgs.nodejs` (Node 22 on unstable); AGENTS.md requires Node 24 |
+| `website/flake.nix`: add `meta.description` to `deploy` app | 🔴 `TODO` | Low    | 2min   | `nix flake check` warns: `app 'apps.x86_64-linux.deploy' lacks attribute 'meta.description'` |
 
 ---
 

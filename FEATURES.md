@@ -53,11 +53,11 @@
 | Feature                          | Status                | Notes                                                                                                          |
 | -------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Marketing website (Astro+Starlight) | 🟢 `FULLY_FUNCTIONAL` | `website/`; deployed to Firebase `atomicwrite` target. Landing page, dark/light theme, comparison matrix.      |
-| Documentation site (9 pages)      | 🟡 `PARTIALLY_FUNCTIONAL` | `website/src/content/docs/` exists & builds, BUT **4 pages teach the REMOVED pre-[Unreleased] API**: `api-reference.mdx`, `getting-started/quick-start.mdx` (4 examples), `guides/error-handling.mdx`, `changelog.mdx` all use `Write(path, data, fp)` which no longer compiles. Missing `WriteVerified`/`WriteIfChanged`/`WriteFuncVerified`. See TODO_LIST. |
+| Documentation site (9 pages)      | 🟢 `FULLY_FUNCTIONAL` | `website/src/content/docs/`; all pages teach the current `[Unreleased] API split` (`Write`/`WriteVerified`/`WriteIfChanged`/`WriteFunc`/`WriteFuncVerified`). Verified by `npm run build` + `typecheck` (11 pages, 0 errors). Changelog page is **generated** from root `CHANGELOG.md`. |
 | Cross-platform locking docs       | 🟢 `FULLY_FUNCTIONAL` | `guides/platform-support.mdx` documents POSIX vs Windows behavior and caveats.                                  |
-| Content Security Policy           | ⚪ `PLANNED`           | CSP removed from `astro.config.mjs` during debugging; Firebase headers only. See TODO_LIST.                     |
+| Content Security Policy           | 🟢 `FULLY_FUNCTIONAL` | Hash-based CSP injected per-file by `scripts/fix-csp.mjs` (`postbuild`); no `'unsafe-inline'` for `script-src`. |
 | OG / social-share images          | ⚪ `PLANNED`           | No `og:image`, no `astro-og-canvas`. See TODO_LIST.                                                             |
-| CI/CD pipelines                   | ⚪ `PLANNED`           | No `.github/workflows/` directory. See TODO_LIST.                                                               |
+| CI/CD pipelines                   | 🟡 `PARTIALLY_FUNCTIONAL` | `.github/workflows/ci.yml` (Go gate) + `website.yml` (build/deploy) exist; not yet proven on a real GitHub run (Firebase deploy needs `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret). |
 
 ---
 

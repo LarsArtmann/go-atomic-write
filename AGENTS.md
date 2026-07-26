@@ -51,9 +51,10 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 | Command                                                                | Purpose                          |
 | ---------------------------------------------------------------------- | -------------------------------- |
 | `cd website && npm run dev`                                            | Local dev server                 |
-| `cd website && npm run build`                                          | Production build to `dist/`      |
+| `cd website && npm run build`                                          | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP) |
 | `cd website && npm run typecheck`                                      | TypeScript + Astro type checking |
 | `cd website && npm run preview`                                        | Preview production build locally |
+| `cd website && npm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md` |
 | `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase               |
 
 Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
@@ -71,6 +72,8 @@ Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 | `website/public/`               | favicon, manifest, robots.txt, JS (theme, animations, copy-code)      |
 | `website/firebase.json`         | Hosting config with security headers                                  |
 | `website/.firebaserc`           | Firebase project + hosting target                                     |
+| `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` (postbuild) |
+| `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)         |
 
 ### DNS
 
@@ -134,3 +137,7 @@ Both are intentional, minimal, and not candidates for replacement.
   - `os.ReadFile(path)`/`os.OpenFile` with a variable path triggers `gosec G304` — annotate with `//nolint:gosec` and rationale
   - Blank line between error assignment and `if err != nil` triggers `wsl_v5` — put the blank line above the assignment instead
   - New third-party imports require updating `.golangci.yml` `depguard.rules.main.allow`
+- **Website changelog page is GENERATED** — `website/src/content/docs/changelog.mdx` is produced from root `CHANGELOG.md` by `scripts/sync-changelog.mjs` (runs on `prebuild`/`predev`). Edit `CHANGELOG.md`, never the `.mdx`. If the build breaks with an MDX "unexpected character" error, a changelog entry likely contains a raw `<`; the sync script escapes `<` but check new entries.
+- **Website CSP is hash-based and post-build** — `scripts/fix-csp.mjs` (`postbuild`) injects a per-file CSP `<meta>` from inline-script SHA-256 hashes. There is **no `'unsafe-inline'` for `script-src`**. If a new inline script breaks the site under CSP, either move it to an external `/js/*.js` file (loaded via `<script is:inline src=…>`) or confirm `fix-csp.mjs` hashed it.
+- **Do NOT add `website/src/pages/404.astro`** — Starlight ships its own `404.html`. A custom one causes a route collision (warning today, hard error in future Astro). The `404 was not found` line during build is a benign Starlight route log, not a warning.
+- The website's `npm run build` requires a clean `.astro` cache when content files are renamed/extension-changed: run `rm -rf .astro dist node_modules/.cache` if the content layer fails to resolve a renamed doc.

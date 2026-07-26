@@ -2,7 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
@@ -98,7 +99,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `errcheck`: `h.Write` return value is now explicitly discarded (`_, _ = hasher.Write(…)`) in the streaming benchmark
 - `*.bak` added to `.gitignore` — backup files from atomic writes were showing as untracked
 
-## [0.1.0] - 2026-06-02
+## [0.1.0] - 2026-06-03
 
 ### Added
 

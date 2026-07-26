@@ -18,6 +18,11 @@
 > `CHANGELOG.md` `[Unreleased]`. The recurring `404 was not found` build line is a
 > **benign Starlight route-generation log** (Starlight ships its own `404.html`);
 > adding a custom `404.astro` causes a route collision and is NOT the fix.
+>
+> All Medium- and Low-impact items (OG image, favicon.ico, WCAG contrast,
+> comparison aria-labels, Lighthouse CI, editorconfig, nodejs_24 pin,
+> meta.description, sitemap verification) were completed on 2026-07-26 — see
+> `CHANGELOG.md` `[Unreleased]`.
 
 ## High Impact
 
@@ -27,21 +32,15 @@
 
 ## Medium Impact
 
-| Task                                                      | Status    | Impact | Effort | Evidence                                                                                                                                         |
-| --------------------------------------------------------- | --------- | ------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Add OG / social-share image generation                    | 🔴 `TODO` | Med    | 2h     | No `astro-og-canvas` dep, no `og:image`, no `website/src/pages/og/` endpoint                                                                     |
-| Add `favicon.ico` for legacy browser support              | 🔴 `TODO` | Med    | 15min  | Only `website/public/favicon.svg` exists (verified)                                                                                              |
-| Add `aria-label`s to comparison matrix cells + WCAG audit | 🔴 `TODO` | Med    | 1h     | `website/src/components/ComparisonSection.astro` — SVG check/X icons lack text alternatives; `text-muted` (`#78716c` on `#0a0908`) borderline AA |
-| Run Lighthouse audit + add `lighthouserc.json` budgets    | 🔴 `TODO` | Med    | 1h     | No `website/lighthouserc.json`; no prior performance/accessibility scores                                                                        |
-| Add `website/.editorconfig` for editor consistency        | 🔴 `TODO` | Med    | 5min   | No `website/.editorconfig` (verified); root `.editorconfig` exists                                                                               |
+| Task                                                      | Status | Impact | Effort | Evidence |
+| --------------------------------------------------------- | ------ | ------ | ------ | -------- |
+| _(none open — previously-Medium items cleared on 2026-07-26)_ |        |        |        |          |
 
 ## Low Impact
 
-| Task                                                        | Status    | Impact | Effort | Evidence                                                                                       |
-| ----------------------------------------------------------- | --------- | ------ | ------ | ---------------------------------------------------------------------------------------------- |
-| Verify sitemap + add `robots.txt` sitemap reference         | 🔴 `TODO` | Low    | 15min  | `website/public/robots.txt` exists; verify all 11 pages in sitemap                             |
-| `website/flake.nix`: pin `nodejs_24` (not `pkgs.nodejs`)    | 🔴 `TODO` | Low    | 5min   | `website/flake.nix:43-57` uses `pkgs.nodejs` (Node 22 on unstable); AGENTS.md requires Node 24 |
-| `website/flake.nix`: add `meta.description` to `deploy` app | 🔴 `TODO` | Low    | 2min   | `nix flake check` warns: `app 'apps.x86_64-linux.deploy' lacks attribute 'meta.description'`   |
+| Task                                                        | Status | Impact | Effort | Evidence |
+| ----------------------------------------------------------- | ------ | ------ | ------ | -------- |
+| _(none open — previously-Low items cleared on 2026-07-26)_  |        |        |        |          |
 
 ---
 

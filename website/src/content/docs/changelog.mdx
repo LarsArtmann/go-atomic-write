@@ -53,6 +53,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - **Dead website code** — unused `comparisons` array (`sections.ts`), unused `ComparisonItem` interface (`types.ts`), and the unused `fade-in-up` keyframe + theme variable (`global.css`). `comparisonMatrix` (which IS rendered) is retained.
 
+### Added (website accessibility & social)
+
+- **OG / social-share image** — static 1200×630 `og-image.png` (generated from `og-image.svg` source) with `og:image`, `twitter:image`, and `twitter:card=summary_large_image` meta tags on both the landing page and all Starlight docs pages.
+- **`favicon.ico`** — multi-resolution (16/32/48/64px) ICO generated from `favicon.svg`, referenced via `&lt;link rel="alternate icon">` for legacy browsers that only request `.ico`.
+- **Lighthouse CI** — `website/lighthouserc.json` with performance/accessibility/SEO budgets (desktop preset), `@lhci/cli` devDependency, `npm run lighthouse` script, and `chromium` in the Nix devShell (`CHROME_PATH` set). Verified: Performance 100, Accessibility 100, Best-Practices 96, SEO 100.
+- **`website/.editorconfig`** — standalone editor config for the website subtree (2-space indent for all web files, `root = true` to decouple from the Go tab-based root config).
+
+### Fixed (website accessibility)
+
+- **WCAG AA contrast failure** — `--color-text-muted` was `#78716c` (4.08:1 on the dark `#0a0908` background, below the 4.5:1 AA minimum). Dark mode lightened to `#8b827a` (5.28:1); light mode darkened to `#6e6762` (5.32:1) for comfortable margin.
+- **Comparison matrix screen-reader inaccessible** — check/X icons in `ComparisonSection.astro` had no text alternative. Each data cell now has a descriptive `aria-label` (e.g., "TOCTOU-safe, go-atomic-write: Yes"); feature-name cells changed to `&lt;th scope="row">`; the `~` partial symbol marked `aria-hidden="true"`.
+
+### Changed (website infra)
+
+- **`website/flake.nix` pinned Node 24** — replaced `pkgs.nodejs` (Node 22 on unstable) with `pkgs.nodejs_24` across all apps and devShell, matching the `.node-version` file and AGENTS.md requirement.
+- **`website/flake.nix` app metadata** — added `meta.description` and `meta.mainProgram` to every `mkApp` (dev, build, preview, deploy); `nix flake check` no longer warns about missing attributes.
+
 ## [0.3.0] - 2026-07-23
 
 ### Added

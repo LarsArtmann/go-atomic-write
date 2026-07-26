@@ -55,6 +55,7 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 | `cd website && npm run typecheck`                                      | TypeScript + Astro type checking                                                  |
 | `cd website && npm run preview`                                        | Preview production build locally                                                  |
 | `cd website && npm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md`                                |
+| `cd website && npm run lighthouse`                                     | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)             |
 | `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                |
 
 Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
@@ -69,9 +70,11 @@ Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 | `website/src/data/`             | Typed content: config, features, sections, hero-code                           |
 | `website/src/content/docs/`     | 9 Starlight documentation pages                                                |
 | `website/src/styles/`           | global.css (emerald theme) + starlight.css                                     |
-| `website/public/`               | favicon, manifest, robots.txt, JS (theme, animations, copy-code)               |
+| `website/public/`               | favicon.svg, favicon.ico, og-image.svg (source) + og-image.png (1200×630), manifest, robots.txt, JS (theme, animations, copy-code) |
 | `website/firebase.json`         | Hosting config with security headers                                           |
 | `website/.firebaserc`           | Firebase project + hosting target                                              |
+| `website/lighthouserc.json`     | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)   |
+| `website/.editorconfig`         | Standalone editor config for the website subtree (2-space indent, `root = true`) |
 | `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` (postbuild) |
 | `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)                  |
 
@@ -141,3 +144,6 @@ Both are intentional, minimal, and not candidates for replacement.
 - **Website CSP is hash-based and post-build** — `scripts/fix-csp.mjs` (`postbuild`) injects a per-file CSP `<meta>` from inline-script SHA-256 hashes. There is **no `'unsafe-inline'` for `script-src`**. If a new inline script breaks the site under CSP, either move it to an external `/js/*.js` file (loaded via `<script is:inline src=…>`) or confirm `fix-csp.mjs` hashed it.
 - **Do NOT add `website/src/pages/404.astro`** — Starlight ships its own `404.html`. A custom one causes a route collision (warning today, hard error in future Astro). The `404 was not found` line during build is a benign Starlight route log, not a warning.
 - The website's `npm run build` requires a clean `.astro` cache when content files are renamed/extension-changed: run `rm -rf .astro dist node_modules/.cache` if the content layer fails to resolve a renamed doc.
+- **OG image is static, not dynamic** — `public/og-image.svg` is the editable source; `public/og-image.png` is the generated 1200×630 output. Regenerate with `magick -background none public/og-image.svg -resize 1200x630! public/og-image.png` (ImageMagick 7). No `astro-og-canvas` dependency needed.
+- **Lighthouse CI needs chromium** — `npm run lighthouse` requires Chrome/Chromium. The Nix devShell provides it and sets `CHROME_PATH`. Run via `nix develop` or `nix shell nixpkgs#nodejs_24 nixpkgs#chromium`.
+- **`website/.editorconfig` uses `root = true`** — this intentionally decouples the website from the Go-rooted `.editorconfig` (which uses tabs). The website uses 2-space indentation for all files.

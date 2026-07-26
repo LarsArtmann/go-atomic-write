@@ -27,39 +27,44 @@
       perSystem =
         { config, pkgs, ... }:
         let
-          mkApp =
-            name: description: runtimeInputs: text:
-            {
-              type = "app";
-              program = "${
-                pkgs.writeShellApplication {
-                  inherit name runtimeInputs text;
-                }
-              }/bin/${name}";
-              meta = {
-                inherit description;
-                mainProgram = name;
-              };
+          mkApp = name: description: runtimeInputs: text: {
+            type = "app";
+            program = "${
+              pkgs.writeShellApplication {
+                inherit name runtimeInputs text;
+              }
+            }/bin/${name}";
+            meta = {
+              inherit description;
+              mainProgram = name;
             };
+          };
         in
         {
           apps = {
             dev = mkApp "dev" "Start the Astro development server" [ pkgs.nodejs_24 ] "npm run dev";
             build = mkApp "build" "Build the website for production" [ pkgs.nodejs_24 ] "npm run build";
-            preview = mkApp "preview" "Preview the production build locally" [ pkgs.nodejs_24 ] "npm run preview";
-            deploy = mkApp "deploy" "Build and deploy the website to Firebase Hosting" [
+            preview = mkApp "preview" "Preview the production build locally" [
               pkgs.nodejs_24
-              pkgs.firebase-tools
-            ] ''
-              npm run build
-              firebase deploy --only hosting
-            '';
+            ] "npm run preview";
+            deploy =
+              mkApp "deploy" "Build and deploy the website to Firebase Hosting"
+                [
+                  pkgs.nodejs_24
+                  pkgs.firebase-tools
+                ]
+                ''
+                  npm run build
+                  firebase deploy --only hosting
+                '';
           };
 
           devShells.default = pkgs.mkShellNoCC {
             packages = builtins.attrValues {
-              inherit (pkgs) nodejs_24 firebase-tools;
+              inherit (pkgs) nodejs_24 firebase-tools chromium;
             };
+
+            CHROME_PATH = "${pkgs.chromium}/bin/chromium";
           };
 
           treefmt.programs.nixfmt.enable = true;

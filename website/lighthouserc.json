@@ -20,7 +20,7 @@
         "categories:accessibility": ["error", { "minScore": 0.95 }],
         "categories:best-practices": ["warn", { "minScore": 0.9 }],
         "categories:seo": ["error", { "minScore": 0.95 }],
-        "resource-count": ["warn", { "maxNumericValue": 35 }],
+        "dom-size": ["warn", { "maxNumericValue": 1500 }],
         "total-byte-weight": ["warn", { "maxNumericValue": 900000 }],
         "uses-responsive-images": "off",
         "csp-xss": "off",

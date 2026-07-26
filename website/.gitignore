@@ -18,5 +18,8 @@ Thumbs.db
 # Astro
 .astro/
 
+# Lighthouse CI
+.lighthouseci/
+
 # Bun (CI uses npm)
 bun.lock

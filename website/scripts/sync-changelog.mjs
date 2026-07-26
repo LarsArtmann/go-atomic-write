@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const sourcePath = resolve(here, "../../CHANGELOG.md");
-const targetPath = resolve(here, "../src/content/docs/changelog.mdx");
+const targetPath = resolve(here, "../src/content/docs/changelog.md");
 
 const raw = readFileSync(sourcePath, "utf8");
 

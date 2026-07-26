@@ -28,7 +28,7 @@
         { config, pkgs, ... }:
         let
           mkApp =
-            name: runtimeInputs: text:
+            name: description: runtimeInputs: text:
             {
               type = "app";
               program = "${
@@ -36,15 +36,19 @@
                   inherit name runtimeInputs text;
                 }
               }/bin/${name}";
+              meta = {
+                inherit description;
+                mainProgram = name;
+              };
             };
         in
         {
           apps = {
-            dev = mkApp "dev" [ pkgs.nodejs ] "npm run dev";
-            build = mkApp "build" [ pkgs.nodejs ] "npm run build";
-            preview = mkApp "preview" [ pkgs.nodejs ] "npm run preview";
-            deploy = mkApp "deploy" [
-              pkgs.nodejs
+            dev = mkApp "dev" "Start the Astro development server" [ pkgs.nodejs_24 ] "npm run dev";
+            build = mkApp "build" "Build the website for production" [ pkgs.nodejs_24 ] "npm run build";
+            preview = mkApp "preview" "Preview the production build locally" [ pkgs.nodejs_24 ] "npm run preview";
+            deploy = mkApp "deploy" "Build and deploy the website to Firebase Hosting" [
+              pkgs.nodejs_24
               pkgs.firebase-tools
             ] ''
               npm run build
@@ -54,7 +58,7 @@
 
           devShells.default = pkgs.mkShellNoCC {
             packages = builtins.attrValues {
-              inherit (pkgs) nodejs firebase-tools;
+              inherit (pkgs) nodejs_24 firebase-tools;
             };
           };
 

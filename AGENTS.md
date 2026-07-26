@@ -5,7 +5,7 @@
 Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerprint verification, cross-platform file locking (`flock`/`LockFileEx`), atomic rename, and fsync for crash durability.
 
 - **Module:** `github.com/larsartmann/go-atomic-write`
-- **Go version:** 1.26.4
+- **Go version:** 1.26.5
 - **Main branch:** `master` (configured in `git-town.toml`)
 
 ## Commands
@@ -113,6 +113,7 @@ Both are intentional, minimal, and not candidates for replacement.
 
 ## Gotchas
 
+- **Keep the Go version above in sync with `go.mod`** — this drift has recurred three times (1.26.3 → 1.26.4 → 1.26.5); whenever `go.mod`'s `go` directive bumps, update the `**Go version:**` line in the Project section above
 - `.tmp` files use unique names (`path + "." + randomHex + ".tmp"`) to prevent concurrent writers from corrupting a shared staging file
 - `.tmp` files are created alongside the target file (same directory) — callers need write permissions on the directory, not just the file
 - `.tmp` files are in `.gitignore`; `.bak` files are no longer created (the `.bak` pattern was removed — it broke POSIX atomicity)

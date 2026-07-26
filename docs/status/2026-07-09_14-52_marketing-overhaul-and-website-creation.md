@@ -166,7 +166,7 @@ Build passes. Typecheck passes (0 errors). However, several integration gaps rem
 - [x] ~~README.md does NOT link to the new website (`atomicwrite.lars.software`)~~ DONE: 9808ab1;
 - [ ] README.md badge section does NOT include a CI badge (no CI exists)
 - [x] ~~AGENTS.md does NOT mention the `website/` directory at all~~ DONE: 9808ab1;
-- [x] ~~AGENTS.md Go version says `1.26.3`, `go.mod` says `1.26.4` — inconsistency~~ DONE: 9808ab1 set AGENTS.md to 1.26.4. (NOTE: `go.mod` has since moved to `1.26.5`; AGENTS.md again lags — see TODO_LIST.)
+- [x] ~~AGENTS.md Go version says `1.26.3`, `go.mod` says `1.26.4` — inconsistency~~ DONE: 9808ab1 set AGENTS.md to 1.26.4. (Re-drifted to 1.26.5 and re-fixed 2026-07-26; gotcha added to AGENTS.md to prevent recurrence.)
 
 ---
 
@@ -178,7 +178,7 @@ Build passes. Typecheck passes (0 errors). However, several integration gaps rem
 
 ### 2. AGENTS.md Go Version Mismatch
 
-~~`AGENTS.md` says "Go version: 1.26.3". `go.mod` says `go 1.26.4`. This is a documentation drift that should have been caught and fixed.~~ DONE: fixed to 1.26.4 in `9808ab1`. This drift recurs: `go.mod` is now `1.26.5` while AGENTS.md still says `1.26.4` (see TODO_LIST "keep AGENTS.md Go version in sync with go.mod").
+~~`AGENTS.md` says "Go version: 1.26.3". `go.mod` says `go 1.26.4`. This is a documentation drift that should have been caught and fixed.~~ DONE: fixed to 1.26.4 in `9808ab1`. This drift recurred a third time (`go.mod` moved to `1.26.5`); re-fixed 2026-07-26 and a gotcha added to AGENTS.md to prevent recurrence.
 
 ### 3. CSP Removed During Debugging
 
@@ -342,5 +342,5 @@ Done items cite the commit that closed them; open items are routed to
 - **OG image generation** (§B, §F.16–20) — no `astro-og-canvas`, no `og:image`. → TODO_LIST.
 - **`favicon.ico`** (§F.21) — only `.svg` exists. → TODO_LIST.
 - **Website polish**: `.editorconfig`, `lighthouserc.json`, `/dependents` page, FAQ/migration guides (§F.22–30, 36–38). → TODO_LIST / ROADMAP.
-- **AGENTS.md Go version lags again** — `go.mod` is now `1.26.5`, AGENTS.md still says `1.26.4`. Recurring drift. → TODO_LIST.
+- **AGENTS.md Go version lags again** — `go.mod` is now `1.26.5`, AGENTS.md still says `1.26.4`. Recurring drift. → FIXED 2026-07-26 (AGENTS.md updated to `1.26.5`; gotcha added to prevent recurrence).
 - **DNS / custom domain** (§F.44–48) — `atomicwrite.lars.software` DNS still pending. → ROADMAP (external dependency).

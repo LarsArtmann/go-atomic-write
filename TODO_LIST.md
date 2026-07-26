@@ -22,7 +22,6 @@
 | Create CI/CD pipelines (Go CI + website deploy)                                               | 🔴 `TODO` | High   | 3h     | No `.github/workflows/` directory exists (verified)                                     |
 | Re-add Content Security Policy to website build                                               | 🔴 `TODO` | High   | 2h     | `website/astro.config.mjs` has no CSP (verified); needs `scripts/fix-csp.mjs` patcher; build script update |
 | Fix the recurring `404 was not found` build warning                                           | 🔴 `TODO` | High   | 30min  | No `website/src/pages/404.astro` exists; warning emitted every build                     |
-| Keep AGENTS.md Go version in sync with `go.mod`                                               | 🔴 `TODO` | High   | 5min   | `go.mod` is `1.26.5`; `AGENTS.md` says `1.26.4` (drift recurs — was 1.26.3→1.26.4 in `9808ab1`) |
 
 ## Medium Impact
 

@@ -30,6 +30,7 @@
     "predev": "node scripts/sync-changelog.mjs",
     "build": "astro build",
     "prebuild": "node scripts/sync-changelog.mjs",
+    "postbuild": "node scripts/fix-csp.mjs",
     "sync:changelog": "node scripts/sync-changelog.mjs",
     "preview": "astro preview",
     "typecheck": "astro check",

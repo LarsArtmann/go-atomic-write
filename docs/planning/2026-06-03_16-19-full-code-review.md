@@ -252,3 +252,37 @@ Total improvement effort: ~20 minutes for meaningful gains.
 ---
 
 _Review complete. Every file visited. Every question answered honestly._
+
+---
+
+## Resolution (2026-07-26)
+
+> This is a **point-in-time snapshot** from 2026-06-03. It reviews the pre-v0.2.0
+> codebase and is now **largely superseded** by three later releases. Kept for
+> history; do not act on its findings without cross-checking the current code.
+
+### What changed since this review
+
+| This review says…                                             | Current reality (2026-07-26)                                                                                                        |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `.bak` two-rename pattern is a "good safety net" / "strength" | **Removed in v0.2.0** — it was a bug (non-atomic window). Single `rename(2)` + directory `fsync` now. See `CHANGELOG.md` [0.2.0]. |
+| `Write(path, data, fingerprint)` is the main API              | **Split in [Unreleased]** into `Write`, `WriteVerified`, `WriteIfChanged`, `WriteFunc`, `WriteFuncVerified`. See `atomicwrite.go`.  |
+| `127 LOC`, no `fsync`                                         | Library grew with streaming + idempotent APIs; `fsync` is now core (`writeAndSync`, `syncDir`).                                     |
+
+### Improvement-plan items — current status
+
+| #  | Task                                                        | Status      | Note                                                                   |
+| -- | ----------------------------------------------------------- | ----------- | ---------------------------------------------------------------------- |
+| 1  | Fix README benchmark path                                   | ✅ Done     | Fixed.                                                                 |
+| 2  | Delete or fill in `DOMAIN_LANGUAGE.md`                     | ✅ Done     | Filled in (and corrected again on 2026-07-26 — removed stale `.bak` refs). |
+| 3  | Test for empty content write                                | ✅ Done     | Covered by `WriteIfChanged` tests.                                     |
+| 4  | Test `.bak` overwrite on second write                       | ⛔ Moot     | `.bak` no longer exists.                                               |
+| 5  | `FingerprintFile` with directory path                       | 🔲 Open     | Still uncovered — minor.                                               |
+| 6  | `Fingerprint.Matches(nil)` test                             | 🔲 Open     | Still uncovered — minor.                                               |
+| 7  | Validate final file content in `TestConcurrentWriteRACE`    | ✅ Done     | Rewritten in v0.2.0 with an integrity check.                           |
+| 8  | Document `.bak` cleanup in README                           | ⛔ Moot     | `.bak` no longer exists.                                               |
+| 9  | Extract benchmark data init to helper                       | ✅ Done     | `benchData` helper added in v0.3.0.                                    |
+| 10 | Platform-specific build constraints / tests                 | 🟡 Partial  | `rename_windows.go` has build tags but remains **untested on Windows**. |
+
+**Verdict:** This review is superseded for any `.bak`- or 3-arg-`Write`-related
+finding. Open items (5, 6, 10) are tracked in `TODO_LIST.md` if still relevant.

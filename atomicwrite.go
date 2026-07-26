@@ -108,20 +108,29 @@ func WriteVerified(path string, data []byte, fingerprint Fingerprint) error {
 // that must not produce spurious diffs on re-runs: no content change means
 // no file mutation, no mtime bump, no file-watcher trigger.
 //
-// Race-safe: if another process modifies the file between the fingerprint
-// check and the atomic rename, returns ErrConcurrentModification. A zero-value
-// fingerprint (first write, file does not exist) means the file must not yet
-// exist; concurrent creation is treated as a conflict.
-func WriteIfChanged(path string, data []byte) (changed bool, err error) {
+// Race-safe for existing files: if another process modifies the file between
+// the fingerprint check and the atomic rename, returns
+// ErrConcurrentModification. First-write (file does not exist) uses a plain
+// atomic write — there is no prior content to protect.
+func WriteIfChanged(path string, data []byte) (bool, error) {
 	existing, err := FingerprintFile(path)
 	if err != nil {
 		return false, err
 	}
 
+	// First write: file does not exist yet — no content to compare or protect.
+	if existing.IsZero() {
+		err = Write(path, data)
+
+		return true, err
+	}
+
+	// Content unchanged — skip the write entirely.
 	if FingerprintFromBytes(data) == existing {
 		return false, nil
 	}
 
+	// Content differs — verified write catches concurrent modification.
 	err = WriteVerified(path, data, existing)
 	if err != nil {
 		return false, err

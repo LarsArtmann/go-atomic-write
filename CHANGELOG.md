@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`WriteIfChanged(path, data) (changed bool, err error)`** — writes only if content differs from disk. Returns `changed=true` when the file was written, `false` when skipped (identical content). This is the idiomatic primitive for config-file writers and code generators that must not produce spurious diffs on re-runs: no content change means no file mutation, no mtime bump, no file-watcher trigger. Composes `FingerprintFile` + `WriteVerified`; first-write uses plain `Write` (no prior content to protect).
+
 ### Changed
 
 - **BREAKING: `Write` / `WriteFunc` API split** (`atomicwrite.go`) — the previous `Write(path, data, fingerprint)` mixed two distinct intents behind a zero-value `Fingerprint{}`, which silently skipped TOCTOU verification (a footgun). The API is now split by intent:

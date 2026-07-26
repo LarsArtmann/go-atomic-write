@@ -15,14 +15,14 @@
 
 > The previously-High items (dead website code, pulse-dot reduced-motion, CSP,
 > CI/CD pipelines, the 404 warning) were completed on 2026-07-26 — see
-> `CHANGELOG.md` `[Unreleased]`. The recurring `404 was not found` build line is a
+> `CHANGELOG.md` `[0.4.0]`. The recurring `404 was not found` build line is a
 > **benign Starlight route-generation log** (Starlight ships its own `404.html`);
 > adding a custom `404.astro` causes a route collision and is NOT the fix.
 >
 > All Medium- and Low-impact items (OG image, favicon.ico, WCAG contrast,
 > comparison aria-labels, Lighthouse CI, editorconfig, nodejs_24 pin,
 > meta.description, sitemap verification) were completed on 2026-07-26 — see
-> `CHANGELOG.md` `[Unreleased]`.
+> `CHANGELOG.md` `[0.4.0]`.
 
 ## High Impact
 

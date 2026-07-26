@@ -327,13 +327,13 @@ Done items cite the commit that closed them; open items are routed to
 
 ### Shipped since this report
 
-| Report item                                          | Resolution | Commit  |
-| ---------------------------------------------------- | ---------- | ------- |
-| README ↔ website disconnect (§D.1)                   | Fixed      | 9808ab1 |
-| AGENTS.md Go-version drift 1.26.3 → 1.26.4 (§D.2)    | Fixed      | 9808ab1 |
-| `website/flake.lock` not generated (§D.4)            | Fixed      | 4a61fb4 |
-| README links to documentation (F.1, F.2)             | Fixed      | 9808ab1 |
-| AGENTS.md documents `website/` (F.3, C.Integration)  | Fixed      | 9808ab1 |
+| Report item                                         | Resolution | Commit  |
+| --------------------------------------------------- | ---------- | ------- |
+| README ↔ website disconnect (§D.1)                  | Fixed      | 9808ab1 |
+| AGENTS.md Go-version drift 1.26.3 → 1.26.4 (§D.2)   | Fixed      | 9808ab1 |
+| `website/flake.lock` not generated (§D.4)           | Fixed      | 4a61fb4 |
+| README links to documentation (F.1, F.2)            | Fixed      | 9808ab1 |
+| AGENTS.md documents `website/` (F.3, C.Integration) | Fixed      | 9808ab1 |
 
 ### Still open (routed to TODO_LIST / ROADMAP)
 

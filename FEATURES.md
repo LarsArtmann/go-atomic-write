@@ -19,45 +19,45 @@
 
 ## Core write API
 
-| Feature                          | Status                | Notes                                                                                                                          |
-| -------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Plain atomic write (`Write`)     | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:66`; fsync + atomic rename, no TOCTOU check. Covered by `TestWriteFirstRun`, `TestWriteLeavesNoLeftoverFiles`. |
-| TOCTOU-verified write            | 🟢 `FULLY_FUNCTIONAL` | `WriteVerified` at `atomicwrite.go:89`; fingerprint re-checked under lock. Covered by `TestWriteWithFingerprint`, `TestWriteRejectsConcurrentModification`. |
-| Idempotent write (`WriteIfChanged`) | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:115`; skips when content matches disk. 7 tests incl. empty-file, new-file, permission, no-leftover cases.      |
-| Streaming write (`WriteFunc`)    | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:149` (plain) + `:165` (`WriteFuncVerified`); 64KB buffered callback. Covered by `TestWriteFunc_*` (6 tests, incl. 400KB stream). |
+| Feature                             | Status                | Notes                                                                                                                                                       |
+| ----------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plain atomic write (`Write`)        | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:66`; fsync + atomic rename, no TOCTOU check. Covered by `TestWriteFirstRun`, `TestWriteLeavesNoLeftoverFiles`.                              |
+| TOCTOU-verified write               | 🟢 `FULLY_FUNCTIONAL` | `WriteVerified` at `atomicwrite.go:89`; fingerprint re-checked under lock. Covered by `TestWriteWithFingerprint`, `TestWriteRejectsConcurrentModification`. |
+| Idempotent write (`WriteIfChanged`) | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:115`; skips when content matches disk. 7 tests incl. empty-file, new-file, permission, no-leftover cases.                                   |
+| Streaming write (`WriteFunc`)       | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:149` (plain) + `:165` (`WriteFuncVerified`); 64KB buffered callback. Covered by `TestWriteFunc_*` (6 tests, incl. 400KB stream).            |
 
 ## Fingerprinting & integrity
 
-| Feature                       | Status                | Notes                                                                                                   |
-| ----------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------- |
-| xxhash64 fingerprint          | 🟢 `FULLY_FUNCTIONAL` | `Fingerprint` (`[8]byte`) at `atomicwrite.go:27`; `FingerprintFromBytes:40`, `FingerprintFile:49`.      |
-| `Fingerprint.IsZero/Matches`  | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:30,35`; covered by `TestFingerprintIsZero`, `TestFingerprintFile*`.                     |
-| Concurrent-modification error | 🟢 `FULLY_FUNCTIONAL` | `ErrConcurrentModification` sentinel (`atomicwrite.go:23`); check with `errors.Is`.                     |
-| xxhash64 vs SHA-256 benchmark | 🟢 `FULLY_FUNCTIONAL` | `hash_bench_test.go`; ~11× faster, 0 allocations, ~27 GB/s. Run with `go test -bench=. -benchmem`.      |
+| Feature                       | Status                | Notes                                                                                              |
+| ----------------------------- | --------------------- | -------------------------------------------------------------------------------------------------- |
+| xxhash64 fingerprint          | 🟢 `FULLY_FUNCTIONAL` | `Fingerprint` (`[8]byte`) at `atomicwrite.go:27`; `FingerprintFromBytes:40`, `FingerprintFile:49`. |
+| `Fingerprint.IsZero/Matches`  | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:30,35`; covered by `TestFingerprintIsZero`, `TestFingerprintFile*`.                |
+| Concurrent-modification error | 🟢 `FULLY_FUNCTIONAL` | `ErrConcurrentModification` sentinel (`atomicwrite.go:23`); check with `errors.Is`.                |
+| xxhash64 vs SHA-256 benchmark | 🟢 `FULLY_FUNCTIONAL` | `hash_bench_test.go`; ~11× faster, 0 allocations, ~27 GB/s. Run with `go test -bench=. -benchmem`. |
 
 ## Durability, locking & platform
 
-| Feature                               | Status                    | Notes                                                                                                                                                |
-| ------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Crash durability (`fsync`)            | 🟢 `FULLY_FUNCTIONAL`     | Temp file fsync'd before rename; target dir fsync'd after (`writeAndSync:302`, `syncDir`).                                                          |
-| Cross-process file locking            | 🟢 `FULLY_FUNCTIONAL`     | `gofrs/flock` exclusive lock in `commitVerified:249`; `flock(2)` Unix, `LockFileEx` Windows.                                                          |
-| Concurrent-writer safety              | 🟢 `FULLY_FUNCTIONAL`     | Unique temp files via `crypto/rand` (`prepareTempPath:181`); proven by `TestConcurrentWriteRACE` (10 divergent writers, integrity check).            |
-| POSIX atomic rename + dir fsync       | 🟢 `FULLY_FUNCTIONAL`     | Single `rename(2)` in `rename_unix.go`; no two-rename window.                                                                                        |
-| Windows rename with retry             | 🟡 `PARTIALLY_FUNCTIONAL` | `rename_windows.go` retries `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`; **untested on real Windows hardware** (build-tag compiles only).        |
-| File permission preservation          | 🟢 `FULLY_FUNCTIONAL`     | Mode copied from existing file, defaults `0o644` (`prepareTempPath:181`); covered by `TestWritePreservesPermissions`, `TestWriteFunc_PreservesPermissions`. |
-| Temp-file cleanup on failure          | 🟢 `FULLY_FUNCTIONAL`     | `cleanupTmp:334`; covered by `TestTempFileCleanedUpOnError`, `TestWriteFunc_CallbackError`.                                                          |
-| Stale temp-file self-cleanup          | ⚪ `PLANNED`              | Crashed writes leave `.tmp` files (unique names prevent interference). No sweeper exists. Known caveat in CHANGELOG v0.2.0.                            |
+| Feature                         | Status                    | Notes                                                                                                                                                       |
+| ------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Crash durability (`fsync`)      | 🟢 `FULLY_FUNCTIONAL`     | Temp file fsync'd before rename; target dir fsync'd after (`writeAndSync:302`, `syncDir`).                                                                  |
+| Cross-process file locking      | 🟢 `FULLY_FUNCTIONAL`     | `gofrs/flock` exclusive lock in `commitVerified:249`; `flock(2)` Unix, `LockFileEx` Windows.                                                                |
+| Concurrent-writer safety        | 🟢 `FULLY_FUNCTIONAL`     | Unique temp files via `crypto/rand` (`prepareTempPath:181`); proven by `TestConcurrentWriteRACE` (10 divergent writers, integrity check).                   |
+| POSIX atomic rename + dir fsync | 🟢 `FULLY_FUNCTIONAL`     | Single `rename(2)` in `rename_unix.go`; no two-rename window.                                                                                               |
+| Windows rename with retry       | 🟡 `PARTIALLY_FUNCTIONAL` | `rename_windows.go` retries `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`; **untested on real Windows hardware** (build-tag compiles only).               |
+| File permission preservation    | 🟢 `FULLY_FUNCTIONAL`     | Mode copied from existing file, defaults `0o644` (`prepareTempPath:181`); covered by `TestWritePreservesPermissions`, `TestWriteFunc_PreservesPermissions`. |
+| Temp-file cleanup on failure    | 🟢 `FULLY_FUNCTIONAL`     | `cleanupTmp:334`; covered by `TestTempFileCleanedUpOnError`, `TestWriteFunc_CallbackError`.                                                                 |
+| Stale temp-file self-cleanup    | ⚪ `PLANNED`              | Crashed writes leave `.tmp` files (unique names prevent interference). No sweeper exists. Known caveat in CHANGELOG v0.2.0.                                 |
 
 ## Website & documentation
 
-| Feature                          | Status                | Notes                                                                                                          |
-| -------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Marketing website (Astro+Starlight) | 🟢 `FULLY_FUNCTIONAL` | `website/`; deployed to Firebase `atomicwrite` target. Landing page, dark/light theme, comparison matrix.      |
-| Documentation site (9 pages)      | 🟢 `FULLY_FUNCTIONAL` | `website/src/content/docs/`; all pages teach the current `[Unreleased] API split` (`Write`/`WriteVerified`/`WriteIfChanged`/`WriteFunc`/`WriteFuncVerified`). Verified by `npm run build` + `typecheck` (11 pages, 0 errors). Changelog page is **generated** from root `CHANGELOG.md`. |
-| Cross-platform locking docs       | 🟢 `FULLY_FUNCTIONAL` | `guides/platform-support.mdx` documents POSIX vs Windows behavior and caveats.                                  |
-| Content Security Policy           | 🟢 `FULLY_FUNCTIONAL` | Hash-based CSP injected per-file by `scripts/fix-csp.mjs` (`postbuild`); no `'unsafe-inline'` for `script-src`. |
-| OG / social-share images          | ⚪ `PLANNED`           | No `og:image`, no `astro-og-canvas`. See TODO_LIST.                                                             |
-| CI/CD pipelines                   | 🟡 `PARTIALLY_FUNCTIONAL` | `.github/workflows/ci.yml` (Go gate) + `website.yml` (build/deploy) exist; not yet proven on a real GitHub run (Firebase deploy needs `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret). |
+| Feature                             | Status                    | Notes                                                                                                                                                                                                                                                                                   |
+| ----------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Marketing website (Astro+Starlight) | 🟢 `FULLY_FUNCTIONAL`     | `website/`; deployed to Firebase `atomicwrite` target. Landing page, dark/light theme, comparison matrix.                                                                                                                                                                               |
+| Documentation site (9 pages)        | 🟢 `FULLY_FUNCTIONAL`     | `website/src/content/docs/`; all pages teach the current `[Unreleased] API split` (`Write`/`WriteVerified`/`WriteIfChanged`/`WriteFunc`/`WriteFuncVerified`). Verified by `npm run build` + `typecheck` (11 pages, 0 errors). Changelog page is **generated** from root `CHANGELOG.md`. |
+| Cross-platform locking docs         | 🟢 `FULLY_FUNCTIONAL`     | `guides/platform-support.mdx` documents POSIX vs Windows behavior and caveats.                                                                                                                                                                                                          |
+| Content Security Policy             | 🟢 `FULLY_FUNCTIONAL`     | Hash-based CSP injected per-file by `scripts/fix-csp.mjs` (`postbuild`); no `'unsafe-inline'` for `script-src`.                                                                                                                                                                         |
+| OG / social-share images            | ⚪ `PLANNED`              | No `og:image`, no `astro-og-canvas`. See TODO_LIST.                                                                                                                                                                                                                                     |
+| CI/CD pipelines                     | 🟡 `PARTIALLY_FUNCTIONAL` | `.github/workflows/ci.yml` (Go gate) + `website.yml` (build/deploy) exist; not yet proven on a real GitHub run (Firebase deploy needs `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret).                                                                                                 |
 
 ---
 

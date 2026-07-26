@@ -48,32 +48,32 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 
 ### Website Commands
 
-| Command                                                                | Purpose                          |
-| ---------------------------------------------------------------------- | -------------------------------- |
-| `cd website && npm run dev`                                            | Local dev server                 |
+| Command                                                                | Purpose                                                                           |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `cd website && npm run dev`                                            | Local dev server                                                                  |
 | `cd website && npm run build`                                          | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP) |
-| `cd website && npm run typecheck`                                      | TypeScript + Astro type checking |
-| `cd website && npm run preview`                                        | Preview production build locally |
-| `cd website && npm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md` |
-| `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase               |
+| `cd website && npm run typecheck`                                      | TypeScript + Astro type checking                                                  |
+| `cd website && npm run preview`                                        | Preview production build locally                                                  |
+| `cd website && npm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md`                                |
+| `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                |
 
 Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 
 ### Website Structure
 
-| Path                            | Purpose                                                               |
-| ------------------------------- | --------------------------------------------------------------------- |
-| `website/astro.config.mjs`      | Astro config: Starlight, fonts, sitemap                               |
-| `website/src/pages/index.astro` | Landing page                                                          |
-| `website/src/components/`       | 14 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, etc.) |
-| `website/src/data/`             | Typed content: config, features, sections, hero-code                  |
-| `website/src/content/docs/`     | 9 Starlight documentation pages                                       |
-| `website/src/styles/`           | global.css (emerald theme) + starlight.css                            |
-| `website/public/`               | favicon, manifest, robots.txt, JS (theme, animations, copy-code)      |
-| `website/firebase.json`         | Hosting config with security headers                                  |
-| `website/.firebaserc`           | Firebase project + hosting target                                     |
+| Path                            | Purpose                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `website/astro.config.mjs`      | Astro config: Starlight, fonts, sitemap                                        |
+| `website/src/pages/index.astro` | Landing page                                                                   |
+| `website/src/components/`       | 14 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, etc.)          |
+| `website/src/data/`             | Typed content: config, features, sections, hero-code                           |
+| `website/src/content/docs/`     | 9 Starlight documentation pages                                                |
+| `website/src/styles/`           | global.css (emerald theme) + starlight.css                                     |
+| `website/public/`               | favicon, manifest, robots.txt, JS (theme, animations, copy-code)               |
+| `website/firebase.json`         | Hosting config with security headers                                           |
+| `website/.firebaserc`           | Firebase project + hosting target                                              |
 | `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` (postbuild) |
-| `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)         |
+| `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)                  |
 
 ### DNS
 

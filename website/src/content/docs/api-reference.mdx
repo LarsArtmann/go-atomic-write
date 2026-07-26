@@ -133,29 +133,29 @@ var ErrConcurrentModification = errors.New("file was modified concurrently since
 
 ## Choosing the right function
 
-| If you...                                              | Use                                |
-| ------------------------------------------------------ | ---------------------------------- |
-| Just want a crash-durable write                        | `Write`                            |
-| Must detect concurrent modification                    | `WriteVerified`                    |
-| Write config/codegen output and skip no-op re-runs     | `WriteIfChanged`                   |
-| Stream large or incrementally-produced content         | `WriteFunc`                        |
-| Stream content AND need TOCTOU protection              | `WriteFuncVerified`                |
+| If you...                                          | Use                 |
+| -------------------------------------------------- | ------------------- |
+| Just want a crash-durable write                    | `Write`             |
+| Must detect concurrent modification                | `WriteVerified`     |
+| Write config/codegen output and skip no-op re-runs | `WriteIfChanged`    |
+| Stream large or incrementally-produced content     | `WriteFunc`         |
+| Stream content AND need TOCTOU protection          | `WriteFuncVerified` |
 
 ## API Summary
 
-| Symbol                          | Description                                              |
-| ------------------------------- | -------------------------------------------------------- |
-| `Fingerprint`                   | `[8]byte` — xxhash64 digest of file content at read time |
-| `Fingerprint.IsZero()`          | Returns `true` for zero-value (no prior file)            |
-| `Fingerprint.Matches(data)`     | Returns `true` if data produces the same fingerprint     |
-| `FingerprintFromBytes(data)`    | Computes fingerprint from raw bytes                      |
-| `FingerprintFile(path)`         | Computes fingerprint from a file (zero if nonexistent)   |
-| `Write(path, data)`             | Crash-durable atomic write (no TOCTOU check)             |
-| `WriteVerified(path, data, fp)` | Atomic write with TOCTOU fingerprint verification        |
-| `WriteIfChanged(path, data)`    | Idempotent write — skips when content matches disk       |
-| `WriteFunc(path, fn)`           | Streams content via callback (no TOCTOU check)           |
-| `WriteFuncVerified(path, fn, fp)` | Streams content via callback with TOCTOU verification  |
-| `ErrConcurrentModification`     | Sentinel error: file changed between read and write      |
+| Symbol                            | Description                                              |
+| --------------------------------- | -------------------------------------------------------- |
+| `Fingerprint`                     | `[8]byte` — xxhash64 digest of file content at read time |
+| `Fingerprint.IsZero()`            | Returns `true` for zero-value (no prior file)            |
+| `Fingerprint.Matches(data)`       | Returns `true` if data produces the same fingerprint     |
+| `FingerprintFromBytes(data)`      | Computes fingerprint from raw bytes                      |
+| `FingerprintFile(path)`           | Computes fingerprint from a file (zero if nonexistent)   |
+| `Write(path, data)`               | Crash-durable atomic write (no TOCTOU check)             |
+| `WriteVerified(path, data, fp)`   | Atomic write with TOCTOU fingerprint verification        |
+| `WriteIfChanged(path, data)`      | Idempotent write — skips when content matches disk       |
+| `WriteFunc(path, fn)`             | Streams content via callback (no TOCTOU check)           |
+| `WriteFuncVerified(path, fn, fp)` | Streams content via callback with TOCTOU verification    |
+| `ErrConcurrentModification`       | Sentinel error: file changed between read and write      |
 
 ## Full API on pkg.go.dev
 

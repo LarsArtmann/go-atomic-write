@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/GoogleChrome/lighthouse/main/types/lighthouserc.d.ts",
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist",
+      "numberOfRuns": 3,
+      "url": [
+        "http://localhost/index.html",
+        "http://localhost/getting-started/installation/index.html",
+        "http://localhost/getting-started/quick-start/index.html",
+        "http://localhost/api-reference/index.html"
+      ],
+      "settings": {
+        "preset": "desktop"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }],
+        "categories:seo": ["error", { "minScore": 0.95 }],
+        "resource-count": ["warn", { "maxNumericValue": 35 }],
+        "total-byte-weight": ["warn", { "maxNumericValue": 900000 }],
+        "uses-responsive-images": "off",
+        "csp-xss": "off",
+        "errors-in-console": "off"
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

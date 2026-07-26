@@ -34,6 +34,7 @@
     "sync:changelog": "node scripts/sync-changelog.mjs",
     "preview": "astro preview",
     "typecheck": "astro check",
+    "lighthouse": "lhci autorun",
     "clean": "rm -rf dist .astro node_modules/.cache",
     "astro": "astro"
   },
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@lhci/cli": "^0.15.1",
     "html-validate": "^11.5.3",
     "typescript": "^6.0.3"
   },

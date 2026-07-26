@@ -53,7 +53,7 @@
 | Feature                          | Status                | Notes                                                                                                          |
 | -------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Marketing website (Astro+Starlight) | 🟢 `FULLY_FUNCTIONAL` | `website/`; deployed to Firebase `atomicwrite` target. Landing page, dark/light theme, comparison matrix.      |
-| Documentation site (9 pages)      | 🟢 `FULLY_FUNCTIONAL` | `website/src/content/docs/`; installation, quick-start, error-handling, platform-support, benchmarks, API ref. |
+| Documentation site (9 pages)      | 🟡 `PARTIALLY_FUNCTIONAL` | `website/src/content/docs/` exists & builds, BUT **4 pages teach the REMOVED pre-[Unreleased] API**: `api-reference.mdx`, `getting-started/quick-start.mdx` (4 examples), `guides/error-handling.mdx`, `changelog.mdx` all use `Write(path, data, fp)` which no longer compiles. Missing `WriteVerified`/`WriteIfChanged`/`WriteFuncVerified`. See TODO_LIST. |
 | Cross-platform locking docs       | 🟢 `FULLY_FUNCTIONAL` | `guides/platform-support.mdx` documents POSIX vs Windows behavior and caveats.                                  |
 | Content Security Policy           | ⚪ `PLANNED`           | CSP removed from `astro.config.mjs` during debugging; Firebase headers only. See TODO_LIST.                     |
 | OG / social-share images          | ⚪ `PLANNED`           | No `og:image`, no `astro-og-canvas`. See TODO_LIST.                                                             |

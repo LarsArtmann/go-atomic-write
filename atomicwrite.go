@@ -100,6 +100,36 @@ func WriteVerified(path string, data []byte, fingerprint Fingerprint) error {
 	return commitVerified(path, tmpPath, fingerprint)
 }
 
+// WriteIfChanged writes data to path only if it differs from the current
+// on-disk content. Returns changed=true if the file was written, false if
+// the content was identical and the write was skipped.
+//
+// This is the idiomatic primitive for config-file writers and code generators
+// that must not produce spurious diffs on re-runs: no content change means
+// no file mutation, no mtime bump, no file-watcher trigger.
+//
+// Race-safe: if another process modifies the file between the fingerprint
+// check and the atomic rename, returns ErrConcurrentModification. A zero-value
+// fingerprint (first write, file does not exist) means the file must not yet
+// exist; concurrent creation is treated as a conflict.
+func WriteIfChanged(path string, data []byte) (changed bool, err error) {
+	existing, err := FingerprintFile(path)
+	if err != nil {
+		return false, err
+	}
+
+	if FingerprintFromBytes(data) == existing {
+		return false, nil
+	}
+
+	err = WriteVerified(path, data, existing)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 // WriteFunc writes to path via a streaming callback with crash durability.
 // The callback receives a buffered writer (64KB buffer) and may stream content
 // incrementally without holding the full payload in memory.

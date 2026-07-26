@@ -14,6 +14,11 @@ Two major deliverables were completed this session:
 
 Build passes. Typecheck passes (0 errors). However, several integration gaps remain — most critically, the README and AGENTS.md were never updated to reference the new website, and no CI/CD infrastructure was created.
 
+> **Update 2026-07-26:** the README↔website disconnect and the AGENTS.md Go-version
+> drift are FIXED (commit `9808ab1`); `website/flake.lock` is generated (`4a61fb4`).
+> Still open: CI/CD (`.github/workflows/`), CSP re-addition, OG image generation,
+> `favicon.ico`. Full item-by-item status in [Resolution](#resolution-2026-07-26) below.
+
 ---
 
 ## A) FULLY DONE
@@ -158,10 +163,10 @@ Build passes. Typecheck passes (0 errors). However, several integration gaps rem
 
 ### Integration Gaps
 
-- [ ] README.md does NOT link to the new website (`atomicwrite.lars.software`)
+- [x] ~~README.md does NOT link to the new website (`atomicwrite.lars.software`)~~ DONE: 9808ab1;
 - [ ] README.md badge section does NOT include a CI badge (no CI exists)
-- [ ] AGENTS.md does NOT mention the `website/` directory at all
-- [ ] AGENTS.md Go version says `1.26.3`, `go.mod` says `1.26.4` — inconsistency
+- [x] ~~AGENTS.md does NOT mention the `website/` directory at all~~ DONE: 9808ab1;
+- [x] ~~AGENTS.md Go version says `1.26.3`, `go.mod` says `1.26.4` — inconsistency~~ DONE: 9808ab1 set AGENTS.md to 1.26.4. (NOTE: `go.mod` has since moved to `1.26.5`; AGENTS.md again lags — see TODO_LIST.)
 
 ---
 
@@ -169,11 +174,11 @@ Build passes. Typecheck passes (0 errors). However, several integration gaps rem
 
 ### 1. README ↔ Website Disconnect
 
-The README was rewritten in session 1 with no mention of a website. The website was created in session 2. Neither references the other. The README should link to `https://atomicwrite.lars.software` and the website docs. Gogenfilter's README has documentation and API reference links prominently.
+~~The README was rewritten in session 1 with no mention of a website. The website was created in session 2. Neither references the other.~~ DONE: README now links to `https://atomicwrite.lars.software` (commit `9808ab1`).
 
 ### 2. AGENTS.md Go Version Mismatch
 
-`AGENTS.md` says "Go version: 1.26.3". `go.mod` says `go 1.26.4`. This is a documentation drift that should have been caught and fixed.
+~~`AGENTS.md` says "Go version: 1.26.3". `go.mod` says `go 1.26.4`. This is a documentation drift that should have been caught and fixed.~~ DONE: fixed to 1.26.4 in `9808ab1`. This drift recurs: `go.mod` is now `1.26.5` while AGENTS.md still says `1.26.4` (see TODO_LIST "keep AGENTS.md Go version in sync with go.mod").
 
 ### 3. CSP Removed During Debugging
 
@@ -181,7 +186,7 @@ The CSP config was removed from `astro.config.mjs` to debug a build error. The b
 
 ### 4. No `flake.lock` Generated
 
-The `flake.nix` exists but was never locked. Running `nix flake lock` is required for reproducible builds.
+~~The `flake.nix` exists but was never locked. Running `nix flake lock` is required for reproducible builds.~~ DONE: `website/flake.lock` committed (`4a61fb4`).
 
 ### 5. `package.json` `overrides` Was Modified Then Left Incomplete
 
@@ -219,11 +224,11 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 
 ### Critical Integration (must-do)
 
-1. Update README.md to link to `https://atomicwrite.lars.software` documentation
-2. Add website documentation link to README badge section/header
-3. Update AGENTS.md to document the `website/` directory (structure, commands, deploy)
-4. Fix AGENTS.md Go version: `1.26.3` → `1.26.4`
-5. Run `nix flake lock` in `website/` to generate `flake.lock`
+1. ~~Update README.md to link to `https://atomicwrite.lars.software` documentation~~ DONE: 9808ab1;
+2. ~~Add website documentation link to README badge section/header~~ DONE: 9808ab1;
+3. ~~Update AGENTS.md to document the `website/` directory (structure, commands, deploy)~~ DONE: 9808ab1;
+4. ~~Fix AGENTS.md Go version: `1.26.3` → `1.26.4`~~ DONE: 9808ab1;
+5. ~~Run `nix flake lock` in `website/` to generate `flake.lock`~~ DONE: 4a61fb4;
 
 ### CI/CD Infrastructure
 
@@ -311,3 +316,31 @@ The website config references `https://atomicwrite.lars.software` and the Fireba
 ### 2. CI Badge — CI Does Not Exist Yet
 
 The README (session 1) was modeled after gogenfilter which has a CI badge. I did not add a CI badge because no `.github/workflows/` directory exists. **Should I create the full CI pipeline now, or is that out of scope for the marketing task?** Gogenfilter has 5 workflow files (ci, website, benchmark, release, lighthouse). Creating CI is a significant infrastructure task that goes beyond "marketing," but the README looks incomplete without a CI badge, and the website's deploy pipeline needs a `website.yml` workflow to actually function.
+
+---
+
+## Resolution (2026-07-26)
+
+Audit of every open item in this report against the codebase as of 2026-07-26.
+Done items cite the commit that closed them; open items are routed to
+`TODO_LIST.md` / `ROADMAP.md`.
+
+### Shipped since this report
+
+| Report item                                          | Resolution | Commit  |
+| ---------------------------------------------------- | ---------- | ------- |
+| README ↔ website disconnect (§D.1)                   | Fixed      | 9808ab1 |
+| AGENTS.md Go-version drift 1.26.3 → 1.26.4 (§D.2)    | Fixed      | 9808ab1 |
+| `website/flake.lock` not generated (§D.4)            | Fixed      | 4a61fb4 |
+| README links to documentation (F.1, F.2)             | Fixed      | 9808ab1 |
+| AGENTS.md documents `website/` (F.3, C.Integration)  | Fixed      | 9808ab1 |
+
+### Still open (routed to TODO_LIST / ROADMAP)
+
+- **CI/CD infrastructure** (§C, §F.6–11, Question 2) — `.github/workflows/` still does not exist. → TODO_LIST.
+- **CSP re-addition** (§D.3, §F.12–15) — no CSP in `astro.config.mjs`; no `scripts/fix-csp.mjs`. → TODO_LIST.
+- **OG image generation** (§B, §F.16–20) — no `astro-og-canvas`, no `og:image`. → TODO_LIST.
+- **`favicon.ico`** (§F.21) — only `.svg` exists. → TODO_LIST.
+- **Website polish**: `.editorconfig`, `lighthouserc.json`, `/dependents` page, FAQ/migration guides (§F.22–30, 36–38). → TODO_LIST / ROADMAP.
+- **AGENTS.md Go version lags again** — `go.mod` is now `1.26.5`, AGENTS.md still says `1.26.4`. Recurring drift. → TODO_LIST.
+- **DNS / custom domain** (§F.44–48) — `atomicwrite.lars.software` DNS still pending. → ROADMAP (external dependency).

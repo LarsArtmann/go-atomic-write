@@ -88,12 +88,12 @@
 - No OG image meta tags or generation
 - No CI/CD workflows
 - No CSP re-addition
-- No `flake.lock` in `website/`
+- ~~No `flake.lock` in `website/`~~ DONE: 4a61fb4;
 - No `favicon.ico` for legacy browsers
 - No mobile layout screenshot verification
 - No Lighthouse/performance audit
 - No CSS bundle size check
-- AGENTS.md not updated with new design patterns
+- AGENTS.md not updated with new design patterns (website **structure** is documented per `9808ab1`, but the component **design patterns** — eyebrow/SectionHeader, comparison-matrix data flow — are not)
 
 ---
 
@@ -190,7 +190,7 @@
 
 29. Fix the 404 build warning
 30. Re-add CSP via `scripts/fix-csp.mjs` post-build patcher
-31. Generate `flake.lock` in `website/`
+31. ~~Generate `flake.lock` in `website/`~~ DONE: 4a61fb4;
 32. Add `firebase.json` cache headers for CSS/JS (1-year immutable)
 33. Create GitHub Actions workflow for Go CI (`ci.yml`)
 34. Create GitHub Actions workflow for website deploy (`website.yml`)
@@ -233,3 +233,31 @@ I cannot take screenshots in this environment. I verified the HTML structure, CS
 ### 2. Should the comparison table show actual code examples per cell?
 
 The current matrix is binary (yes/no/partial). A richer version would show tiny code snippets in each cell — e.g., the `os.WriteFile` column for "Crash-durable" could show a struck-through `fsync` to make the gap visceral. This would make the table much taller and more complex. Is that worth the visual weight, or is the binary matrix the right level of abstraction for a landing page?
+
+---
+
+## Resolution (2026-07-26)
+
+Audit of open items in this report against the codebase as of 2026-07-26.
+
+### Shipped since this report
+
+| Report item                              | Resolution | Commit  |
+| ---------------------------------------- | ---------- | ------- |
+| `website/flake.lock` not generated       | Fixed      | 4a61fb4 |
+| AGENTS.md documents `website/` structure | Fixed      | 9808ab1 |
+
+### Still open — bugs introduced this session (§d), verified present 2026-07-26
+
+All four issues introduced during the design overhaul are **still present** and
+have been routed to `TODO_LIST.md`:
+
+- **Dead code** (§d.Dead Code) — `comparisons` array (`sections.ts:34`) and `ComparisonItem` interface (`types.ts:27`) are still unused; `ComparisonSection.astro` imports only `comparisonMatrix`. → TODO_LIST.
+- **Unused `fade-in-up` animation** (§d.Unused CSS) — defined in `global.css:39,95` but never applied to any element. → TODO_LIST.
+- **404 build warning** (§d.404) — no `src/pages/404.astro` exists; the warning persists. → TODO_LIST.
+- **Pulse-dot ignores `prefers-reduced-motion`** (§d.Pulse-Dot) — the reduced-motion block (`global.css:123`) targets only `[data-animate]:not(.animate-fade-in)`; `.animate-pulse-dot` runs infinitely for vestibular-disorder users. → TODO_LIST.
+
+### Still open — broader (§c, §f), routed to TODO_LIST / ROADMAP
+
+- OG image generation, CI/CD, CSP re-addition, `favicon.ico`, Lighthouse audit, accessibility (aria-labels, WCAG contrast). → TODO_LIST.
+- Landing-page content expansion (FAQ, migration guide, personas, testimonials), mobile flow connector. → ROADMAP.

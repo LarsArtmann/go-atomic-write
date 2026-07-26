@@ -4,6 +4,13 @@ import SectionHeader from './SectionHeader.astro';
 
 const checkSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
 const xSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
+
+const readableValue = (value: string): string => {
+  if (value === 'yes') return 'Yes';
+  if (value === 'no') return 'No';
+  if (value === 'partial') return 'Partial';
+  return value;
+};
 ---
 
 <SectionHeader eyebrow="Comparison" title="Why go-atomic-write?" subtitle="os.WriteFile handles none of this. A naive temp+rename handles one." />
@@ -12,9 +19,9 @@ const xSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" view
   <table class="w-full border-collapse text-sm">
     <thead>
       <tr>
-        <th class="text-left py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border"></th>
+        <th scope="col" class="py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border">Feature</th>
         {comparisonMatrix.columns.map((col, index) => (
-          <th class={`py-3 px-4 font-semibold text-center border-b border-border ${index === 2 ? 'text-accent' : 'text-text-secondary'}`}>
+          <th scope="col" class={`py-3 px-4 font-semibold text-center border-b border-border ${index === 2 ? 'text-accent' : 'text-text-secondary'}`}>
             {col}
           </th>
         ))}
@@ -23,15 +30,18 @@ const xSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" view
     <tbody>
       {comparisonMatrix.rows.map((row) => (
         <tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors">
-          <td class="py-3 px-4 text-text-secondary font-medium text-left">{row.feature}</td>
+          <th scope="row" class="py-3 px-4 text-text-secondary font-medium text-left">{row.feature}</th>
           {row.values.map((value, valueIndex) => (
-            <td class={`py-3 px-4 text-center ${valueIndex === 2 ? 'bg-accent-dim' : ''}`}>
+            <td
+              class={`py-3 px-4 text-center ${valueIndex === 2 ? 'bg-accent-dim' : ''}`}
+              aria-label={`${row.feature}, ${comparisonMatrix.columns[valueIndex]}: ${readableValue(value)}`}
+            >
               {value === 'yes' ? (
                 <span class="inline-flex items-center justify-center text-success" set:html={checkSvg} />
               ) : value === 'no' ? (
                 <span class="inline-flex items-center justify-center text-danger" set:html={xSvg} />
               ) : value === 'partial' ? (
-                <span class="inline-flex items-center justify-center text-amber text-xs font-mono">~</span>
+                <span class="inline-flex items-center justify-center text-amber text-xs font-mono" aria-hidden="true">~</span>
               ) : (
                 <span class="font-mono text-text-secondary text-xs">{value}</span>
               )}

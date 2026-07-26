@@ -1,4 +1,4 @@
-import type { StepCard, ComparisonItem, UseCase, ComparisonMatrix } from "./types";
+import type { StepCard, UseCase, ComparisonMatrix } from "./types";
 
 export const steps: StepCard[] = [
   {
@@ -28,37 +28,6 @@ export const steps: StepCard[] = [
     title: "Atomic Rename",
     desc: "Single rename(2) replaces the target. Directory is fsync'd (POSIX).",
     code: "// os.Rename(tmp, path) + syncDir()",
-  },
-];
-
-export const comparisons: ComparisonItem[] = [
-  {
-    variant: "os.WriteFile",
-    accent: false,
-    pros: ["Zero dependencies"],
-    cons: ["No TOCTOU protection", "Partial writes on crash", "No concurrent-write safety"],
-  },
-  {
-    variant: "go-atomic-write",
-    accent: true,
-    pros: [
-      "TOCTOU-safe via fingerprint",
-      "Crash-durable via fsync",
-      "Concurrent-safe via flock",
-      "Atomic rename — no missing files",
-      "Only 2 dependencies",
-    ],
-    cons: [],
-  },
-  {
-    variant: "DIY",
-    accent: false,
-    pros: ["No external deps"],
-    cons: [
-      "Two-rename window (not atomic)",
-      "No fingerprint verification",
-      "Manual fsync + lock handling",
-    ],
   },
 ];
 

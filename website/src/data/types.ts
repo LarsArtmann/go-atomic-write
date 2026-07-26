@@ -24,13 +24,6 @@ export interface StepCard {
 
 export type ComparisonVariant = "os.WriteFile" | "DIY" | "go-atomic-write";
 
-export interface ComparisonItem {
-  variant: ComparisonVariant;
-  pros: string[];
-  cons: string[];
-  accent: boolean;
-}
-
 export type MatrixValue = "yes" | "no" | string;
 
 export interface MatrixRow {

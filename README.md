@@ -85,7 +85,7 @@ func main() {
     newData := []byte(`{"updated": true}`)
 
     // Write with TOCTOU protection
-    err = atomicwrite.Write(path, newData, fp)
+    err = atomicwrite.WriteVerified(path, newData, fp)
     if err != nil {
         panic(err)
     }
@@ -94,16 +94,42 @@ func main() {
 
 ### First write (no existing file)
 
-Pass a zero-value `Fingerprint` to skip verification:
+Use `Write` when there is no prior content to protect (first write, temp files):
 
 ```go
-err := atomicwrite.Write(path, data, atomicwrite.Fingerprint{})
+err := atomicwrite.Write(path, data)
 ```
+
+Or pass a zero-value `Fingerprint` to `WriteVerified` if you need concurrent-creation
+detection (the write fails if another process creates the file first):
+
+```go
+err := atomicwrite.WriteVerified(path, data, atomicwrite.Fingerprint{})
+```
+
+### Write only if content changed
+
+Use `WriteIfChanged` when re-running a tool should not produce spurious diffs
+(config writers, code generators, lock-file updaters):
+
+```go
+changed, err := atomicwrite.WriteIfChanged(path, newData)
+if err != nil {
+    panic(err)
+}
+if changed {
+    fmt.Println("config updated")
+} else {
+    fmt.Println("config already up to date")
+}
+```
+
+No content change means no file mutation, no mtime bump, no file-watcher trigger.
 
 ### Detecting concurrent modification
 
 ```go
-err := atomicwrite.Write(path, newData, fp)
+err := atomicwrite.WriteVerified(path, newData, fp)
 if errors.Is(err, atomicwrite.ErrConcurrentModification) {
     // Re-read the file, merge changes, and retry
 }
@@ -115,11 +141,13 @@ When content is large or produced incrementally (JSON encoders, diagram renderer
 use `WriteFunc` to stream via a callback instead of holding the full payload in memory:
 
 ```go
-err := atomicwrite.WriteFunc(path, func(w io.Writer) error {
+err := atomicwrite.WriteFuncVerified(path, func(w io.Writer) error {
     enc := json.NewEncoder(w)
     return enc.Encode(largeObject)
 }, fp)
 ```
+
+For streaming without TOCTOU verification, use `WriteFunc(path, fn)`.
 
 ### Fingerprinting a file
 
@@ -143,16 +171,19 @@ if fp.Matches(currentData) {
 
 ## API
 
-| Symbol                       | Description                                              |
-| ---------------------------- | -------------------------------------------------------- |
-| `Fingerprint`                | `[8]byte` — xxhash64 digest of file content at read time |
-| `Fingerprint.IsZero()`       | Returns `true` for zero-value (no prior file)            |
-| `Fingerprint.Matches(data)`  | Returns `true` if data produces the same fingerprint     |
-| `FingerprintFromBytes(data)` | Computes fingerprint from raw bytes                      |
-| `FingerprintFile(path)`      | Computes fingerprint from a file (zero if nonexistent)   |
-| `Write(path, data, fp)`      | Writes data with TOCTOU protection                       |
-| `WriteFunc(path, fn, fp)`    | Streams content via callback with TOCTOU protection      |
-| `ErrConcurrentModification`  | Sentinel error: file changed between read and write      |
+| Symbol                            | Description                                                |
+| --------------------------------- | ---------------------------------------------------------- |
+| `Fingerprint`                     | `[8]byte` — xxhash64 digest of file content at read time   |
+| `Fingerprint.IsZero()`            | Returns `true` for zero-value (no prior file)              |
+| `Fingerprint.Matches(data)`       | Returns `true` if data produces the same fingerprint       |
+| `FingerprintFromBytes(data)`      | Computes fingerprint from raw bytes                        |
+| `FingerprintFile(path)`           | Computes fingerprint from a file (zero if nonexistent)     |
+| `Write(path, data)`               | Atomic write, no TOCTOU check (first write, single-writer) |
+| `WriteVerified(path, data, fp)`   | Atomic write with fingerprint race-check                   |
+| `WriteIfChanged(path, data)`      | Writes only if content differs; returns `(changed, err)`   |
+| `WriteFunc(path, fn)`             | Streams content via callback, no TOCTOU check              |
+| `WriteFuncVerified(path, fn, fp)` | Streams content via callback with TOCTOU check             |
+| `ErrConcurrentModification`       | Sentinel error: file changed between read and write        |
 
 ## Design decisions
 

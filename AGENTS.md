@@ -28,13 +28,13 @@ No Makefile, no CI config. All commands are plain `go` toolchain.
 
 Flat single-package layout — all source in the repository root:
 
-| File                  | Purpose                                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------- |
-| `atomicwrite.go`      | Public API + staging: `Fingerprint`, `Write`, `FingerprintFile`, `writeAndSync`, `randomSuffix` |
-| `rename_unix.go`      | POSIX `atomicRename` (single `rename(2)` + directory `fsync`)                                   |
-| `rename_windows.go`   | Windows `atomicRename` (retry on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`)               |
-| `atomicwrite_test.go` | Unit + concurrency + integrity tests                                                            |
-| `hash_bench_test.go`  | xxhash64 vs SHA-256 benchmarks                                                                  |
+| File                  | Purpose                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `atomicwrite.go`      | Public API + staging: `Fingerprint`, `Write`, `WriteVerified`, `WriteIfChanged`, `FingerprintFile`, `writeAndSync`, `randomSuffix` |
+| `rename_unix.go`      | POSIX `atomicRename` (single `rename(2)` + directory `fsync`)                                                                      |
+| `rename_windows.go`   | Windows `atomicRename` (retry on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`)                                                  |
+| `atomicwrite_test.go` | Unit + concurrency + integrity tests                                                                                               |
+| `hash_bench_test.go`  | xxhash64 vs SHA-256 benchmarks                                                                                                     |
 
 ## Website
 
@@ -87,6 +87,7 @@ Caller reads file → computes Fingerprint → modifies data → calls Write()
 Key internal functions:
 
 - `Write()` — entry point; generates unique temp path, stages + fsyncs data, branches on fingerprint
+- `WriteIfChanged()` — idempotent write; skips if content matches disk, delegates to `Write` (first-write) or `WriteVerified` (content change)
 - `writeAndSync()` — creates temp file, writes data, fsyncs, closes (with cleanup on error)
 - `randomSuffix()` — generates random hex suffix for unique temp file names (crypto/rand)
 - `commitWithVerification()` — acquires exclusive `flock`, re-reads target, verifies match, renames

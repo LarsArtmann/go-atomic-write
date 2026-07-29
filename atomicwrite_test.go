@@ -121,6 +121,33 @@ func TestWriteFirstRun(t *testing.T) {
 	}
 }
 
+func TestWriteVerifiedFirstRun(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "newfile")
+
+	err := WriteVerified(path, []byte("first"), Fingerprint{})
+	if err != nil {
+		t.Fatalf("WriteVerified first run: %v", err)
+	}
+
+	assertFileContent(t, path, "first")
+}
+
+func TestWriteVerifiedZeroFingerprintRejectsExistingFile(t *testing.T) {
+	t.Parallel()
+
+	path := tempFile(t, "already here")
+
+	err := WriteVerified(path, []byte("overwrite"), Fingerprint{})
+	if !errors.Is(err, ErrConcurrentModification) {
+		t.Fatalf("expected ErrConcurrentModification for zero fingerprint on existing file, got %v", err)
+	}
+
+	assertFileContent(t, path, "already here")
+}
+
 func TestWriteWithFingerprint(t *testing.T) {
 	t.Parallel()
 

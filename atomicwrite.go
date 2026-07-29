@@ -199,9 +199,51 @@ func prepareTempPath(path string) (string, fs.FileMode, error) {
 // writeFuncBufferSize is the default buffer size for streaming writes.
 const writeFuncBufferSize = 65536
 
-// commitVerified always performs TOCTOU verification under an exclusive lock.
-// A zero fingerprint means the file should not exist yet; if it appears
-// concurrently, that is a conflict.
+// commitVerified performs TOCTOU verification. For a zero fingerprint
+// (first-write), the target file must not exist; the check runs BEFORE
+// acquiring the flock because gofrs/flock creates the file via O_CREATE,
+// which would cause a false "created concurrently" conflict. First-write
+// uses a plain atomic rename — there is no prior content to protect.
+func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
+	if fingerprint.IsZero() {
+		if _, err := os.Stat(path); err == nil {
+			cleanupTmp(tmpPath)
+
+			return fmt.Errorf("%w: %s was created concurrently", ErrConcurrentModification, path)
+		} else if !os.IsNotExist(err) {
+			cleanupTmp(tmpPath)
+
+			return fmt.Errorf("stating %s for verification: %w", path, err)
+		}
+
+		return atomicRename(path, tmpPath)
+	}
+
+	fileLock := flock.New(path)
+
+	lockErr := fileLock.Lock()
+	if lockErr != nil {
+		cleanupTmp(tmpPath)
+
+		return fmt.Errorf("acquiring exclusive lock on %s: %w", path, lockErr)
+	}
+	defer func() { _ = fileLock.Close() }()
+
+	current, err := os.ReadFile(path) //nolint:gosec // path is caller-controlled
+	if err != nil {
+		cleanupTmp(tmpPath)
+
+		return fmt.Errorf("re-reading %s for verification: %w", path, err)
+	}
+
+	if !fingerprint.Matches(current) {
+		cleanupTmp(tmpPath)
+
+		return fmt.Errorf("%w: %s was modified since read", ErrConcurrentModification, path)
+	}
+
+	return atomicRename(path, tmpPath)
+}
 
 func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode) error {
 	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm) //nolint:gosec // caller-controlled
@@ -244,48 +286,6 @@ func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode
 	}
 
 	return nil
-}
-
-func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
-	fileLock := flock.New(path)
-
-	lockErr := fileLock.Lock()
-	if lockErr != nil {
-		cleanupTmp(tmpPath)
-
-		return fmt.Errorf("acquiring exclusive lock on %s: %w", path, lockErr)
-	}
-	defer func() { _ = fileLock.Close() }()
-
-	if fingerprint.IsZero() {
-		// Caller confirmed the file did not exist. Verify it still doesn't.
-		if _, err := os.Stat(path); err == nil {
-			cleanupTmp(tmpPath)
-
-			return fmt.Errorf("%w: %s was created concurrently", ErrConcurrentModification, path)
-		} else if !os.IsNotExist(err) {
-			cleanupTmp(tmpPath)
-
-			return fmt.Errorf("stating %s for verification: %w", path, err)
-		}
-
-		return atomicRename(path, tmpPath)
-	}
-
-	current, err := os.ReadFile(path) //nolint:gosec // path is caller-controlled
-	if err != nil {
-		cleanupTmp(tmpPath)
-
-		return fmt.Errorf("re-reading %s for verification: %w", path, err)
-	}
-
-	if !fingerprint.Matches(current) {
-		cleanupTmp(tmpPath)
-
-		return fmt.Errorf("%w: %s was modified since read", ErrConcurrentModification, path)
-	}
-
-	return atomicRename(path, tmpPath)
 }
 
 func randomSuffix() (string, error) {

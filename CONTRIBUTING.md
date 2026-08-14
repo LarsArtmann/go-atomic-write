@@ -42,11 +42,11 @@ Tailwind v4, deployed to Firebase Hosting. Node.js 24 is required
 
 ```bash
 cd website
-npm install                       # First-time setup
-npm run dev                       # Local dev server
-npm run build                     # Production build (regenerates the changelog page first)
-npm run typecheck                 # TypeScript + Astro type checking
-npm run preview                   # Preview the production build locally
+pnpm install                       # First-time setup
+pnpm run dev                       # Local dev server
+pnpm run build                     # Production build (regenerates the changelog page first)
+pnpm run typecheck                 # TypeScript + Astro type checking
+pnpm run preview                   # Preview the production build locally
 ```
 
 ### Website notes

@@ -42,11 +42,11 @@
         in
         {
           apps = {
-            dev = mkApp "dev" "Start the Astro development server" [ pkgs.nodejs_24 ] "npm run dev";
-            build = mkApp "build" "Build the website for production" [ pkgs.nodejs_24 ] "npm run build";
+            dev = mkApp "dev" "Start the Astro development server" [ pkgs.nodejs_24 ] "pnpm run dev";
+            build = mkApp "build" "Build the website for production" [ pkgs.nodejs_24 ] "pnpm run build";
             preview = mkApp "preview" "Preview the production build locally" [
               pkgs.nodejs_24
-            ] "npm run preview";
+            ] "pnpm run preview";
             deploy =
               mkApp "deploy" "Build and deploy the website to Firebase Hosting"
                 [
@@ -54,7 +54,7 @@
                   pkgs.firebase-tools
                 ]
                 ''
-                  npm run build
+                  pnpm run build
                   firebase deploy --only hosting
                 '';
           };

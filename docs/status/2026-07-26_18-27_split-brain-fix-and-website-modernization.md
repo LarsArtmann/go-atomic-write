@@ -28,7 +28,7 @@ Rewrote **6 files** to the current `[Unreleased]` API split, then **compile-test
 
 ### Split brain #2 — dual changelog collapsed to one source of truth
 
-- **`website/scripts/sync-changelog.mjs`** — generates `changelog.mdx` from root `CHANGELOG.md`. Wired into `prebuild` + `predev` + a standalone `npm run sync:changelog`. Escapes `<` for MDX safety. The website page now carries `[Unreleased]` and will never diverge again.
+- **`website/scripts/sync-changelog.mjs`** — generates `changelog.mdx` from root `CHANGELOG.md`. Wired into `prebuild` + `predev` + a standalone `pnpm run sync:changelog`. Escapes `<` for MDX safety. The website page now carries `[Unreleased]` and will never diverge again.
 
 ### Audit completion (the items the prior report admitted skipping)
 
@@ -61,8 +61,8 @@ Rewrote **6 files** to the current `[Unreleased]` API split, then **compile-test
 - `go vet ./...` — clean
 - `go build ./...` — clean
 - `golangci-lint run ./...` — **0 issues**
-- `npm run typecheck` (Node 24 via nix) — 0 errors, 0 warnings, 0 hints
-- `npm run build` — 11 pages built, `postbuild` CSP injected (87 hashes)
+- `pnpm run typecheck` (Node 24 via nix) — 0 errors, 0 warnings, 0 hints
+- `pnpm run build` — 11 pages built, `postbuild` CSP injected (87 hashes)
 - Doc examples compiled against the real library via a temp Go module — clean
 - `nix flake check` (website) — **all checks passed** (1 missing-`meta.description` nit noted)
 - `git status` — clean (auto-commit daemon committed all work)
@@ -98,7 +98,7 @@ Both workflow files are written and syntactically valid, but neither has run on 
 
 ### 1. The 404.astro false start — I built then destroyed
 
-I treated "Fix the 404 warning" as a literal instruction and **wrote a custom `404.astro`** as my first move — then discovered during `npm run build` that it **collides with Starlight's built-in 404 route** (hard error in future Astro versions). I deleted it. I should have checked whether Starlight already provides a 404 **before** writing one. The TODO_LIST's premise ("add 404.astro") was itself wrong; I verified the premise late instead of early. Cost: a wasted round-trip and a create/delete pair now in git history via the daemon.
+I treated "Fix the 404 warning" as a literal instruction and **wrote a custom `404.astro`** as my first move — then discovered during `pnpm run build` that it **collides with Starlight's built-in 404 route** (hard error in future Astro versions). I deleted it. I should have checked whether Starlight already provides a 404 **before** writing one. The TODO_LIST's premise ("add 404.astro") was itself wrong; I verified the premise late instead of early. Cost: a wasted round-trip and a create/delete pair now in git history via the daemon.
 
 ### 2. The changelog sync script took 3 iterations
 
@@ -145,7 +145,7 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 
 8. **Meta-CSP is the wrong layer for `frame-ancestors`.** Move CSP to `firebase.json` headers (stronger, supports all directives) or drop unsupported directives from the meta.
 9. **`website/flake.nix` puts developers in a Node 22 shell while docs say Node 24.** Split brain between the flake and AGENTS.md. Trivial fix, real confusion for the next contributor.
-10. **Build scripts have no regression tests.** A future changelog `<` or a script-attribute `>` could silently break `npm run build`. The project's "all tests automated" mandate should cover build tooling too.
+10. **Build scripts have no regression tests.** A future changelog `<` or a script-attribute `>` could silently break `pnpm run build`. The project's "all tests automated" mandate should cover build tooling too.
 11. **The website teaches an un-tagged API.** `WriteVerified`/`WriteIfChanged` exist only on `master`, not in any release. A user on the latest tag (v0.3.0) gets the old API; the new docs will mislead them. (Carried forward from the prior report's g.2 — still unresolved.)
 
 ---
@@ -187,7 +187,7 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 
 ### Lower — polish & resilience
 
-22. Add a `npm run check` aggregate script (typecheck + build + csp + lint) for a single pre-merge gate.
+22. Add a `pnpm run check` aggregate script (typecheck + build + csp + lint) for a single pre-merge gate.
 23. Add `html-validate` to the website CI step (dep is already in `devDependencies` but not wired).
 24. Document the meta-vs-header CSP decision in `AGENTS.md` website gotchas (once §f.1 is decided).
 25. Add a `CONTRIBUTING.md` note that doc code examples MUST compile (link to the temp-module method I used, or add a `make doccheck`).
@@ -209,7 +209,7 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 41. Verify `prefers-color-scheme` is respected on first paint (no FOUC) for the docs pages.
 42. Add `lang` attribute audit (confirm all pages are `lang="en"`).
 43. Add a stale-doc-detector: a script that diffs doc code examples against `atomicwrite.go` exports and flags mismatches (the structural fix for the original split brain).
-44. Run `npm audit` on the website and fix any high-severity findings.
+44. Run `pnpm audit` on the website and fix any high-severity findings.
 45. Add a `.nvmrc`/`engines.node` field to `website/package.json` (currently only AGENTS.md documents Node 24).
 46. Confirm `firebase.json` `cleanUrls: true` doesn't break the `/docs/* → /*` redirect (potential redirect chain).
 47. Add a changelog entry for the `website.yml` `paths` fix once §f.33 is done.

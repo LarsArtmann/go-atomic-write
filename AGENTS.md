@@ -50,12 +50,12 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 
 | Command                                                                | Purpose                                                                           |
 | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `cd website && npm run dev`                                            | Local dev server                                                                  |
-| `cd website && npm run build`                                          | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP) |
-| `cd website && npm run typecheck`                                      | TypeScript + Astro type checking                                                  |
-| `cd website && npm run preview`                                        | Preview production build locally                                                  |
-| `cd website && npm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md`                                |
-| `cd website && npm run lighthouse`                                     | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)             |
+| `cd website && pnpm run dev`                                            | Local dev server                                                                  |
+| `cd website && pnpm run build`                                          | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP) |
+| `cd website && pnpm run typecheck`                                      | TypeScript + Astro type checking                                                  |
+| `cd website && pnpm run preview`                                        | Preview production build locally                                                  |
+| `cd website && pnpm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md`                                |
+| `cd website && pnpm run lighthouse`                                     | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)             |
 | `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                |
 
 Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
@@ -143,7 +143,7 @@ Both are intentional, minimal, and not candidates for replacement.
 - **Website changelog page is GENERATED** — `website/src/content/docs/changelog.mdx` is produced from root `CHANGELOG.md` by `scripts/sync-changelog.mjs` (runs on `prebuild`/`predev`). Edit `CHANGELOG.md`, never the `.mdx`. If the build breaks with an MDX "unexpected character" error, a changelog entry likely contains a raw `<`; the sync script escapes `<` but check new entries.
 - **Website CSP is hash-based and post-build** — `scripts/fix-csp.mjs` (`postbuild`) injects a per-file CSP `<meta>` from inline-script SHA-256 hashes. There is **no `'unsafe-inline'` for `script-src`**. If a new inline script breaks the site under CSP, either move it to an external `/js/*.js` file (loaded via `<script is:inline src=…>`) or confirm `fix-csp.mjs` hashed it.
 - **Do NOT add `website/src/pages/404.astro`** — Starlight ships its own `404.html`. A custom one causes a route collision (warning today, hard error in future Astro). The `404 was not found` line during build is a benign Starlight route log, not a warning.
-- The website's `npm run build` requires a clean `.astro` cache when content files are renamed/extension-changed: run `rm -rf .astro dist node_modules/.cache` if the content layer fails to resolve a renamed doc.
+- The website's `pnpm run build` requires a clean `.astro` cache when content files are renamed/extension-changed: run `rm -rf .astro dist node_modules/.cache` if the content layer fails to resolve a renamed doc.
 - **OG image is static, not dynamic** — `public/og-image.svg` is the editable source; `public/og-image.png` is the generated 1200×630 output. Regenerate with `magick -background none public/og-image.svg -resize 1200x630! public/og-image.png` (ImageMagick 7). No `astro-og-canvas` dependency needed.
-- **Lighthouse CI needs chromium** — `npm run lighthouse` requires Chrome/Chromium. The Nix devShell provides it and sets `CHROME_PATH`. Run via `nix develop` or `nix shell nixpkgs#nodejs_24 nixpkgs#chromium`.
+- **Lighthouse CI needs chromium** — `pnpm run lighthouse` requires Chrome/Chromium. The Nix devShell provides it and sets `CHROME_PATH`. Run via `nix develop` or `nix shell nixpkgs#nodejs_24 nixpkgs#chromium`.
 - **`website/.editorconfig` uses `root = true`** — this intentionally decouples the website from the Go-rooted `.editorconfig` (which uses tabs). The website uses 2-space indentation for all files.

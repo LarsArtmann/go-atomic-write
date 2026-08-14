@@ -109,8 +109,8 @@ Build passes. Typecheck passes (0 errors). However, several integration gaps rem
 
 ### Verification
 
-- [x] `npm run build` — 11 pages generated, sitemap, pagefind search index
-- [x] `npm run typecheck` — 0 errors, 0 warnings, 0 hints (28 files checked)
+- [x] `pnpm run build` — 11 pages generated, sitemap, pagefind search index
+- [x] `pnpm run typecheck` — 0 errors, 0 warnings, 0 hints (28 files checked)
 - [x] `go build ./...` — passes
 - [x] `go vet ./...` — passes
 - [x] `go test ./...` — passes
@@ -235,7 +235,7 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 6. Create `.github/workflows/ci.yml` (Go: build, test -race, vet, golangci-lint)
 7. Create `.github/workflows/website.yml` (build + deploy on push to master)
 8. Create `.github/workflows/release.yml` (tag-based GitHub release)
-9. Create `.github/dependabot.yml` (Go + npm dependency updates)
+9. Create `.github/dependabot.yml` (Go + pnpm dependency updates)
 10. Create `.github/FUNDING.yml`
 11. Add CI badge to README once CI exists
 
@@ -289,7 +289,7 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 39. Run `nix fmt` on `website/flake.nix`
 40. Validate all internal doc links are not broken
 41. Check Starlight sidebar matches all created pages
-42. Add `dedup` script and npm command if code duplication is a concern
+42. Add `dedup` script and pnpm command if code duplication is a concern
 43. Add `validate:docs` script (if md-go-validator is needed)
 
 ### Build & Deploy

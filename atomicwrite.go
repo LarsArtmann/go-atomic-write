@@ -77,6 +77,31 @@ func Write(path string, data []byte) error {
 	return atomicRename(path, tmpPath)
 }
 
+// WriteWithPerm writes data to path with an explicit file permission and
+// crash durability (fsync + atomic rename). The temp file is created with the
+// requested permission, so the final file appears atomically with the correct
+// mode — there is no chmod-after-rename window in which the file is briefly
+// visible with the wrong permissions.
+//
+// The explicit permission takes precedence over an existing file's current
+// mode. Use Write instead to preserve an existing file's mode (or the 0o644
+// default for new files).
+//
+// It does NOT perform TOCTOU verification — use WriteVerified for that.
+func WriteWithPerm(path string, data []byte, perm fs.FileMode) error {
+	tmpPath, err := tempPathFor(path)
+	if err != nil {
+		return err
+	}
+
+	stageErr := writeAndSync(tmpPath, data, perm)
+	if stageErr != nil {
+		return stageErr
+	}
+
+	return atomicRename(path, tmpPath)
+}
+
 // WriteVerified writes data to path with TOCTOU protection and crash durability.
 // Data is staged to a unique temp file, fsync'd, then verified against the
 // fingerprint before atomic rename.
@@ -188,12 +213,22 @@ func prepareTempPath(path string) (string, fs.FileMode, error) {
 		perm = info.Mode().Perm()
 	}
 
-	suffix, suffixErr := randomSuffix()
-	if suffixErr != nil {
-		return "", 0, fmt.Errorf("generating temp file suffix: %w", suffixErr)
+	tmpPath, tmpErr := tempPathFor(path)
+	if tmpErr != nil {
+		return "", 0, tmpErr
 	}
 
-	return path + "." + suffix + ".tmp", perm, nil
+	return tmpPath, perm, nil
+}
+
+// tempPathFor returns a unique temp file path alongside the target file.
+func tempPathFor(path string) (string, error) {
+	suffix, suffixErr := randomSuffix()
+	if suffixErr != nil {
+		return "", fmt.Errorf("generating temp file suffix: %w", suffixErr)
+	}
+
+	return path + "." + suffix + ".tmp", nil
 }
 
 // writeFuncBufferSize is the default buffer size for streaming writes.

@@ -515,3 +515,76 @@ func TestWriteIfChanged_LeavesNoLeftoverFiles(t *testing.T) {
 		t.Errorf("expected no temp files after write, found: %v", tmpMatches)
 	}
 }
+
+func TestWriteWithPerm_SetsPermOnCreate(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "secret")
+
+	if err := WriteWithPerm(path, []byte("sensitive"), 0o600); err != nil {
+		t.Fatalf("WriteWithPerm: %v", err)
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Errorf("perm = %o, want 600", got)
+	}
+
+	data, err := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(data) != "sensitive" {
+		t.Errorf("content = %q, want %q", data, "sensitive")
+	}
+}
+
+func TestWriteWithPerm_OverridesExistingPerm(t *testing.T) {
+	t.Parallel()
+
+	path := tempFile(t, "old")
+
+	if err := WriteWithPerm(path, []byte("new"), 0o600); err != nil {
+		t.Fatalf("WriteWithPerm: %v", err)
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Errorf("perm = %o, want 600 (explicit perm takes precedence)", got)
+	}
+}
+
+func TestWriteWithPerm_LeavesNoTempFiles(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "file")
+
+	if err := WriteWithPerm(path, []byte("data"), 0o644); err != nil {
+		t.Fatalf("WriteWithPerm: %v", err)
+	}
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(entries) != 1 || entries[0].Name() != "file" {
+		names := make([]string, len(entries))
+		for i, e := range entries {
+			names[i] = e.Name()
+		}
+
+		t.Errorf("dir contains leftover temp files: %v", names)
+	}
+}

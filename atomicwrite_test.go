@@ -580,7 +580,7 @@ func TestWriteWithPerm_LeavesNoTempFiles(t *testing.T) {
 	}
 
 	if len(entries) != 1 || entries[0].Name() != "file" {
-		names := make([]string, len(entries))
+		names := make([]string, 0, len(entries))
 		for i, e := range entries {
 			names[i] = e.Name()
 		}

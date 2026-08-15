@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-08-15
+
+### Fixed
+
+- **Windows builds now compile** (`rename_windows.go`) — `isRetryableRename` referenced `syscall.ERROR_SHARING_VIOLATION`, which Go's stdlib `syscall` package does not define on windows (it only exports a small errno subset). Every `GOOS=windows` build of this library — direct or transitive — failed with `undefined: syscall.ERROR_SHARING_VIOLATION`. The constant is now defined locally by value (`syscall.Errno(32)`, the WinAPI `ERROR_SHARING_VIOLATION` code), preserving the intended retry-on-sharing-violation behavior.
+
+## [0.5.0] - 2026-08-14
+
+### Added
+
+- **`WriteWithPerm(path, data, perm)`** — atomic write with explicit file permissions (0.4.0's API always used 0o644).
+
+### Changed
+
+- Test hygiene: zero-length `make` to satisfy the `makezero` linter.
+
 ## [0.4.0] - 2026-07-26
 
 ### Added

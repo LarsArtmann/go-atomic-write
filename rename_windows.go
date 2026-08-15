@@ -43,5 +43,12 @@ func isRetryableRename(err error) bool {
 		return false
 	}
 
-	return errno == syscall.ERROR_ACCESS_DENIED || errno == syscall.ERROR_SHARING_VIOLATION
+	return errno == syscall.ERROR_ACCESS_DENIED || errno == errSharingViolation
 }
+
+// errSharingViolation is ERROR_SHARING_VIOLATION (WinAPI error code 32): a
+// Windows rename fails with it while another process still holds the target
+// open. Go's stdlib syscall package for Windows does not define this constant
+// (only a small errno subset), so referencing it by name broke compilation for
+// GOOS=windows. Defined here by value instead.
+const errSharingViolation = syscall.Errno(32)

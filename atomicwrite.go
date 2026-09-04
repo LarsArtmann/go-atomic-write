@@ -47,7 +47,7 @@ func FingerprintFromBytes(data []byte) Fingerprint {
 // FingerprintFile computes an xxhash64 Fingerprint from a file's current content.
 // Returns a zero-value Fingerprint if the file does not exist.
 func FingerprintFile(path string) (Fingerprint, error) {
-	data, err := os.ReadFile(path) //nolint:gosec // path is caller-controlled
+	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return Fingerprint{}, nil
@@ -264,7 +264,7 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 	}
 	defer func() { _ = fileLock.Close() }()
 
-	current, err := os.ReadFile(path) //nolint:gosec // path is caller-controlled
+	current, err := os.ReadFile(path)
 	if err != nil {
 		cleanupTmp(tmpPath)
 
@@ -281,7 +281,7 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 }
 
 func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode) error {
-	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm) //nolint:gosec // caller-controlled
+	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
 	if err != nil {
 		return fmt.Errorf("creating temp file %s: %w", tmpPath, err)
 	}
@@ -335,7 +335,7 @@ func randomSuffix() (string, error) {
 }
 
 func writeAndSync(tmpPath string, data []byte, perm fs.FileMode) error {
-	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm) //nolint:gosec // caller-controlled
+	file, err := os.OpenFile(tmpPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
 	if err != nil {
 		return fmt.Errorf("creating temp file %s: %w", tmpPath, err)
 	}

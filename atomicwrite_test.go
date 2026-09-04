@@ -27,7 +27,7 @@ func tempFile(t *testing.T, content string) string {
 func assertFileContent(t *testing.T, path, want string) {
 	t.Helper()
 
-	data, err := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
+	data, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("reading file: %v", err)
 	}
@@ -323,7 +323,7 @@ func TestConcurrentWriteRACE(t *testing.T) {
 		t.Log("no conflicts detected — race window may be too narrow")
 	}
 
-	data, readErr := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
+	data, readErr := os.ReadFile(path)
 	if readErr != nil {
 		t.Fatalf("reading final file: %v", readErr)
 	}
@@ -535,7 +535,7 @@ func TestWriteWithPerm_SetsPermOnCreate(t *testing.T) {
 		t.Errorf("perm = %o, want 600", got)
 	}
 
-	data, err := os.ReadFile(path) //nolint:gosec // test reads from t.TempDir
+	data, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
 	}

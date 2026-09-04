@@ -50,12 +50,12 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 
 | Command                                                                | Purpose                                                                           |
 | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `cd website && pnpm run dev`                                            | Local dev server                                                                  |
-| `cd website && pnpm run build`                                          | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP) |
-| `cd website && pnpm run typecheck`                                      | TypeScript + Astro type checking                                                  |
-| `cd website && pnpm run preview`                                        | Preview production build locally                                                  |
-| `cd website && pnpm run sync:changelog`                                 | Regenerate changelog page from root `CHANGELOG.md`                                |
-| `cd website && pnpm run lighthouse`                                     | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)             |
+| `cd website && pnpm run dev`                                           | Local dev server                                                                  |
+| `cd website && pnpm run build`                                         | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP) |
+| `cd website && pnpm run typecheck`                                     | TypeScript + Astro type checking                                                  |
+| `cd website && pnpm run preview`                                       | Preview production build locally                                                  |
+| `cd website && pnpm run sync:changelog`                                | Regenerate changelog page from root `CHANGELOG.md`                                |
+| `cd website && pnpm run lighthouse`                                    | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)             |
 | `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                |
 
 Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).

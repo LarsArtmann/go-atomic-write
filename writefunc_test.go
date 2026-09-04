@@ -89,7 +89,7 @@ func TestWriteFunc_LargeStream(t *testing.T) {
 		t.Fatalf("WriteFunc failed: %v", err)
 	}
 
-	data, readErr := os.ReadFile(path) //nolint:gosec // test temp dir
+	data, readErr := os.ReadFile(path)
 	if readErr != nil {
 		t.Fatal(readErr)
 	}

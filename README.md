@@ -6,6 +6,7 @@
 <a href="https://pkg.go.dev/github.com/larsartmann/go-atomic-write"><img src="https://pkg.go.dev/badge/github.com/larsartmann/go-atomic-write.svg" alt="Go Reference"></a>
 
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+
 </p>
 
 <p align="center">

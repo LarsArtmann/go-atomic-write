@@ -10,12 +10,12 @@
 
 ## A) FULLY DONE (verified, no caveats)
 
-| #   | Task                                                          | Evidence                                                                                                                                                                                                                                                            |
-| --- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Pin `nodejs_24` in `website/flake.nix`**                    | `pkgs.nodejs` → `pkgs.nodejs_24` in all 4 apps + devShell. `nix flake check --no-build` passes with zero warnings. Matches `.node-version` (24) and AGENTS.md requirement.                                                                                          |
-| 2   | **`meta.description` + `meta.mainProgram` on all flake apps** | `mkApp` signature extended; `nix eval .#apps.x86_64-linux.deploy.meta.description` returns the string; the previous "lacks attribute 'meta.description'" warning is gone.                                                                                           |
-| 3   | **`website/.editorconfig`**                                   | Standalone file with `root = true` (decouples from the tab-based Go root). 2-space indent for all web files; markdown exempt from trailing-whitespace trimming.                                                                                                     |
-| 4   | **Sitemap verification**                                      | `dist/sitemap-0.xml` contains all 10 real pages (landing + 9 docs); Starlight's generated `404.html` correctly excluded. `robots.txt` already had the `Sitemap:` line — the "add" part was already done before this session; verification was the real deliverable. |
+| # | Task                                                          | Evidence                                                                                                                                                                                                                                                            |
+| - | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Pin `nodejs_24` in `website/flake.nix`**                    | `pkgs.nodejs` → `pkgs.nodejs_24` in all 4 apps + devShell. `nix flake check --no-build` passes with zero warnings. Matches `.node-version` (24) and AGENTS.md requirement.                                                                                          |
+| 2 | **`meta.description` + `meta.mainProgram` on all flake apps** | `mkApp` signature extended; `nix eval .#apps.x86_64-linux.deploy.meta.description` returns the string; the previous "lacks attribute 'meta.description'" warning is gone.                                                                                           |
+| 3 | **`website/.editorconfig`**                                   | Standalone file with `root = true` (decouples from the tab-based Go root). 2-space indent for all web files; markdown exempt from trailing-whitespace trimming.                                                                                                     |
+| 4 | **Sitemap verification**                                      | `dist/sitemap-0.xml` contains all 10 real pages (landing + 9 docs); Starlight's generated `404.html` correctly excluded. `robots.txt` already had the `Sitemap:` line — the "add" part was already done before this session; verification was the real deliverable. |
 
 ---
 
@@ -164,21 +164,21 @@ These are accuracy-of-reporting failures, not code failures. The code works; the
 
 ## Verification log (this session)
 
-| Check                             | Command                      | Result                                            |
-| --------------------------------- | ---------------------------- | ------------------------------------------------- |
-| Go tests                          | `go test ./...`              | PASS (cached)                                     |
-| Go vet                            | `go vet ./...`               | PASS                                              |
-| golangci-lint                     | `golangci-lint run ./...`    | **0 issues**                                      |
-| Website typecheck                 | `pnpm run typecheck`          | 0 errors, 0 warnings, 0 hints (31 files)          |
-| Website build                     | `pnpm run build`              | 11 pages, sitemap + CSP patched, 87 inline hashes |
-| Nix flake check                   | `nix flake check --no-build` | all checks passed, zero warnings                  |
-| Nix formatter                     | `nix fmt`                    | applied, no diff after                            |
-| Lighthouse (landing)              | manual `pnpm dlx lhci`            | Perf 100, A11y 100, BP 96, SEO 100                |
-| Lighthouse (docs pages)           | —                            | **NOT MEASURED** (gap)                            |
+| Check                              | Command                      | Result                                            |
+| ---------------------------------- | ---------------------------- | ------------------------------------------------- |
+| Go tests                           | `go test ./...`              | PASS (cached)                                     |
+| Go vet                             | `go vet ./...`               | PASS                                              |
+| golangci-lint                      | `golangci-lint run ./...`    | **0 issues**                                      |
+| Website typecheck                  | `pnpm run typecheck`         | 0 errors, 0 warnings, 0 hints (31 files)          |
+| Website build                      | `pnpm run build`             | 11 pages, sitemap + CSP patched, 87 inline hashes |
+| Nix flake check                    | `nix flake check --no-build` | all checks passed, zero warnings                  |
+| Nix formatter                      | `nix fmt`                    | applied, no diff after                            |
+| Lighthouse (landing)               | manual `pnpm dlx lhci`       | Perf 100, A11y 100, BP 96, SEO 100                |
+| Lighthouse (docs pages)            | —                            | **NOT MEASURED** (gap)                            |
 | `pnpm run lighthouse` (the script) | —                            | **NEVER RUN** (gap)                               |
-| Visual check of OG PNG            | —                            | **NOT DONE** (gap)                                |
-| `html-validate` on dist           | —                            | **NOT RUN** (gap)                                 |
-| Full WCAG palette audit           | —                            | **NOT DONE** (gap)                                |
+| Visual check of OG PNG             | —                            | **NOT DONE** (gap)                                |
+| `html-validate` on dist            | —                            | **NOT RUN** (gap)                                 |
+| Full WCAG palette audit            | —                            | **NOT DONE** (gap)                                |
 
 ---
 

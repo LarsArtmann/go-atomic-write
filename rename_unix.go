@@ -18,7 +18,7 @@ func atomicRename(path, tmpPath string) error {
 }
 
 func syncDir(dir string) error {
-	dirFile, err := os.Open(dir) //nolint:gosec // dir derived from caller-controlled path
+	dirFile, err := os.Open(dir)
 	if err != nil {
 		return fmt.Errorf("opening directory %s for sync: %w", dir, err)
 	}

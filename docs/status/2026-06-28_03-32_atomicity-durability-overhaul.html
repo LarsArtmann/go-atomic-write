@@ -64,14 +64,14 @@
 
         /* --- Type stacks --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -280,15 +280,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       .issue {
@@ -300,15 +312,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -742,9 +766,10 @@
           <div class="hero-badge">Comprehensive Status Update</div>
           <h1>go-atomic-write &mdash; Atomicity &amp; Durability Overhaul</h1>
           <p class="hero-subtitle">
-            Full status of the rewrite that fixed the broken <code>.bak</code> rename pattern, added
-            unique temp files, fsync for crash durability, and platform-specific rename with Windows
-            retry logic.
+            Full status of the rewrite that fixed the broken
+            <code>.bak</code> rename pattern, added unique temp files, fsync for
+            crash durability, and platform-specific rename with Windows retry
+            logic.
           </p>
         </div>
 
@@ -772,10 +797,11 @@
         <div class="card card-solution">
           <h4>Verdict: Shippable</h4>
           <p>
-            All 12 planned tasks are complete. <code>go build</code>, <code>go vet</code>,
-            <code>go test -race</code>, <code>go test -bench</code>, and
-            <code>golangci-lint</code> all pass with zero issues. The library now delivers on its
-            core promise: truly atomic writes with real crash durability.
+            All 12 planned tasks are complete. <code>go build</code>,
+            <code>go vet</code>, <code>go test -race</code>,
+            <code>go test -bench</code>, and <code>golangci-lint</code> all pass
+            with zero issues. The library now delivers on its core promise:
+            truly atomic writes with real crash durability.
           </p>
         </div>
 
@@ -788,10 +814,11 @@
             <div class="text">
               <strong>Dropped the <code>.bak</code> dance</strong>
               <span
-                >Removed the two-rename pattern (<code>path&rarr;.bak</code> then
-                <code>tmp&rarr;path</code>) that broke POSIX atomicity. Now a single
-                <code>os.Rename(tmp, path)</code> atomically replaces the target.
-                <code>atomicwrite.go:114</code> &rarr; <code>rename_unix.go:11-18</code></span
+                >Removed the two-rename pattern (<code>path&rarr;.bak</code>
+                then <code>tmp&rarr;path</code>) that broke POSIX atomicity. Now
+                a single <code>os.Rename(tmp, path)</code> atomically replaces
+                the target. <code>atomicwrite.go:114</code> &rarr;
+                <code>rename_unix.go:11-18</code></span
               >
             </div>
           </div>
@@ -800,9 +827,10 @@
             <div class="text">
               <strong>Unique temp file names</strong>
               <span
-                >Temp files now use <code>path + "." + randomHex + ".tmp"</code> via
-                <code>crypto/rand</code> (4-byte suffix). Prevents concurrent writers from
-                corrupting a shared staging file.
+                >Temp files now use
+                <code>path + "." + randomHex + ".tmp"</code> via
+                <code>crypto/rand</code> (4-byte suffix). Prevents concurrent
+                writers from corrupting a shared staging file.
                 <code>atomicwrite.go:73-78, randomSuffix()</code></span
               >
             </div>
@@ -812,21 +840,27 @@
             <div class="text">
               <strong>fsync for crash durability</strong>
               <span
-                >New <code>writeAndSync()</code> function: opens temp file, writes data, calls
-                <code>file.Sync()</code>, closes &mdash; with cleanup on any error. The "crash
-                safety" doc claim is now actually true. <code>atomicwrite.go:134-160</code></span
+                >New <code>writeAndSync()</code> function: opens temp file,
+                writes data, calls <code>file.Sync()</code>, closes &mdash; with
+                cleanup on any error. The "crash safety" doc claim is now
+                actually true. <code>atomicwrite.go:134-160</code></span
               >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>Platform split: rename_unix.go + rename_windows.go</strong>
+              <strong
+                >Platform split: rename_unix.go + rename_windows.go</strong
+              >
               <span
-                >POSIX: single <code>rename(2)</code> + directory <code>fsync</code> via
-                <code>syncDir()</code>. Windows: retry loop on
-                <code>ERROR_ACCESS_DENIED</code>/<code>ERROR_SHARING_VIOLATION</code> (5 retries,
-                exponential backoff 1&ndash;16ms). <code>rename_unix.go</code>,
+                >POSIX: single <code>rename(2)</code> + directory
+                <code>fsync</code> via <code>syncDir()</code>. Windows: retry
+                loop on <code>ERROR_ACCESS_DENIED</code>/<code
+                  >ERROR_SHARING_VIOLATION</code
+                >
+                (5 retries, exponential backoff 1&ndash;16ms).
+                <code>rename_unix.go</code>,
                 <code>rename_windows.go</code></span
               >
             </div>
@@ -836,19 +870,23 @@
             <div class="text">
               <strong>Package doc fixed</strong>
               <span
-                >Changed from "atomic rename for crash safety" (a lie without fsync) to "atomic
-                rename, and fsync for crash durability" (now true).
-                <code>atomicwrite.go:1-3</code></span
+                >Changed from "atomic rename for crash safety" (a lie without
+                fsync) to "atomic rename, and fsync for crash durability" (now
+                true). <code>atomicwrite.go:1-3</code></span
               >
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>TestWriteCreatesBackup removed, TestWriteLeavesNoLeftoverFiles added</strong>
+              <strong
+                >TestWriteCreatesBackup removed, TestWriteLeavesNoLeftoverFiles
+                added</strong
+              >
               <span
-                >Removed the test that validated the bug as a feature. New test verifies no
-                <code>.bak</code> and no <code>.tmp</code> files remain after a successful write.
+                >Removed the test that validated the bug as a feature. New test
+                verifies no <code>.bak</code> and no <code>.tmp</code> files
+                remain after a successful write.
                 <code>atomicwrite_test.go:194-218</code></span
               >
             </div>
@@ -857,13 +895,15 @@
             <div class="check">+</div>
             <div class="text">
               <strong
-                >TestConcurrentWriteRACE rewritten with divergent content + integrity check</strong
+                >TestConcurrentWriteRACE rewritten with divergent content +
+                integrity check</strong
               >
               <span
-                >10 writers with distinct payloads (<code>writer-0</code> through
-                <code>writer-9</code>). Final file content verified to be exactly one writer's
-                payload &mdash; not interleaved bytes. The old test used identical content from all
-                writers and could not catch corruption.
+                >10 writers with distinct payloads (<code>writer-0</code>
+                through <code>writer-9</code>). Final file content verified to
+                be exactly one writer's payload &mdash; not interleaved bytes.
+                The old test used identical content from all writers and could
+                not catch corruption.
                 <code>atomicwrite_test.go:233-279</code></span
               >
             </div>
@@ -871,10 +911,13 @@
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>TestTempFileCleanedUpOnError updated for unique names</strong>
+              <strong
+                >TestTempFileCleanedUpOnError updated for unique names</strong
+              >
               <span
                 >Uses <code>filepath.Glob</code> instead of hardcoded
-                <code>testfile.tmp</code> path. <code>atomicwrite_test.go:227-231</code></span
+                <code>testfile.tmp</code> path.
+                <code>atomicwrite_test.go:227-231</code></span
               >
             </div>
           </div>
@@ -883,9 +926,11 @@
             <div class="text">
               <strong>AGENTS.md fully updated</strong>
               <span
-                >New architecture diagram, file structure table, key functions list, data flow,
-                gotchas. Removed all <code>.bak</code> references. Added <code>fsync</code>, unique
-                temp, OS split, and <code>wsl_v5</code> lint gotcha. <code>AGENTS.md</code></span
+                >New architecture diagram, file structure table, key functions
+                list, data flow, gotchas. Removed all
+                <code>.bak</code> references. Added <code>fsync</code>, unique
+                temp, OS split, and <code>wsl_v5</code> lint gotcha.
+                <code>AGENTS.md</code></span
               >
             </div>
           </div>
@@ -894,9 +939,10 @@
             <div class="text">
               <strong>README.md fully updated</strong>
               <span
-                >How it works section now describes unique temp, fsync, atomic rename, directory
-                fsync. Error contract updated. Platform support section expanded with POSIX vs
-                Windows details. Removed <code>.bak</code> references and "~130 lines" claim.
+                >How it works section now describes unique temp, fsync, atomic
+                rename, directory fsync. Error contract updated. Platform
+                support section expanded with POSIX vs Windows details. Removed
+                <code>.bak</code> references and "~130 lines" claim.
                 <code>README.md</code></span
               >
             </div>
@@ -906,9 +952,11 @@
             <div class="text">
               <strong>All quality gates green</strong>
               <span
-                ><code>go build</code>, <code>go vet</code>, <code>go test -race -count=1</code>,
-                <code>go test -bench</code>, <code>golangci-lint run</code> &mdash; all pass with
-                zero issues.</span
+                ><code>go build</code>, <code>go vet</code>,
+                <code>go test -race -count=1</code>,
+                <code>go test -bench</code>,
+                <code>golangci-lint run</code> &mdash; all pass with zero
+                issues.</span
               >
             </div>
           </div>
@@ -920,15 +968,17 @@
         <div class="card card-warning">
           <h4>Windows durability &mdash; directory fsync is a no-op</h4>
           <p>
-            File-level durability is handled: <code>file.Sync()</code> on Windows calls
-            <code>FlushFileBuffers</code>, which flushes the file's data to disk. However, there is
-            no POSIX-equivalent directory fsync on Windows &mdash; the directory entry after rename
-            is not explicitly synced. This is a known platform limitation, documented in AGENTS.md,
-            but not yet tested on an actual Windows machine.
+            File-level durability is handled: <code>file.Sync()</code> on
+            Windows calls <code>FlushFileBuffers</code>, which flushes the
+            file's data to disk. However, there is no POSIX-equivalent directory
+            fsync on Windows &mdash; the directory entry after rename is not
+            explicitly synced. This is a known platform limitation, documented
+            in AGENTS.md, but not yet tested on an actual Windows machine.
           </p>
           <div class="callout callout-warning">
             <strong>Status:</strong>
-            Code written and compiles via build tags. Untested on actual Windows hardware.
+            Code written and compiles via build tags. Untested on actual Windows
+            hardware.
           </div>
         </div>
 
@@ -938,27 +988,31 @@
         <div class="card">
           <h4>Write benchmark (fsync overhead measurement)</h4>
           <p>
-            The original plan included a <code>Write</code> benchmark to measure fsync overhead vs
-            the old no-fsync path. Not yet written &mdash; benchmarks for xxhash vs SHA-256 exist
-            but no end-to-end <code>Write</code> benchmark exists.
+            The original plan included a <code>Write</code> benchmark to measure
+            fsync overhead vs the old no-fsync path. Not yet written &mdash;
+            benchmarks for xxhash vs SHA-256 exist but no end-to-end
+            <code>Write</code> benchmark exists.
           </p>
         </div>
 
         <div class="card">
           <h4>Stale temp file cleanup</h4>
           <p>
-            Unique temp names prevent concurrent corruption, but if a process crashes mid-write, the
-            <code>.tmp</code> file remains forever. No cleanup-on-startup logic exists yet. With
-            unique names, stale files don't interfere with new writes, but they accumulate.
+            Unique temp names prevent concurrent corruption, but if a process
+            crashes mid-write, the
+            <code>.tmp</code> file remains forever. No cleanup-on-startup logic
+            exists yet. With unique names, stale files don't interfere with new
+            writes, but they accumulate.
           </p>
         </div>
 
         <div class="card">
           <h4>context.Context support</h4>
           <p>
-            <code>Write()</code> blocks on <code>fsync</code>, which can take unbounded time on
-            slow/network filesystems. No <code>context.Context</code> parameter exists for
-            cancellation or timeout. This is a design decision, not an oversight &mdash; see
+            <code>Write()</code> blocks on <code>fsync</code>, which can take
+            unbounded time on slow/network filesystems. No
+            <code>context.Context</code> parameter exists for cancellation or
+            timeout. This is a design decision, not an oversight &mdash; see
             <a href="#question">#1 Open Question</a>.
           </p>
         </div>
@@ -971,33 +1025,43 @@
           <h3>The <code>.bak</code> dance broke POSIX atomicity</h3>
           <div class="where">atomicwrite.go:114-122 (old code)</div>
           <p>
-            The original <code>atomicRename</code> did <code>os.Rename(path, path+".bak")</code>
-            <em>then</em> <code>os.Rename(tmpPath, path)</code>. On POSIX, a single
-            <code>rename(2)</code> atomically swaps the inode &mdash; readers always see either old
-            or new content, never <code>ENOENT</code>. Splitting into two renames opened a window
-            where <code>path</code> didn't exist. A concurrent reader (or a crash between the two
-            calls) saw the file missing. The library named "atomic-write" was not atomic.
+            The original <code>atomicRename</code> did
+            <code>os.Rename(path, path+".bak")</code> <em>then</em>
+            <code>os.Rename(tmpPath, path)</code>. On POSIX, a single
+            <code>rename(2)</code> atomically swaps the inode &mdash; readers
+            always see either old or new content, never <code>ENOENT</code>.
+            Splitting into two renames opened a window where
+            <code>path</code> didn't exist. A concurrent reader (or a crash
+            between the two calls) saw the file missing. The library named
+            "atomic-write" was not atomic.
           </p>
           <div class="callout callout-solution">
             <strong>Fix:</strong>
-            Single <code>os.Rename(tmp, path)</code> &mdash; one atomic syscall on POSIX.
+            Single <code>os.Rename(tmp, path)</code> &mdash; one atomic syscall
+            on POSIX.
           </div>
         </div>
 
         <div class="issue issue-critical">
           <span class="severity severity-critical">Fixed</span>
-          <h3>Concurrent writers corrupted the shared <code>.tmp</code> file</h3>
-          <div class="where">atomicwrite.go:73 (old code, tmpPath := path + ".tmp")</div>
+          <h3>
+            Concurrent writers corrupted the shared <code>.tmp</code> file
+          </h3>
+          <div class="where">
+            atomicwrite.go:73 (old code, tmpPath := path + ".tmp")
+          </div>
           <p>
-            <code>tmpPath</code> was computed <em>before</em> the lock. Two <code>Write()</code>
+            <code>tmpPath</code> was computed <em>before</em> the lock. Two
+            <code>Write()</code>
             calls to the same target both opened/truncated/wrote the same
-            <code>path.tmp</code>, interleaving bytes. The lock only guarded the verify+rename, not
-            the staging write. The winner then renamed a possibly-corrupted file.
+            <code>path.tmp</code>, interleaving bytes. The lock only guarded the
+            verify+rename, not the staging write. The winner then renamed a
+            possibly-corrupted file.
           </p>
           <div class="callout callout-solution">
             <strong>Fix:</strong>
-            Unique temp file names via <code>crypto/rand</code> &mdash; each writer gets
-            <code>path + "." + randomHex + ".tmp"</code>.
+            Unique temp file names via <code>crypto/rand</code> &mdash; each
+            writer gets <code>path + "." + randomHex + ".tmp"</code>.
           </div>
         </div>
 
@@ -1006,15 +1070,17 @@
           <h3>The concurrency test couldn't catch the corruption bug</h3>
           <div class="where">atomicwrite_test.go:254 (old code)</div>
           <p>
-            <code>TestConcurrentWriteRACE</code> used identical content (<code>"updated"</code>)
-            from all 5 goroutines. Even if bytes were interleaved, the result was the same string
-            &mdash; the test would pass on corrupted data. The test was structurally incapable of
+            <code>TestConcurrentWriteRACE</code> used identical content
+            (<code>"updated"</code>) from all 5 goroutines. Even if bytes were
+            interleaved, the result was the same string &mdash; the test would
+            pass on corrupted data. The test was structurally incapable of
             detecting the bug it was supposed to guard against.
           </p>
           <div class="callout callout-solution">
             <strong>Fix:</strong>
-            10 writers with divergent content (<code>writer-0</code> &ndash; <code>writer-9</code>)
-            + integrity check verifying the final file is exactly one writer's payload.
+            10 writers with divergent content (<code>writer-0</code> &ndash;
+            <code>writer-9</code>) + integrity check verifying the final file is
+            exactly one writer's payload.
           </div>
         </div>
 
@@ -1025,47 +1091,52 @@
           <div class="card card-warning">
             <h4>Test on actual Windows</h4>
             <p>
-              <code>rename_windows.go</code> compiles via build tags but has never run on a real
-              Windows machine. The retry loop, <code>ERROR_ACCESS_DENIED</code> detection, and
+              <code>rename_windows.go</code> compiles via build tags but has
+              never run on a real Windows machine. The retry loop,
+              <code>ERROR_ACCESS_DENIED</code> detection, and
               <code>MoveFileEx</code> behavior are all unverified.
             </p>
           </div>
           <div class="card card-warning">
             <h4>Stale temp file accumulation</h4>
             <p>
-              Crashed writes leave <code>.tmp</code> files forever. Unique names prevent
-              interference but don't clean up. Need a glob-and-remove on startup, or document the
-              expected cleanup pattern.
+              Crashed writes leave <code>.tmp</code> files forever. Unique names
+              prevent interference but don't clean up. Need a glob-and-remove on
+              startup, or document the expected cleanup pattern.
             </p>
           </div>
           <div class="card card-warning">
             <h4>No <code>Write</code> benchmark</h4>
             <p>
-              fsync adds real latency. We should benchmark <code>Write</code> end-to-end to quantify
-              the cost and establish a regression baseline.
+              fsync adds real latency. We should benchmark
+              <code>Write</code> end-to-end to quantify the cost and establish a
+              regression baseline.
             </p>
           </div>
           <div class="card card-warning">
             <h4>No fuzz tests</h4>
             <p>
-              <code>writeAndSync</code> and <code>randomSuffix</code> handle arbitrary data sizes
-              and edge cases. Fuzz testing would catch panics or data corruption on unusual inputs
-              (empty data, very large data, concurrent access).
+              <code>writeAndSync</code> and <code>randomSuffix</code> handle
+              arbitrary data sizes and edge cases. Fuzz testing would catch
+              panics or data corruption on unusual inputs (empty data, very
+              large data, concurrent access).
             </p>
           </div>
           <div class="card card-warning">
             <h4>No godoc examples</h4>
             <p>
-              <code>ExampleWrite</code>, <code>ExampleFingerprintFile</code> etc. would make the
-              package discoverable via <code>go doc</code> and
+              <code>ExampleWrite</code>,
+              <code>ExampleFingerprintFile</code> etc. would make the package
+              discoverable via <code>go doc</code> and
               <a href="https://pkg.go.dev">pkg.go.dev</a>.
             </p>
           </div>
           <div class="card card-warning">
             <h4>Windows durability gap</h4>
             <p>
-              No directory fsync equivalent on Windows. The rename directory entry may not be
-              durable after a crash. Should be documented as a known limitation, or addressed via
+              No directory fsync equivalent on Windows. The rename directory
+              entry may not be durable after a crash. Should be documented as a
+              known limitation, or addressed via
               <code>MOVEFILE_WRITE_THROUGH</code>.
             </p>
           </div>
@@ -1090,7 +1161,8 @@
                 <td>1</td>
                 <td><span class="badge badge-critical">Critical</span></td>
                 <td>
-                  Test on actual Windows &mdash; verify retry loop, <code>MoveFileEx</code>,
+                  Test on actual Windows &mdash; verify retry loop,
+                  <code>MoveFileEx</code>,
                   <code>FlushFileBuffers</code>
                 </td>
                 <td>High</td>
@@ -1100,7 +1172,8 @@
                 <td>2</td>
                 <td><span class="badge badge-critical">Critical</span></td>
                 <td>
-                  Add CI with Windows runner (GitHub Actions) &mdash; <code>go test</code> on
+                  Add CI with Windows runner (GitHub Actions) &mdash;
+                  <code>go test</code> on
                   <code>windows-latest</code>
                 </td>
                 <td>High</td>
@@ -1110,8 +1183,8 @@
                 <td>3</td>
                 <td><span class="badge badge-high">High</span></td>
                 <td>
-                  Add <code>Write</code> benchmark &mdash; measure fsync overhead, establish
-                  regression baseline
+                  Add <code>Write</code> benchmark &mdash; measure fsync
+                  overhead, establish regression baseline
                 </td>
                 <td>High</td>
                 <td>30m</td>
@@ -1120,7 +1193,8 @@
                 <td>4</td>
                 <td><span class="badge badge-high">High</span></td>
                 <td>
-                  Stale temp file cleanup &mdash; glob <code>*.tmp</code> on startup or after write
+                  Stale temp file cleanup &mdash; glob <code>*.tmp</code> on
+                  startup or after write
                 </td>
                 <td>Med</td>
                 <td>30m</td>
@@ -1129,8 +1203,8 @@
                 <td>5</td>
                 <td><span class="badge badge-high">High</span></td>
                 <td>
-                  Add fuzz tests for <code>writeAndSync</code> &mdash; random data sizes, edge
-                  cases, empty data
+                  Add fuzz tests for <code>writeAndSync</code> &mdash; random
+                  data sizes, edge cases, empty data
                 </td>
                 <td>Med</td>
                 <td>30m</td>
@@ -1139,8 +1213,8 @@
                 <td>6</td>
                 <td><span class="badge badge-high">High</span></td>
                 <td>
-                  Stress test: 100+ concurrent writers &mdash; verify no corruption under heavy
-                  contention
+                  Stress test: 100+ concurrent writers &mdash; verify no
+                  corruption under heavy contention
                 </td>
                 <td>Med</td>
                 <td>20m</td>
@@ -1149,8 +1223,8 @@
                 <td>7</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Test very large files (multi-MB) through <code>writeAndSync</code> &mdash; verify
-                  no OOM
+                  Test very large files (multi-MB) through
+                  <code>writeAndSync</code> &mdash; verify no OOM
                 </td>
                 <td>Low</td>
                 <td>15m</td>
@@ -1159,8 +1233,8 @@
                 <td>8</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Test temp file cleanup on <code>file.Sync()</code> failure &mdash; verify
-                  <code>.tmp</code> removed
+                  Test temp file cleanup on <code>file.Sync()</code> failure
+                  &mdash; verify <code>.tmp</code> removed
                 </td>
                 <td>Low</td>
                 <td>15m</td>
@@ -1169,7 +1243,8 @@
                 <td>9</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Add godoc examples: <code>ExampleWrite</code>, <code>ExampleFingerprintFile</code>
+                  Add godoc examples: <code>ExampleWrite</code>,
+                  <code>ExampleFingerprintFile</code>
                 </td>
                 <td>Low</td>
                 <td>20m</td>
@@ -1178,8 +1253,8 @@
                 <td>10</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Test concurrent writes with different file permissions &mdash; verify perm
-                  preservation through unique temp
+                  Test concurrent writes with different file permissions &mdash;
+                  verify perm preservation through unique temp
                 </td>
                 <td>Low</td>
                 <td>15m</td>
@@ -1188,7 +1263,8 @@
                 <td>11</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Investigate <code>MOVEFILE_WRITE_THROUGH</code> for Windows directory durability
+                  Investigate <code>MOVEFILE_WRITE_THROUGH</code> for Windows
+                  directory durability
                 </td>
                 <td>Med</td>
                 <td>1h</td>
@@ -1207,8 +1283,9 @@
                 <td>13</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Consider <code>context.Context</code> support for <code>Write</code> &mdash;
-                  cancellation/timeout on slow filesystems
+                  Consider <code>context.Context</code> support for
+                  <code>Write</code> &mdash; cancellation/timeout on slow
+                  filesystems
                 </td>
                 <td>Med</td>
                 <td>1h</td>
@@ -1217,8 +1294,8 @@
                 <td>14</td>
                 <td><span class="badge badge-medium">Medium</span></td>
                 <td>
-                  Add <code>FingerprintStream</code> for large files &mdash; avoid reading entire
-                  file into memory
+                  Add <code>FingerprintStream</code> for large files &mdash;
+                  avoid reading entire file into memory
                 </td>
                 <td>Med</td>
                 <td>30m</td>
@@ -1226,7 +1303,10 @@
               <tr>
                 <td>15</td>
                 <td><span class="badge badge-low">Low</span></td>
-                <td>Verify all errors are wrapped with <code>%w</code> consistently</td>
+                <td>
+                  Verify all errors are wrapped with
+                  <code>%w</code> consistently
+                </td>
                 <td>Low</td>
                 <td>10m</td>
               </tr>
@@ -1234,8 +1314,8 @@
                 <td>16</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Test that <code>commitWithVerification</code> properly cleans up on lock
-                  acquisition failure
+                  Test that <code>commitWithVerification</code> properly cleans
+                  up on lock acquisition failure
                 </td>
                 <td>Low</td>
                 <td>15m</td>
@@ -1244,8 +1324,8 @@
                 <td>17</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Consider <code>WriteWithOptions</code> pattern for future options (fsync opt-out,
-                  custom temp dir)
+                  Consider <code>WriteWithOptions</code> pattern for future
+                  options (fsync opt-out, custom temp dir)
                 </td>
                 <td>Low</td>
                 <td>30m</td>
@@ -1254,8 +1334,8 @@
                 <td>18</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Document <code>randomSuffix</code> collision probability (4 bytes = 2^32 &mdash;
-                  sufficient?)
+                  Document <code>randomSuffix</code> collision probability (4
+                  bytes = 2^32 &mdash; sufficient?)
                 </td>
                 <td>Low</td>
                 <td>5m</td>
@@ -1264,8 +1344,8 @@
                 <td>19</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Verify <code>syncDir</code> handles <code>/tmp</code> (tmpfs &mdash; fsync is a
-                  no-op but shouldn't error)
+                  Verify <code>syncDir</code> handles <code>/tmp</code> (tmpfs
+                  &mdash; fsync is a no-op but shouldn't error)
                 </td>
                 <td>Low</td>
                 <td>10m</td>
@@ -1274,7 +1354,8 @@
                 <td>20</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Add test for directory fsync failure &mdash; should it return error or warn?
+                  Add test for directory fsync failure &mdash; should it return
+                  error or warn?
                 </td>
                 <td>Low</td>
                 <td>15m</td>
@@ -1283,8 +1364,8 @@
                 <td>21</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Review if <code>commitWithVerification</code> should also fsync after re-reading
-                  target
+                  Review if <code>commitWithVerification</code> should also
+                  fsync after re-reading target
                 </td>
                 <td>Low</td>
                 <td>10m</td>
@@ -1293,8 +1374,9 @@
                 <td>22</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Consider migration path for users upgrading from <code>.bak</code> version &mdash;
-                  old <code>.bak</code> files orphaned
+                  Consider migration path for users upgrading from
+                  <code>.bak</code> version &mdash; old <code>.bak</code> files
+                  orphaned
                 </td>
                 <td>Low</td>
                 <td>15m</td>
@@ -1313,8 +1395,8 @@
                 <td>24</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Add <code>.gitignore</code> entry for <code>docs/status/</code> if reports
-                  shouldn't be committed
+                  Add <code>.gitignore</code> entry for
+                  <code>docs/status/</code> if reports shouldn't be committed
                 </td>
                 <td>Low</td>
                 <td>2m</td>
@@ -1323,8 +1405,8 @@
                 <td>25</td>
                 <td><span class="badge badge-low">Low</span></td>
                 <td>
-                  Consider whether <code>.tmp</code> suffix should be configurable or remain
-                  hardcoded
+                  Consider whether <code>.tmp</code> suffix should be
+                  configurable or remain hardcoded
                 </td>
                 <td>Low</td>
                 <td>10m</td>
@@ -1337,37 +1419,46 @@
         <h2 id="question"><span class="num">07</span>#1 Open Question</h2>
 
         <div class="card card-problem">
-          <h4>Should <code>Write()</code> accept a <code>context.Context</code>?</h4>
+          <h4>
+            Should <code>Write()</code> accept a <code>context.Context</code>?
+          </h4>
           <p>
-            <code>Write()</code> now calls <code>file.Sync()</code>, which flushes to disk. On a
-            local SSD this takes microseconds. On a network filesystem (NFS, SMB, CephFS) or a slow
-            disk, <code>fsync</code> can take <strong>seconds or even minutes</strong>. There is no
-            way for a caller to cancel or timeout a write.
+            <code>Write()</code> now calls <code>file.Sync()</code>, which
+            flushes to disk. On a local SSD this takes microseconds. On a
+            network filesystem (NFS, SMB, CephFS) or a slow disk,
+            <code>fsync</code> can take
+            <strong>seconds or even minutes</strong>. There is no way for a
+            caller to cancel or timeout a write.
           </p>
           <p>
-            Adding <code>context.Context</code> is an API change. Go's convention is
-            <code>ctx</code> as the first parameter (<code>Write(ctx, path, data, fp)</code>), which
-            breaks every existing call site. Alternatively, a new function
-            <code>WriteContext</code> could be added alongside the existing <code>Write</code>.
+            Adding <code>context.Context</code> is an API change. Go's
+            convention is <code>ctx</code> as the first parameter (<code
+              >Write(ctx, path, data, fp)</code
+            >), which breaks every existing call site. Alternatively, a new
+            function <code>WriteContext</code> could be added alongside the
+            existing <code>Write</code>.
           </p>
           <p>
-            The deeper question: <strong>does fsync even respect context?</strong>
-            <code>file.Sync()</code> calls <code>fsync(2)</code>, which is a blocking syscall with
-            no cancellation primitive. A context-based timeout would need to run the write in a
-            goroutine and abandon it on timeout &mdash; leaving the temp file on disk. That's a
-            leak, not a clean cancel.
+            The deeper question:
+            <strong>does fsync even respect context?</strong>
+            <code>file.Sync()</code> calls <code>fsync(2)</code>, which is a
+            blocking syscall with no cancellation primitive. A context-based
+            timeout would need to run the write in a goroutine and abandon it on
+            timeout &mdash; leaving the temp file on disk. That's a leak, not a
+            clean cancel.
           </p>
           <div class="callout callout-problem">
             <strong>Why I can't figure this out myself:</strong>
-            This is a product decision, not a technical one. It depends on who the callers are and
-            whether they run on local disks (no timeout needed) or network filesystems (timeout
-            critical). I don't know the deployment context.
+            This is a product decision, not a technical one. It depends on who
+            the callers are and whether they run on local disks (no timeout
+            needed) or network filesystems (timeout critical). I don't know the
+            deployment context.
           </div>
         </div>
 
         <footer class="footer">
-          Generated 2026-06-28 03:32 &middot; All claims verified against source code &middot;
-          go-atomic-write master branch
+          Generated 2026-06-28 03:32 &middot; All claims verified against source
+          code &middot; go-atomic-write master branch
         </footer>
       </main>
     </div>

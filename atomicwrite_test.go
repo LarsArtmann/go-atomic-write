@@ -16,7 +16,7 @@ func tempFile(t *testing.T, content string) string {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "testfile")
 
-	err := os.WriteFile(path, []byte(content), 0o644) //nolint:gosec // test fixture uses 0644 inside t.TempDir
+	err := os.WriteFile(path, []byte(content), 0o644)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +172,7 @@ func TestWriteRejectsConcurrentModification(t *testing.T) {
 
 	modified := "modified"
 
-	err := os.WriteFile(path, []byte(modified), 0o644) //nolint:gosec // test fixture in t.TempDir
+	err := os.WriteFile(path, []byte(modified), 0o644)
 	if err != nil {
 		t.Fatalf("modify file: %v", err)
 	}
@@ -351,7 +351,7 @@ func TestAtomicRenameReportsErrorOnFailure(t *testing.T) {
 	ghostPath := filepath.Join(dir, "nonexistent", "dir", "testfile")
 	tmpPath := filepath.Join(dir, "temp-file")
 
-	err := os.WriteFile(tmpPath, []byte("content"), 0o644) //nolint:gosec // test fixture in t.TempDir
+	err := os.WriteFile(tmpPath, []byte("content"), 0o644)
 	if err != nil {
 		t.Fatalf("write temp: %v", err)
 	}

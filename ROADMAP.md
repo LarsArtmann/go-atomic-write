@@ -43,6 +43,7 @@ Raw ideas:
   syntax highlighting (Shiki/ExpressiveCode), mobile how-it-works flow connector
 - Dependents page (GitHub code search for importers) once the library has users
 - Social proof: testimonials, "used by" once adoption exists
+- Promotion push: the library has zero importers (pkg.go.dev "Imported by: 0" as of 2026-09-17) — README/profile presence, HN/Reddit show-case, or adoption by a flagship LarsArtmann project
 - Benchmark dashboard (à la GitHub Pages) for tracking xxhash64 vs SHA-256 over time
 - DNS: `atomicwrite.lars.software` and `go-atomic-write.lars.software` custom
   domains (external dependency — Namecheap DNS via Terraform)
@@ -57,6 +58,7 @@ Raw ideas:
 - Lock the public API after real-world usage feedback
 - Document the v1.0.0 compatibility guarantee and what counts as a breaking change
 - Release automation (`release.yml` tag-based GitHub releases) before cutting v1.0.0
+- Decide the release convention: keep tagging 0.x as GitHub `--prerelease` (skill convention) or switch to stable releases at v1.0
 
 ## Non-goals
 

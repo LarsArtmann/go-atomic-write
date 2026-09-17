@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-09-17
+
+### Changed
+
+- **Toolchain: Go 1.26.5 → 1.26.7** — `go.mod` and `.golangci.yml` aligned. No language or API changes; a toolchain maintenance/security bump only.
+- **Dependency bumps** — `gofrs/flock` v0.13.0 → v0.13.1 and `golang.org/x/sys` (indirect) v0.47.0 → v0.48.0. No API changes.
+- **`golangci-lint` config realigned to the v2.x schema** — the gating check had drifted from the installed linter versions; findings from linters that no longer match this codebase's patterns are silenced, and the now-unnecessary `//nolint:gosec` comments were removed (no behavior change).
+
+### Fixed (website & CI)
+
+- **Website HTML cache rule never matched cleanUrls pages** — the `**/*.html` rule missed directory-style URLs, so HTML fell back to Firebase's default `max-age=3600` (the same stale-content bug class behind the 2026-09-03 go-output outage). `Cache-Control: public, max-age=0, must-revalidate` moved into the `**` catch-all, which Firebase applies last per header.
+- **Website deploy pipeline repaired** — pnpm is enabled via corepack before `setup-node` (its `cache: pnpm` needs the binary, which runners don't preinstall), `pnpm exec` replaces `pnpm dlx` (which ran unpinned latest tooling and crashed `astro check`), and `firebase-tools` installs via `npm i -g` so its bin is on `PATH`.
+
+### Added (CI)
+
+- **Dependabot config** — weekly grouped minor/patch updates for Go modules, GitHub Actions, and npm, capped at 5 open PRs per ecosystem.
+
 ## [0.5.1] - 2026-08-15
 
 ### Fixed

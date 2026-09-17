@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-atomic-write
 
-go 1.26.7
+go 1.27.1
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0

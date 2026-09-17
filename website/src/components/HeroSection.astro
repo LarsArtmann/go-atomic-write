@@ -1,6 +1,6 @@
 ---
 import { siteConfig } from '../data/config';
-import { heroCode } from '../data/hero-code';
+import { heroCode, highlightedHeroCode } from '../data/hero-code';
 import Icon from './Icon.astro';
 
 async function getGitHubStars(): Promise<number | null> {
@@ -22,28 +22,9 @@ const stars = await getGitHubStars();
 const starsText = stars !== null ? `${stars} Stars` : 'Star on GitHub';
 
 const importPath = siteConfig.github.replace('https://github.com/', 'github.com/');
+const installCommand = `go get ${importPath}@latest`;
 
-const highlightedCode = `<span class="text-text-muted">package</span> <span class="text-text-secondary">main</span>
-
-<span class="text-text-muted">import</span> (
-    <span class="text-text-muted">"os"</span>
-
-    atomicwrite <span class="text-accent-hover">"${importPath}"</span>
-)
-
-<span class="text-text-muted">func</span> <span class="text-accent">main</span>() {
-    path := <span class="text-amber">"/etc/app/config.json"</span>
-
-    data, _ := os.<span class="text-accent">ReadFile</span>(path)
-    fp := atomicwrite.<span class="text-accent">FingerprintFromBytes</span>(data)
-
-    newData := []<span class="text-text-muted">byte</span>(<span class="text-amber">\`{"updated": true}\`</span>)
-
-    err := atomicwrite.<span class="text-accent">Write</span>(path, newData, fp)
-    <span class="text-code-comment">// err == ErrConcurrentModification if someone</span>
-    <span class="text-code-comment">// else wrote between your read and write</span>
-    _ = err
-}`;
+const highlightedCode = highlightedHeroCode();
 
 const metrics = [
   { value: '2', label: 'Dependencies' },
@@ -68,13 +49,21 @@ const metrics = [
       Never lose a <span class="text-accent">byte</span> to a crash.
     </h1>
 
-    <p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
-      TOCTOU-safe writes via fingerprint verification, cross-platform locking, atomic rename, and fsync for crash durability.
+    <p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-8 leading-relaxed">
+      If two processes write the same file, one silently wins and the other silently loses data. This makes that impossible, in three lines of Go.
     </p>
 
+    <div class="relative max-w-md mx-auto mb-8">
+      <div class="flex items-center gap-3 px-4 py-3 rounded-lg border border-border-accent bg-bg-card-solid text-left font-mono text-sm">
+        <span class="text-accent select-none" aria-hidden="true">$</span>
+        <code class="flex-1 min-w-0 overflow-x-auto whitespace-nowrap text-text-primary">{installCommand}</code>
+        <button type="button" data-copy data-code={installCommand} class="shrink-0 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150" aria-label="Copy install command">Copy</button>
+      </div>
+    </div>
+
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
-      <a href="/getting-started/installation/" data-astro-prefetch class="px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 inline-flex items-center gap-2 border-none cursor-pointer shadow-lg shadow-accent/20 hover:shadow-accent/30 hover:-translate-y-0.5">
-        Get Started
+      <a href="/getting-started/installation/" data-astro-prefetch class="px-6 py-3 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5">
+        Read the docs
         <Icon name="arrow-right" size={16} />
       </a>
       <a href={siteConfig.github} target="_blank" rel="noopener noreferrer" class="px-6 py-3 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5">
@@ -105,7 +94,7 @@ const metrics = [
           <span class="ml-3 text-xs text-text-muted font-mono">main.go</span>
         </div>
         <pre class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative"><code id="hero-code" set:html={highlightedCode} /></pre>
-        <button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={heroCode} aria-label="Copy code to clipboard">Copy</button>
+        <button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" data-copy data-code={heroCode} aria-label="Copy code to clipboard">Copy</button>
       </div>
     </div>
   </div>

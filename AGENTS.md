@@ -130,8 +130,8 @@ Both are intentional, minimal, and not candidates for replacement.
 - `FingerprintFile` returns zero-value (not an error) for nonexistent files — this is the "first write" sentinel
 - File permissions are preserved from the existing file, defaulting to `0644` for new files
 - `ErrConcurrentModification` is a sentinel `errors.New` value — always check with `errors.Is`, not string matching
-- The `//nolint:gosec` comments on `os.ReadFile`/`os.OpenFile`/`os.Open` calls are intentional — `path` is caller-controlled, not user input
-- The `//nolint:gosec` comments on `os.ReadFile`/`os.WriteFile` calls in `atomicwrite_test.go` are intentional — all paths are `t.TempDir()`-rooted and never user input
+- Only `//nolint:makezero` remains in `hash_bench_test.go` — the `//nolint:gosec` comments were removed in 0.5.2 when the linter config was realigned; do not re-add them reflexively
+- **golangci-lint GitHub Action must be v7+** for golangci-lint v2 (action v6 refuses `version: v2.x`), and the lint version must be pinned explicitly (`version: v2.13.2`) — `version: latest` resolves to the ancient v1.x line built with go1.24
 - Lint is gating: a single `golangci-lint` issue blocks merging. Common pitfalls:
   - Single-letter variables (`fp`, `wg`, `h`, `mb`) trigger `varnamelen` — use full words
   - Inline `if err := …; err != nil` triggers `noinlineerr` — assign first, then check
@@ -140,6 +140,7 @@ Both are intentional, minimal, and not candidates for replacement.
   - `os.ReadFile(path)`/`os.OpenFile` with a variable path triggers `gosec G304` — annotate with `//nolint:gosec` and rationale
   - Blank line between error assignment and `if err != nil` triggers `wsl_v5` — put the blank line above the assignment instead
   - New third-party imports require updating `.golangci.yml` `depguard.rules.main.allow`
+  - `exhaustruct` was deprecated in golangci-lint v2.13.0 — migration to `exhaustruct_v5` is pending (tracked in TODO_LIST.md)
 - **Website changelog page is GENERATED** — `website/src/content/docs/changelog.mdx` is produced from root `CHANGELOG.md` by `scripts/sync-changelog.mjs` (runs on `prebuild`/`predev`). Edit `CHANGELOG.md`, never the `.mdx`. If the build breaks with an MDX "unexpected character" error, a changelog entry likely contains a raw `<`; the sync script escapes `<` but check new entries.
 - **Website CSP is hash-based and post-build** — `scripts/fix-csp.mjs` (`postbuild`) injects a per-file CSP `<meta>` from inline-script SHA-256 hashes. There is **no `'unsafe-inline'` for `script-src`**. If a new inline script breaks the site under CSP, either move it to an external `/js/*.js` file (loaded via `<script is:inline src=…>`) or confirm `fix-csp.mjs` hashed it.
 - **Do NOT add `website/src/pages/404.astro`** — Starlight ships its own `404.html`. A custom one causes a route collision (warning today, hard error in future Astro). The `404 was not found` line during build is a benign Starlight route log, not a warning.
@@ -147,3 +148,7 @@ Both are intentional, minimal, and not candidates for replacement.
 - **OG image is static, not dynamic** — `public/og-image.svg` is the editable source; `public/og-image.png` is the generated 1200×630 output. Regenerate with `magick -background none public/og-image.svg -resize 1200x630! public/og-image.png` (ImageMagick 7). No `astro-og-canvas` dependency needed.
 - **Lighthouse CI needs chromium** — `pnpm run lighthouse` requires Chrome/Chromium. The Nix devShell provides it and sets `CHROME_PATH`. Run via `nix develop` or `nix shell nixpkgs#nodejs_24 nixpkgs#chromium`.
 - **`website/.editorconfig` uses `root = true`** — this intentionally decouples the website from the Go-rooted `.editorconfig` (which uses tabs). The website uses 2-space indentation for all files.
+- **`astro check` requires TypeScript 6.x** — TS7's native compiler dropped the programmatic API that `astro check` needs; `website/package.json` pins `typescript` `^6.0.3` deliberately. Do not let Dependabot/auto-updaters bump it to 7.
+- **The auto-commit daemon commits manifest changes without lockfiles** — this caused four `pnpm install --frozen-lockfile` CI failures (09-09, 09-13, 09-15, 09-17). After any `package.json`/`go.mod` change, regenerate the lockfile (`pnpm install`, `go mod tidy`) in the same change or CI breaks.
+- **Website deploy needs `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE`** — a repo secret holding a JSON key for `github-website-deploy@lars-software.iam.gserviceaccount.com` (the shared GitHub-deploy SA; templ-components uses the same SA pattern). Without it every CI deploy fails at the final step and the live site silently freezes (it was stale 2026-07-26 → 2026-09-17 for exactly this reason). Local deploys work without the secret: `nix shell nixpkgs#nodejs nixpkgs#firebase-tools -c firebase deploy --only hosting:atomicwrite --project lars-software` (firebase-tools is logged in as `lartyhd@gmail.com`). IAM for `lars-software` is only visible to `lartyhd@gmail.com`, not `lars@helpless.ai`.
+- **The `firebase-adminsdk` SA has hit GCP's 10-key cap** — minting new keys for it fails with `FAILED_PRECONDITION`. Use `github-website-deploy@lars-software` for new CI keys instead.

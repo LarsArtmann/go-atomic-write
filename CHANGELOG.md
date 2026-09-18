@@ -11,14 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - **Landing page leads with the consequence instead of the mechanism** — the hero subheadline now names the failure mode ("if two processes write the same file, one silently loses data") rather than listing four mechanisms, and the primary hero action is the copyable `go get` command. Feature titles state outcomes ("No silent overwrites", "Survives power loss") instead of implementation names.
 - **Meta description rewritten** for search results and social previews: crash-safe framing instead of a TOCTOU and fsync mechanism list.
+- **Module path is now a single constant** (`siteConfig.modulePath`) — the hero snippet, the copyable `go get` command, the GitHub link, the pkg.go.dev link, and the Starlight docs meta description all derive from it. The module path was previously rebuilt by string-replacing `siteConfig.github` in two separate files, a smaller copy of the same split-brain bug.
+- **Remaining corporate-register copy replaced** — the feature grid subtitle now describes what the library does instead of "every decision optimized for…", and the README lead names the three concrete failure modes rather than a mechanism list.
 
 ### Added (website)
 
 - **Landing page FAQ** — answers "why not a temp file plus rename?", "what does a write cost?", "what happens when two writers race?", and "when should I not use this?".
+- **Build-time verification gate** (`website/scripts/verify-build.mjs`, run from `postbuild`) — asserts the hero code shown in `dist/index.html` is byte-identical to the code its copy button copies, that the install command matches the `go.mod` module path, and that every `[data-copy]` button carries a non-empty payload. A regression of the hero split brain now fails the build.
+- **`pnpm run validate`** — runs `html-validate` on the built landing page; wired into the Website CI workflow.
+- **i18n content collection** (`src/content/i18n/en.json`, intentionally empty) — silences the `The collection "i18n" does not exist or is empty` warning Starlight emitted on every build.
 
 ### Fixed (website)
 
 - **Landing page hero sample did not compile** — the rendered snippet called `atomicwrite.Write(path, newData, fp)`, but `Write` takes only `(path, data)`; the copy button copied the correct `WriteVerified` call, so the visible code and the copied code disagreed. Both now derive from a single token list in `website/src/data/hero-code.ts`, so they cannot drift again.
+- **README attributed `ErrConcurrentModification` to the wrong function** — it claimed `Write` returns it on fingerprint mismatch, but `Write` takes no fingerprint. Corrected to `WriteVerified`.
+- **Copy buttons survive navigation and announce success** — `copy-code.js` now installs one delegated click listener instead of binding per element, so it cannot double-bind across ClientRouter navigations, and it writes "Copied to clipboard" into a `role="status"` live region for screen readers.
+
+### Removed (website)
+
+- **`website/src/styles/global.out.css`** — a 44 KB generated Tailwind output with no references anywhere in the build; a leftover from an older CLI workflow.
 
 ### Fixed (CI)
 

@@ -1,12 +1,12 @@
 # Status Report: Landing Page Messaging Rewrite + Hero Split-Brain Fix
 
-| Field | Value |
-| --- | --- |
-| Date | 2026-09-18 06:11 CEST |
-| Session type | Website copy + bug fix (no Go source touched) |
-| Scope | `website/` landing page, hero sample, feature copy, FAQ, meta description, docs |
-| Outcome | All attempted work complete and verified against built output |
-| Predecessor | `2026-09-17_20-57_website-unfreeze-and-ci-deploy-repair.md` |
+| Field        | Value                                                                           |
+| ------------ | ------------------------------------------------------------------------------- |
+| Date         | 2026-09-18 06:11 CEST                                                           |
+| Session type | Website copy + bug fix (no Go source touched)                                   |
+| Scope        | `website/` landing page, hero sample, feature copy, FAQ, meta description, docs |
+| Outcome      | All attempted work complete and verified against built output                   |
+| Predecessor  | `2026-09-17_20-57_website-unfreeze-and-ci-deploy-repair.md`                     |
 
 ---
 
@@ -36,75 +36,76 @@ Everything in section (f). The three highest-value items are: OG image + README/
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-| --- | --- | --- |
-| 1 | Hero split brain fixed | `heroCode` and `highlightedHeroCode()` both derive from one token list in `website/src/data/hero-code.ts` |
-| 2 | Verified parity in built output | Node script parsed `dist/index.html`: `visible === payload: true` |
-| 3 | Verified the bug is gone | Payload contains `atomicwrite.WriteVerified(path, newData, fp)`; no 3-arg `Write` remains |
-| 4 | Hero subheadline rewritten | Now names the failure mode instead of listing four mechanisms |
-| 5 | Physical primary action added | Copyable `go get github.com/larsartmann/go-atomic-write@latest` bar, `data-copy`, accent-bordered |
-| 6 | CTA hierarchy corrected | One primary (install), two secondary (docs, star) |
-| 7 | Feature titles converted to outcomes | 6 of 6 rewritten; descriptions preserved for the technical reader |
-| 8 | Feature 1 description de-duplicated | No longer repeats its own title |
-| 9 | Meta description rewritten | New crash-safe framing confirmed in `dist/index.html` |
-| 10 | FAQ section added | `FaqSection.astro`, 6 items, native `<details>`, zero JS |
-| 11 | FAQ claims verified against Go source | Checked `commitVerified`, `WriteIfChanged`, `rename_windows.go`, `FingerprintFromBytes` |
-| 12 | Copy handler generalized | `copy-code.js` binds every `[data-copy]`, not one `#copy-btn` |
-| 13 | `plus` icon added | `types.ts` `uiIconKeys` + `Icon.astro` path map |
-| 14 | FAQ wired into page | `Sections.astro` renders it before the final CTA |
-| 15 | Tailwind classes confirmed emitted | `group-open:rotate-45`, `open:border-border-accent`, marker-hidden all present in built CSS |
-| 16 | Syntax classes survive the `.ts` move | `text-amber`, `text-code-comment`, `text-accent-hover` all emitted |
-| 17 | Typecheck clean | `astro check`: 0 errors, 0 warnings, 0 hints (32 files) |
-| 18 | Build clean | 11 pages, `fix-csp.mjs` patched 11 files |
-| 19 | HTML validity | `html-validate dist/index.html`: exit 0 |
-| 20 | Live serving verified | `astro preview` on :4321 served the full page and the updated `/js/copy-code.js` |
-| 21 | Stars grammar fixed | "1 Stars" to "1 Star" (singular-aware) |
-| 22 | CHANGELOG updated | `[Unreleased]` gained Changed/Added/Fixed (website) sections |
-| 23 | Changelog page regenerated | `sync-changelog` output contains all three new entries |
-| 24 | Memory updated | `AGENTS.md`: hero single-source gotcha, declarative copy buttons, component count corrected 14 to 16 |
-| 25 | Scope verified clean | `git status` shows only the two in-flight files; no stray artifacts |
+| #  | Item                                  | Evidence                                                                                                  |
+| -- | ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 1  | Hero split brain fixed                | `heroCode` and `highlightedHeroCode()` both derive from one token list in `website/src/data/hero-code.ts` |
+| 2  | Verified parity in built output       | Node script parsed `dist/index.html`: `visible === payload: true`                                         |
+| 3  | Verified the bug is gone              | Payload contains `atomicwrite.WriteVerified(path, newData, fp)`; no 3-arg `Write` remains                 |
+| 4  | Hero subheadline rewritten            | Now names the failure mode instead of listing four mechanisms                                             |
+| 5  | Physical primary action added         | Copyable `go get github.com/larsartmann/go-atomic-write@latest` bar, `data-copy`, accent-bordered         |
+| 6  | CTA hierarchy corrected               | One primary (install), two secondary (docs, star)                                                         |
+| 7  | Feature titles converted to outcomes  | 6 of 6 rewritten; descriptions preserved for the technical reader                                         |
+| 8  | Feature 1 description de-duplicated   | No longer repeats its own title                                                                           |
+| 9  | Meta description rewritten            | New crash-safe framing confirmed in `dist/index.html`                                                     |
+| 10 | FAQ section added                     | `FaqSection.astro`, 6 items, native `<details>`, zero JS                                                  |
+| 11 | FAQ claims verified against Go source | Checked `commitVerified`, `WriteIfChanged`, `rename_windows.go`, `FingerprintFromBytes`                   |
+| 12 | Copy handler generalized              | `copy-code.js` binds every `[data-copy]`, not one `#copy-btn`                                             |
+| 13 | `plus` icon added                     | `types.ts` `uiIconKeys` + `Icon.astro` path map                                                           |
+| 14 | FAQ wired into page                   | `Sections.astro` renders it before the final CTA                                                          |
+| 15 | Tailwind classes confirmed emitted    | `group-open:rotate-45`, `open:border-border-accent`, marker-hidden all present in built CSS               |
+| 16 | Syntax classes survive the `.ts` move | `text-amber`, `text-code-comment`, `text-accent-hover` all emitted                                        |
+| 17 | Typecheck clean                       | `astro check`: 0 errors, 0 warnings, 0 hints (32 files)                                                   |
+| 18 | Build clean                           | 11 pages, `fix-csp.mjs` patched 11 files                                                                  |
+| 19 | HTML validity                         | `html-validate dist/index.html`: exit 0                                                                   |
+| 20 | Live serving verified                 | `astro preview` on :4321 served the full page and the updated `/js/copy-code.js`                          |
+| 21 | Stars grammar fixed                   | "1 Stars" to "1 Star" (singular-aware)                                                                    |
+| 22 | CHANGELOG updated                     | `[Unreleased]` gained Changed/Added/Fixed (website) sections                                              |
+| 23 | Changelog page regenerated            | `sync-changelog` output contains all three new entries                                                    |
+| 24 | Memory updated                        | `AGENTS.md`: hero single-source gotcha, declarative copy buttons, component count corrected 14 to 16      |
+| 25 | Scope verified clean                  | `git status` shows only the two in-flight files; no stray artifacts                                       |
 
 ## b) PARTIALLY DONE
 
-| # | Item | What is done | What is missing |
-| --- | --- | --- | --- |
-| 1 | Messaging consistency across the project | Landing page rewritten | README, 9 docs pages, OG image, FeatureGrid subtitle not audited |
-| 2 | Copy-button UX | Two buttons work via one handler | No `aria-live` announcement; success is visual only |
-| 3 | FAQ content | 6 accurate answers, all source-verified | No links out to `guides/benchmarks` or `guides/error-handling`, which discuss the same ground |
-| 4 | FeatureGrid voice | Titles are outcome-first | Section subtitle still reads "Every decision optimized for..." |
-| 5 | Commit hygiene | Changes are on disk and build | Two heuristic auto-commits; the stars fix is still uncommitted |
-| 6 | Verification depth | DOM, CSS, HTML, HTTP all verified | No pixels, no Lighthouse, no contrast measurement |
+| # | Item                                     | What is done                            | What is missing                                                                               |
+| - | ---------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 1 | Messaging consistency across the project | Landing page rewritten                  | README, 9 docs pages, OG image, FeatureGrid subtitle not audited                              |
+| 2 | Copy-button UX                           | Two buttons work via one handler        | No `aria-live` announcement; success is visual only                                           |
+| 3 | FAQ content                              | 6 accurate answers, all source-verified | No links out to `guides/benchmarks` or `guides/error-handling`, which discuss the same ground |
+| 4 | FeatureGrid voice                        | Titles are outcome-first                | Section subtitle still reads "Every decision optimized for..."                                |
+| 5 | Commit hygiene                           | Changes are on disk and build           | Two heuristic auto-commits; the stars fix is still uncommitted                                |
+| 6 | Verification depth                       | DOM, CSS, HTML, HTTP all verified       | No pixels, no Lighthouse, no contrast measurement                                             |
 
 ## c) NOT STARTED
 
-| # | Item |
-| --- | --- |
-| 1 | OG image text audit and PNG regeneration |
-| 2 | README voice alignment with the new landing page |
-| 3 | Docs-site voice audit (9 pages) |
-| 4 | Automated parity assertion (`displayed === clipboard`) in a test or build step |
-| 5 | `importPath` consolidation into one exported constant |
-| 6 | Removal of the now-dead `id="hero-code"` attribute |
-| 7 | Lighthouse CI run and recorded scores |
-| 8 | Accessibility sweep (contrast, focus rings, keyboard order) |
-| 9 | Mobile width verification of the install bar and FAQ grid |
-| 10 | ClientRouter re-bind verification (does `[data-copy]` survive view-transition navigation?) |
-| 11 | Deploy to Firebase and live-site verification |
-| 12 | Investigation of the Starlight "i18n collection does not exist" build warning |
+| #  | Item                                                                                             |
+| -- | ------------------------------------------------------------------------------------------------ |
+| 1  | OG image text audit and PNG regeneration                                                         |
+| 2  | README voice alignment with the new landing page                                                 |
+| 3  | Docs-site voice audit (9 pages)                                                                  |
+| 4  | Automated parity assertion (`displayed === clipboard`) in a test or build step                   |
+| 5  | `importPath` consolidation into one exported constant                                            |
+| 6  | Removal of the now-dead `id="hero-code"` attribute                                               |
+| 7  | Lighthouse CI run and recorded scores                                                            |
+| 8  | Accessibility sweep (contrast, focus rings, keyboard order)                                      |
+| 9  | Mobile width verification of the install bar and FAQ grid                                        |
+| 10 | ClientRouter re-bind verification (does `[data-copy]` survive view-transition navigation?)       |
+| 11 | Deploy to Firebase and live-site verification                                                    |
+| 12 | Investigation of the Starlight "i18n collection does not exist" build warning                    |
 | 13 | Investigation of `website/src/styles/global.out.css` (possibly a stale committed build artifact) |
-| 14 | CI alignment: html-validate / typecheck / link-check steps |
+| 14 | CI alignment: html-validate / typecheck / link-check steps                                       |
 
 ## d) TOTALLY FUCKED UP
 
 Honest list. Nothing was destroyed, but three things were genuinely wrong at session start or introduce risk:
 
-1. **THE SPLIT BRAIN (pre-existing, high severity).** The landing page shipped a Go sample that could not compile: `atomicwrite.Write(path, newData, fp)`, while `Write` takes `(path, data)` only. Worse, the copy button copied a *different* string (`WriteVerified`). A visitor reading the page and a visitor copying the code received different APIs. Fixed and verified, but it had been live.
+1. **THE SPLIT BRAIN (pre-existing, high severity).** The landing page shipped a Go sample that could not compile: `atomicwrite.Write(path, newData, fp)`, while `Write` takes `(path, data)` only. Worse, the copy button copied a _different_ string (`WriteVerified`). A visitor reading the page and a visitor copying the code received different APIs. Fixed and verified, but it had been live.
 2. **`1 Stars` (pre-existing, low severity).** The star button rendered "1 Stars" for a single stargazer. Fixed.
 3. **History quality (self-inflicted this session).** I let the auto-commit daemon produce `chore: auto-commit 11 changed file(s) (heuristic)` for a 13-file messaging change. I was not asked to commit, so I did not, but the result is that the reasoning behind these changes exists only in this report, not in git.
 
 ## e) WHAT WE SHOULD IMPROVE
 
 **Process**
+
 1. Treat a description/copy change as a multi-surface change and grep for the old string across the repo before declaring done.
 2. When a fix removes a whole class of bug, add the assertion that proves it stays removed.
 3. Commit per logical task when the daemon is racing, so history explains intent.
@@ -125,6 +126,7 @@ Honest list. Nothing was destroyed, but three things were genuinely wrong at ses
 ## f) UP TO 50 THINGS TO GET DONE NEXT
 
 **Consistency (highest value)**
+
 1. Audit `public/og-image.svg`; rewrite its copy if it carries the old mechanism sentence; regenerate `og-image.png` at 1200x630.
 2. Rewrite `README.md` to lead with the consequence, matching the new landing page.
 3. Audit all 9 Starlight docs pages for the old mechanism-first sentence.
@@ -206,16 +208,16 @@ I verified DOM, CSS, HTML validity, and live serving, but I have not seen pixels
 
 ## Session Metrics
 
-| Metric | Value |
-| --- | --- |
-| Files changed | 13 (12 website/docs + `AGENTS.md`; `changelog.mdx` is generated) |
-| New files | 1 (`FaqSection.astro`) |
-| Go source touched | 0 |
-| Build time | ~4 to 7s |
-| Typecheck | 0 errors / 0 warnings / 0 hints |
-| Bugs fixed | 3 (non-compiling hero sample, code/clipboard divergence, "1 Stars") |
-| Bugs introduced | 0 detected |
-| Deploys performed | 0 |
-| Tests added | 0 (flagged as the top process gap) |
+| Metric            | Value                                                               |
+| ----------------- | ------------------------------------------------------------------- |
+| Files changed     | 13 (12 website/docs + `AGENTS.md`; `changelog.mdx` is generated)    |
+| New files         | 1 (`FaqSection.astro`)                                              |
+| Go source touched | 0                                                                   |
+| Build time        | ~4 to 7s                                                            |
+| Typecheck         | 0 errors / 0 warnings / 0 hints                                     |
+| Bugs fixed        | 3 (non-compiling hero sample, code/clipboard divergence, "1 Stars") |
+| Bugs introduced   | 0 detected                                                          |
+| Deploys performed | 0                                                                   |
+| Tests added       | 0 (flagged as the top process gap)                                  |
 
 **Waiting for instructions.**

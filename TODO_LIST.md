@@ -22,34 +22,34 @@
 
 ## High Impact
 
-| Task                                                                       | Status | Impact | Effort | Evidence                                                                                |
-| -------------------------------------------------------------------------- | ------ | ------ | ------ | --------------------------------------------------------------------------------------- |
-| Add `GOOS=windows` + `GOOS=darwin` build matrix to CI (v0.5.1 was exactly such a break; Linux-only CI can't catch it) | 🔴 TODO | High   | S      | `.github/workflows/ci.yml`; report §f #3                                                |
-| npm vulnerability sweep: clear the 10 high Dependabot alerts (astro ecosystem bumps) | 🔴 TODO | High   | M      | https://github.com/LarsArtmann/go-atomic-write/security/dependabot; report §f #6        |
+| Task                                                                                                                  | Status  | Impact | Effort | Evidence                                                                         |
+| --------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | -------------------------------------------------------------------------------- |
+| Add `GOOS=windows` + `GOOS=darwin` build matrix to CI (v0.5.1 was exactly such a break; Linux-only CI can't catch it) | 🔴 TODO | High   | S      | `.github/workflows/ci.yml`; report §f #3                                         |
+| npm vulnerability sweep: clear the 10 high Dependabot alerts (astro ecosystem bumps)                                  | 🔴 TODO | High   | M      | https://github.com/LarsArtmann/go-atomic-write/security/dependabot; report §f #6 |
 
 ## Medium Impact
 
-| Task                                                                             | Status | Impact | Effort | Evidence                                                     |
-| -------------------------------------------------------------------------------- | ------ | ------ | ------ | ------------------------------------------------------------ |
-| Investigate why the Dependabot `npm_and_yarn` run fails                          | 🔴 TODO | Medium | S      | Dependabot run #1579905290; report §f #7                     |
-| Add CI guard job: `pnpm install --frozen-lockfile` + `go mod tidy -diff` (auto-commit daemon drift tripwire — 4 CI breaks: 09-09/09-13/09-15/09-17) | 🔴 TODO | Medium | S      | `AGENTS.md` daemon gotcha; report §f #9                      |
-| Add `govulncheck` job for the Go module in CI                                    | 🔴 TODO | Medium | S      | `.github/workflows/ci.yml`; report §f #10                    |
-| Find what wrote `go 1.27.1` into `go.mod` at 2026-09-17 ~09:29 (auto-commit 77b79cc) and prevent recurrence | 🔴 TODO | Medium | S      | commit `77b79cc`; report §f #11                              |
-| Consumer propagation: enumerate LarsArtmann repos importing go-atomic-write; bump them to v0.5.2 | 🔴 TODO | Medium | M      | pkg.go.dev shows "Imported by: 0"; report §f #12             |
+| Task                                                                                                                                                | Status  | Impact | Effort | Evidence                                         |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ------------------------------------------------ |
+| Investigate why the Dependabot `npm_and_yarn` run fails                                                                                             | 🔴 TODO | Medium | S      | Dependabot run #1579905290; report §f #7         |
+| Add CI guard job: `pnpm install --frozen-lockfile` + `go mod tidy -diff` (auto-commit daemon drift tripwire — 4 CI breaks: 09-09/09-13/09-15/09-17) | 🔴 TODO | Medium | S      | `AGENTS.md` daemon gotcha; report §f #9          |
+| Add `govulncheck` job for the Go module in CI                                                                                                       | 🔴 TODO | Medium | S      | `.github/workflows/ci.yml`; report §f #10        |
+| Find what wrote `go 1.27.1` into `go.mod` at 2026-09-17 ~09:29 (auto-commit 77b79cc) and prevent recurrence                                         | 🔴 TODO | Medium | S      | commit `77b79cc`; report §f #11                  |
+| Consumer propagation: enumerate LarsArtmann repos importing go-atomic-write; bump them to v0.5.2                                                    | 🔴 TODO | Medium | M      | pkg.go.dev shows "Imported by: 0"; report §f #12 |
 
 ## Low Impact
 
-| Task                                                                        | Status | Impact | Effort | Evidence                                                  |
-| --------------------------------------------------------------------------- | ------ | ------ | ------ | --------------------------------------------------------- |
-| Migrate `exhaustruct` → `exhaustruct_v5` in `.golangci.yml` (deprecated since golangci-lint v2.13.0) | 🔴 TODO | Low | S | `.golangci.yml:42,151`; lint warning; report §f #13       |
-| Consistency gate for the version trio (`go.mod` / `.golangci.yml` run.go / `AGENTS.md`) | 🔴 TODO | Low | S | `AGENTS.md:122` drift gotcha; report §f #14               |
-| Update README benchmark header "Go 1.26.3" → current toolchain (1.26.7)     | 🔴 TODO | Low   | S      | `README.md:217`; report §f #15                            |
-| Remove `minimumReleaseAgeExclude: astro@7.3.3` from `pnpm-workspace.yaml` once its release-age threshold passes | 🔴 TODO | Low | S | `website/pnpm-workspace.yaml`; report §f #16              |
-| Pin `GOTOOLCHAIN` in CI workflows (setup-go manifest lag risk)              | 🔴 TODO | Low   | S      | `.github/workflows/ci.yml`; report §f #18                 |
-| Re-check Dependabot config caps (5 PRs/ecosystem) after the npm vuln sweep  | 🔴 TODO | Low   | S      | `.github/dependabot.yml`; report §f #20                   |
-| Add release-checklist section to AGENTS.md (CI-green-first ordering, cross-compile gate) | 🔴 TODO | Low | S | report §d self-critique; report §f #21                    |
-| Run Lighthouse CI against the deployed site post-deploy                     | 🔴 TODO | Low   | S      | `website/lighthouserc.json`; report §f #22                |
-| Track + bump Node-20-deprecated action SHAs when compatible versions ship   | 🔴 TODO | Low   | S      | Website workflow Node.js 20 deprecation annotations; report §f #24 |
+| Task                                                                                                            | Status  | Impact | Effort | Evidence                                                           |
+| --------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ------------------------------------------------------------------ |
+| Migrate `exhaustruct` → `exhaustruct_v5` in `.golangci.yml` (deprecated since golangci-lint v2.13.0)            | 🔴 TODO | Low    | S      | `.golangci.yml:42,151`; lint warning; report §f #13                |
+| Consistency gate for the version trio (`go.mod` / `.golangci.yml` run.go / `AGENTS.md`)                         | 🔴 TODO | Low    | S      | `AGENTS.md:122` drift gotcha; report §f #14                        |
+| Update README benchmark header "Go 1.26.3" → current toolchain (1.26.7)                                         | 🔴 TODO | Low    | S      | `README.md:217`; report §f #15                                     |
+| Remove `minimumReleaseAgeExclude: astro@7.3.3` from `pnpm-workspace.yaml` once its release-age threshold passes | 🔴 TODO | Low    | S      | `website/pnpm-workspace.yaml`; report §f #16                       |
+| Pin `GOTOOLCHAIN` in CI workflows (setup-go manifest lag risk)                                                  | 🔴 TODO | Low    | S      | `.github/workflows/ci.yml`; report §f #18                          |
+| Re-check Dependabot config caps (5 PRs/ecosystem) after the npm vuln sweep                                      | 🔴 TODO | Low    | S      | `.github/dependabot.yml`; report §f #20                            |
+| Add release-checklist section to AGENTS.md (CI-green-first ordering, cross-compile gate)                        | 🔴 TODO | Low    | S      | report §d self-critique; report §f #21                             |
+| Run Lighthouse CI against the deployed site post-deploy                                                         | 🔴 TODO | Low    | S      | `website/lighthouserc.json`; report §f #22                         |
+| Track + bump Node-20-deprecated action SHAs when compatible versions ship                                       | 🔴 TODO | Low    | S      | Website workflow Node.js 20 deprecation annotations; report §f #24 |
 
 ---
 

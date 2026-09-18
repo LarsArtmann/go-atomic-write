@@ -75,7 +75,7 @@ Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 | `website/.firebaserc`           | Firebase project + hosting target                                                                                                  |
 | `website/lighthouserc.json`     | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)                                                       |
 | `website/.editorconfig`         | Standalone editor config for the website subtree (2-space indent, `root = true`)                                                   |
-| `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` + `verify-build.mjs` (postbuild)                                 |
+| `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` + `verify-build.mjs` (postbuild)                                |
 | `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)                                                                      |
 
 ### DNS

@@ -7,16 +7,16 @@ const repoRoot = join(websiteRoot, "..");
 
 const failures = [];
 const check = (condition, message) => {
-  if (!condition) failures.push(message);
+	if (!condition) failures.push(message);
 };
 
 const decodeEntities = (value) =>
-  value
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
+	value
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;/g, "'")
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">")
+		.replace(/&amp;/g, "&");
 
 const stripTags = (value) => value.replace(/<[^>]+>/g, "");
 
@@ -31,43 +31,41 @@ check(Boolean(heroBlock), "hero code block not found in dist/index.html");
 
 const visibleCode = heroBlock ? decodeEntities(stripTags(heroBlock[1])) : "";
 
-const copyButton = html.match(
-  /code-preview[\s\S]*?<button[^>]*data-copy[^>]*data-code="([^"]*)"/,
-);
+const copyButton = html.match(/code-preview[\s\S]*?<button[^>]*data-copy[^>]*data-code="([^"]*)"/);
 check(Boolean(copyButton), "hero copy button with data-code not found in dist/index.html");
 
 const copiedCode = copyButton ? decodeEntities(copyButton[1]) : "";
 
 check(
-  visibleCode === copiedCode,
-  "hero code shown on the page does not match the code the copy button copies",
+	visibleCode === copiedCode,
+	"hero code shown on the page does not match the code the copy button copies",
 );
 
 if (modulePath) {
-  check(
-    html.includes(`go get ${modulePath}@latest`),
-    `install command is missing "go get ${modulePath}@latest"`,
-  );
-  check(
-    visibleCode.includes(`"${modulePath}"`),
-    `hero import path does not match the go.mod module path (${modulePath})`,
-  );
+	check(
+		html.includes(`go get ${modulePath}@latest`),
+		`install command is missing "go get ${modulePath}@latest"`,
+	);
+	check(
+		visibleCode.includes(`"${modulePath}"`),
+		`hero import path does not match the go.mod module path (${modulePath})`,
+	);
 }
 
 const copyButtons = html.match(/<button[^>]*data-copy[^>]*>/g) ?? [];
 check(copyButtons.length >= 2, "expected at least two copy buttons on the landing page");
 
 for (const tag of copyButtons) {
-  const code = tag.match(/data-code="([^"]*)"/)?.[1] ?? "";
-  check(decodeEntities(code).trim().length > 0, `copy button has an empty data-code: ${tag}`);
+	const code = tag.match(/data-code="([^"]*)"/)?.[1] ?? "";
+	check(decodeEntities(code).trim().length > 0, `copy button has an empty data-code: ${tag}`);
 }
 
 if (failures.length > 0) {
-  console.error("verify-build failed:");
-  for (const failure of failures) console.error(`  - ${failure}`);
-  process.exit(1);
+	console.error("verify-build failed:");
+	for (const failure of failures) console.error(`  - ${failure}`);
+	process.exit(1);
 }
 
 console.log(
-  `verify-build: hero code parity OK, module path OK (${modulePath}), ${copyButtons.length} copy buttons checked`,
+	`verify-build: hero code parity OK, module path OK (${modulePath}), ${copyButtons.length} copy buttons checked`,
 );

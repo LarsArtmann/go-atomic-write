@@ -48,6 +48,9 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Validate HTML
+        run: pnpm run validate
+
       - name: Upload build artifact
         if: github.event_name == 'push'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

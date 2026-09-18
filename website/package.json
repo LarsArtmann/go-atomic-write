@@ -30,10 +30,11 @@
     "predev": "node scripts/sync-changelog.mjs",
     "build": "astro build",
     "prebuild": "node scripts/sync-changelog.mjs",
-    "postbuild": "node scripts/fix-csp.mjs",
+    "postbuild": "node scripts/fix-csp.mjs && node scripts/verify-build.mjs",
     "sync:changelog": "node scripts/sync-changelog.mjs",
     "preview": "astro preview",
     "typecheck": "astro check",
+    "validate": "html-validate dist/index.html",
     "lighthouse": "lhci autorun",
     "clean": "rm -rf dist .astro node_modules/.cache",
     "astro": "astro"

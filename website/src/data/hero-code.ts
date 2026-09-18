@@ -1,6 +1,6 @@
 import { siteConfig } from "./config";
 
-const importPath = siteConfig.github.replace("https://github.com/", "github.com/");
+const importPath = siteConfig.modulePath;
 
 interface CodeSegment {
   text: string;

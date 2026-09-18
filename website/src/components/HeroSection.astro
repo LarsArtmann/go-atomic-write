@@ -21,8 +21,7 @@ async function getGitHubStars(): Promise<number | null> {
 const stars = await getGitHubStars();
 const starsText = stars !== null ? `${stars} ${stars === 1 ? 'Star' : 'Stars'}` : 'Star on GitHub';
 
-const importPath = siteConfig.github.replace('https://github.com/', 'github.com/');
-const installCommand = `go get ${importPath}@latest`;
+const { installCommand } = siteConfig;
 
 const highlightedCode = highlightedHeroCode();
 
@@ -93,7 +92,7 @@ const metrics = [
           ))}
           <span class="ml-3 text-xs text-text-muted font-mono">main.go</span>
         </div>
-        <pre class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative"><code id="hero-code" set:html={highlightedCode} /></pre>
+        <pre class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative"><code set:html={highlightedCode} /></pre>
         <button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" data-copy data-code={heroCode} aria-label="Copy code to clipboard">Copy</button>
       </div>
     </div>

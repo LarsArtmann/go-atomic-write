@@ -15,7 +15,7 @@
 
 ---
 
-Every `os.WriteFile` call has three failure modes that silently corrupt data. This library eliminates all three with a minimal dependency footprint — fingerprint verification, cross-platform file locking, atomic rename, and fsync for crash durability.
+Every `os.WriteFile` call has three failure modes that silently corrupt data: a concurrent writer overwrites you, a crash leaves a half-written file, and two writers interleave their bytes. This library eliminates all three — a fingerprint check turns a lost update into an error, a single rename means the file is never partially written, and fsync keeps the write after a power loss.
 
 ## Why?
 
@@ -44,7 +44,7 @@ Writing a file safely is harder than it looks:
 5. **Atomic rename** — rename the temp file to the target (single `rename(2)` on POSIX, `MoveFileEx` on Windows)
 6. **fsync directory** — sync the directory entry to make the rename durable (POSIX)
 
-If the fingerprint doesn't match, `Write` returns `ErrConcurrentModification` — the caller should re-read and retry.
+If the fingerprint doesn't match, `WriteVerified` returns `ErrConcurrentModification` — the caller should re-read and retry.
 
 ## Use cases
 

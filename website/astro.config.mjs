@@ -3,6 +3,7 @@ import starlight from "@astrojs/starlight";
 import sitemap from "@astrojs/sitemap";
 
 import tailwindcss from "@tailwindcss/vite";
+import { siteConfig } from "./src/data/config.ts";
 
 export default defineConfig({
 	site: "https://atomicwrite.lars.software",
@@ -94,8 +95,7 @@ export default defineConfig({
 					tag: "meta",
 					attrs: {
 						name: "description",
-						content:
-							"Crash-safe, race-free file writes for Go. Fingerprint verification, cross-platform file locking, atomic rename, and fsync for crash durability.",
+						content: siteConfig.description,
 					},
 				},
 				{

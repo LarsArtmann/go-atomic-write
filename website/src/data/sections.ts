@@ -1,4 +1,4 @@
-import type { StepCard, UseCase, ComparisonMatrix } from "./types";
+import type { StepCard, UseCase, ComparisonMatrix, FaqItem } from "./types";
 
 export const steps: StepCard[] = [
   {
@@ -59,5 +59,38 @@ export const useCases: UseCase[] = [
     title: "CI/CD Pipelines",
     desc: "Concurrent writers on shared artifacts and lock files",
     icon: "refresh",
+  },
+];
+
+export const faqItems: FaqItem[] = [
+  {
+    question: "Why not just write a temp file and rename it?",
+    answer:
+      "That handles crashes and missing files, but not races. If another process changes the file between your read and your write, one of the two updates is silently lost. go-atomic-write locks the file, re-reads it, and verifies the fingerprint first. On a mismatch you get ErrConcurrentModification instead of a lost update.",
+  },
+  {
+    question: "When should I not use this?",
+    answer:
+      "If one process owns the file, never crashes mid-write, and you do not need durability across reboots, plain os.WriteFile is simpler. This library earns its keep when a file is shared between processes or has to survive a crash.",
+  },
+  {
+    question: "What does a write cost?",
+    answer:
+      "One xxhash64 pass (~27 GB/s, zero allocations), one advisory lock, and one full re-read of the file while the lock is held. Negligible for config, state, and checkpoint files; measurable for multi-gigabyte files.",
+  },
+  {
+    question: "What happens when two writers race?",
+    answer:
+      "Exactly one wins. The loser gets ErrConcurrentModification and the original file is left untouched, because the temp file is discarded before any rename. Writers holding fresh data can retry; writers that do not should surface the error.",
+  },
+  {
+    question: "Does it work on Windows?",
+    answer:
+      "Yes. LockFileEx replaces flock, a failed os.Rename is retried five times with exponential backoff on ERROR_ACCESS_DENIED and ERROR_SHARING_VIOLATION (antivirus, open handles), and directory fsync is a no-op because Windows has no equivalent.",
+  },
+  {
+    question: "Do I have to change how I read files?",
+    answer:
+      "No. Reads stay as they are. You only change the write: compute a fingerprint when you read, then call WriteVerified. WriteIfChanged skips the write entirely when the bytes already match, which keeps file watchers and mtimes quiet on no-op runs.",
   },
 ];

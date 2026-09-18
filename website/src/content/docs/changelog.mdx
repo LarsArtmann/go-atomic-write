@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed (CI)
+
+- **`astro check` requires TypeScript 6.x** — `website` pinned `typescript` `^7.0.2` → `^6.0.3` (and regenerated `pnpm-lock.yaml`). TS7's native compiler dropped the programmatic API that `astro check` depends on. Shipped in the v0.5.2 tag but missed from its changelog section.
+- **golangci-lint GitHub Action upgraded v6 → v7** (SHA-pinned, `version: v2.13.2` explicit) — action v6 cannot install golangci-lint v2, and `version: latest` resolves to the ancient v1.x line. Shipped in the v0.5.2 tag but missed from its changelog section.
+- **Website deploys unblocked** — the `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` repository secret was missing, so every CI deploy failed at the final step and the live site was frozen at the 0.4.0 content since 2026-07-26. A key for the shared `github-website-deploy@lars-software` service account is now registered, and the site is live again with current content.
+
+### Added (CI)
+
+- `workflow_dispatch` trigger on the Website workflow so deploys can be run manually without pushing a `website/**` change.
+
 ## [0.5.2] - 2026-09-17
 
 ### Changed

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed (website)
+
+- **Landing page leads with the consequence instead of the mechanism** — the hero subheadline now names the failure mode ("if two processes write the same file, one silently loses data") rather than listing four mechanisms, and the primary hero action is the copyable `go get` command. Feature titles state outcomes ("No silent overwrites", "Survives power loss") instead of implementation names.
+- **Meta description rewritten** for search results and social previews: crash-safe framing instead of a TOCTOU and fsync mechanism list.
+
+### Added (website)
+
+- **Landing page FAQ** — answers "why not a temp file plus rename?", "what does a write cost?", "what happens when two writers race?", and "when should I not use this?".
+
+### Fixed (website)
+
+- **Landing page hero sample did not compile** — the rendered snippet called `atomicwrite.Write(path, newData, fp)`, but `Write` takes only `(path, data)`; the copy button copied the correct `WriteVerified` call, so the visible code and the copied code disagreed. Both now derive from a single token list in `website/src/data/hero-code.ts`, so they cannot drift again.
+
 ### Fixed (CI)
 
 - **`astro check` requires TypeScript 6.x** — `website` pinned `typescript` `^7.0.2` → `^6.0.3` (and regenerated `pnpm-lock.yaml`). TS7's native compiler dropped the programmatic API that `astro check` depends on. Shipped in the v0.5.2 tag but missed from its changelog section.

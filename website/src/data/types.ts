@@ -45,6 +45,11 @@ export interface UseCase {
   icon: UseCaseIcon;
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export const uiIconKeys = [
   "arrow-external",
   "arrow-right",
@@ -54,6 +59,7 @@ export const uiIconKeys = [
   "sun",
   "moon",
   "star",
+  "plus",
 ] as const;
 export type UIIcon = (typeof uiIconKeys)[number];
 

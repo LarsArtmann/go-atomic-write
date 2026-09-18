@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "go-atomic-write",
   title: "go-atomic-write — Crash-Safe, Race-Free File Writes for Go",
   description:
-    "TOCTOU-safe file writes via fingerprint verification, cross-platform file locking, atomic rename, and fsync for crash durability.",
+    "Crash-safe, race-free file writes for Go. Detect concurrent modification instead of silently overwriting data.",
   siteUrl: "https://atomicwrite.lars.software",
   github: "https://github.com/larsartmann/go-atomic-write",
   author: {

@@ -19,7 +19,7 @@ async function getGitHubStars(): Promise<number | null> {
 }
 
 const stars = await getGitHubStars();
-const starsText = stars !== null ? `${stars} Stars` : 'Star on GitHub';
+const starsText = stars !== null ? `${stars} ${stars === 1 ? 'Star' : 'Stars'}` : 'Star on GitHub';
 
 const importPath = siteConfig.github.replace('https://github.com/', 'github.com/');
 const installCommand = `go get ${importPath}@latest`;

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed (Go module)
+
+- **`go` directive is now `go 1.27`** (fleet minor policy, ADR-0001 in go-version-auto-configure) — raised from the patch-form `go 1.26.7` that v0.5.2 published. Environments must provide a Go 1.27 toolchain; the directive is major.minor only, so any 1.27.x toolchain satisfies it and `GOTOOLCHAIN=auto` picks one up automatically.
+
 ### Changed (website)
 
 - **Landing page leads with the consequence instead of the mechanism** — the hero subheadline now names the failure mode ("if two processes write the same file, one silently loses data") rather than listing four mechanisms, and the primary hero action is the copyable `go get` command. Feature titles state outcomes ("No silent overwrites", "Survives power loss") instead of implementation names.

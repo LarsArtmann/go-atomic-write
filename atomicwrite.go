@@ -244,11 +244,12 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 		if _, err := os.Stat(path); err == nil {
 			cleanupTmp(tmpPath)
 
-			return fmt.Errorf("%w: %s was created concurrently", ErrConcurrentModification, path)
+			return fmt.Errorf("%w: %s was created concurrently; removed tmp file %s",
+			ErrConcurrentModification, path, tmpPath)
 		} else if !os.IsNotExist(err) {
 			cleanupTmp(tmpPath)
 
-			return fmt.Errorf("stating %s for verification: %w", path, err)
+			return fmt.Errorf("stating %s for verification (tmp file %s): %w", path, tmpPath, err)
 		}
 
 		return atomicRename(path, tmpPath)
@@ -260,7 +261,7 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 	if lockErr != nil {
 		cleanupTmp(tmpPath)
 
-		return fmt.Errorf("acquiring exclusive lock on %s: %w", path, lockErr)
+		return fmt.Errorf("acquiring exclusive lock on %s (tmp file %s): %w", path, tmpPath, lockErr)
 	}
 	defer func() { _ = fileLock.Close() }()
 
@@ -268,13 +269,14 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 	if err != nil {
 		cleanupTmp(tmpPath)
 
-		return fmt.Errorf("re-reading %s for verification: %w", path, err)
+		return fmt.Errorf("re-reading %s for verification (tmp file %s): %w", path, tmpPath, err)
 	}
 
 	if !fingerprint.Matches(current) {
 		cleanupTmp(tmpPath)
 
-		return fmt.Errorf("%w: %s was modified since read", ErrConcurrentModification, path)
+		return fmt.Errorf("%w: %s was modified since read; removed tmp file %s",
+			ErrConcurrentModification, path, tmpPath)
 	}
 
 	return atomicRename(path, tmpPath)
@@ -297,25 +299,25 @@ func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode
 	closeErr := file.Close()
 
 	if writeErr != nil {
-		_ = os.Remove(tmpPath)
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("writing temp file %s: %w", tmpPath, writeErr)
 	}
 
 	if flushErr != nil {
-		_ = os.Remove(tmpPath)
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("flushing temp file %s: %w", tmpPath, flushErr)
 	}
 
 	if syncErr != nil {
-		_ = os.Remove(tmpPath)
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("syncing temp file %s: %w", tmpPath, syncErr)
 	}
 
 	if closeErr != nil {
-		_ = os.Remove(tmpPath)
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("closing temp file %s: %w", tmpPath, closeErr)
 	}
@@ -342,23 +344,23 @@ func writeAndSync(tmpPath string, data []byte, perm fs.FileMode) error {
 
 	_, writeErr := file.Write(data)
 	if writeErr != nil {
-		_ = file.Close()
-		_ = os.Remove(tmpPath)
+		_ = file.Close() //nolint:erraudit // best-effort close on a failed write; the write error is returned
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("writing temp file %s: %w", tmpPath, writeErr)
 	}
 
 	syncErr := file.Sync()
 	if syncErr != nil {
-		_ = file.Close()
-		_ = os.Remove(tmpPath)
+		_ = file.Close() //nolint:erraudit // best-effort close on a failed sync; the sync error is returned
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("syncing temp file %s: %w", tmpPath, syncErr)
 	}
 
 	closeErr := file.Close()
 	if closeErr != nil {
-		_ = os.Remove(tmpPath)
+		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("closing temp file %s: %w", tmpPath, closeErr)
 	}
@@ -367,5 +369,5 @@ func writeAndSync(tmpPath string, data []byte, perm fs.FileMode) error {
 }
 
 func cleanupTmp(tmpPath string) {
-	_ = os.Remove(tmpPath)
+	_ = os.Remove(tmpPath) //nolint:erraudit // best-effort cleanup; the primary error is returned by callers
 }

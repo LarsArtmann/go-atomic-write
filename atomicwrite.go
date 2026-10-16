@@ -245,7 +245,7 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 			cleanupTmp(tmpPath)
 
 			return fmt.Errorf("%w: %s was created concurrently; removed tmp file %s",
-			ErrConcurrentModification, path, tmpPath)
+				ErrConcurrentModification, path, tmpPath)
 		} else if !os.IsNotExist(err) {
 			cleanupTmp(tmpPath)
 
@@ -345,6 +345,7 @@ func writeAndSync(tmpPath string, data []byte, perm fs.FileMode) error {
 	_, writeErr := file.Write(data)
 	if writeErr != nil {
 		_ = file.Close() //nolint:erraudit // best-effort close on a failed write; the write error is returned
+
 		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("writing temp file %s: %w", tmpPath, writeErr)
@@ -353,6 +354,7 @@ func writeAndSync(tmpPath string, data []byte, perm fs.FileMode) error {
 	syncErr := file.Sync()
 	if syncErr != nil {
 		_ = file.Close() //nolint:erraudit // best-effort close on a failed sync; the sync error is returned
+
 		cleanupTmp(tmpPath)
 
 		return fmt.Errorf("syncing temp file %s: %w", tmpPath, syncErr)

@@ -21,30 +21,30 @@
 
 | Feature                             | Status                | Notes                                                                                                                                                       |
 | ----------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Plain atomic write (`Write`)        | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:66`; fsync + atomic rename, no TOCTOU check. Covered by `TestWriteFirstRun`, `TestWriteLeavesNoLeftoverFiles`.                              |
-| TOCTOU-verified write               | 🟢 `FULLY_FUNCTIONAL` | `WriteVerified` at `atomicwrite.go:89`; fingerprint re-checked under lock. Covered by `TestWriteWithFingerprint`, `TestWriteRejectsConcurrentModification`. |
-| Idempotent write (`WriteIfChanged`) | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:115`; skips when content matches disk. 7 tests incl. empty-file, new-file, permission, no-leftover cases.                                   |
-| Streaming write (`WriteFunc`)       | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:149` (plain) + `:165` (`WriteFuncVerified`); 64KB buffered callback. Covered by `TestWriteFunc_*` (6 tests, incl. 400KB stream).            |
+| Plain atomic write (`Write`)        | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:15`; fsync + atomic rename, no TOCTOU check. Covered by `TestWriteFirstRun`, `TestWriteLeavesNoLeftoverFiles`.                              |
+| TOCTOU-verified write               | 🟢 `FULLY_FUNCTIONAL` | `WriteVerified` at `atomicwrite.go:63`; fingerprint re-checked under lock. Covered by `TestWriteWithFingerprint`, `TestWriteRejectsConcurrentModification`. |
+| Idempotent write (`WriteIfChanged`) | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:89`; skips when content matches disk. 7 tests incl. empty-file, new-file, permission, no-leftover cases.                                   |
+| Streaming write (`WriteFunc`)       | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:123` (plain) + `:139` (`WriteFuncVerified`); 64KB buffered callback. Covered by `TestWriteFunc_*` (6 tests, incl. 400KB stream).            |
 
 ## Fingerprinting & integrity
 
 | Feature                       | Status                | Notes                                                                                              |
 | ----------------------------- | --------------------- | -------------------------------------------------------------------------------------------------- |
-| xxhash64 fingerprint          | 🟢 `FULLY_FUNCTIONAL` | `Fingerprint` (`[8]byte`) at `atomicwrite.go:27`; `FingerprintFromBytes:40`, `FingerprintFile:49`. |
-| `Fingerprint.IsZero/Matches`  | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:30,35`; covered by `TestFingerprintIsZero`, `TestFingerprintFile*`.                |
-| Concurrent-modification error | 🟢 `FULLY_FUNCTIONAL` | `ErrConcurrentModification` sentinel (`atomicwrite.go:23`); check with `errors.Is`.                |
+| xxhash64 fingerprint          | 🟢 `FULLY_FUNCTIONAL` | `Fingerprint` (`[8]byte`) at `fingerprint.go:13`; `FingerprintFromBytes:26`, `FingerprintFile:35`. |
+| `Fingerprint.IsZero/Matches`  | 🟢 `FULLY_FUNCTIONAL` | `fingerprint.go:16,21`; covered by `TestFingerprintIsZero`, `TestFingerprintFile*`.                |
+| Concurrent-modification error | 🟢 `FULLY_FUNCTIONAL` | `ErrConcurrentModification` sentinel (`commit.go:13`); check with `errors.Is`.                |
 | xxhash64 vs SHA-256 benchmark | 🟢 `FULLY_FUNCTIONAL` | `hash_bench_test.go`; ~11× faster, 0 allocations, ~27 GB/s. Run with `go test -bench=. -benchmem`. |
 
 ## Durability, locking & platform
 
 | Feature                         | Status                    | Notes                                                                                                                                                                                                                          |
 | ------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Crash durability (`fsync`)      | 🟢 `FULLY_FUNCTIONAL`     | Temp file fsync'd before rename; target dir fsync'd after (`writeAndSync:302`, `syncDir`).                                                                                                                                     |
-| Cross-process file locking      | 🟢 `FULLY_FUNCTIONAL`     | `gofrs/flock` exclusive lock in `commitVerified:249`; `flock(2)` Unix, `LockFileEx` Windows.                                                                                                                                   |
-| Concurrent-writer safety        | 🟢 `FULLY_FUNCTIONAL`     | Unique temp files via `crypto/rand` (`prepareTempPath:181`); proven by `TestConcurrentWriteRACE` (10 divergent writers, integrity check).                                                                                      |
+| Crash durability (`fsync`)      | 🟢 `FULLY_FUNCTIONAL`     | Temp file fsync'd before rename; target dir fsync'd after (`writeAndSync:57` at `stage.go`, `syncDir`).                                                                                                                                     |
+| Cross-process file locking      | 🟢 `FULLY_FUNCTIONAL`     | `gofrs/flock` exclusive lock in `commitVerified:20` (`commit.go`); `flock(2)` Unix, `LockFileEx` Windows.                                                                                                                                   |
+| Concurrent-writer safety        | 🟢 `FULLY_FUNCTIONAL`     | Unique temp files via `crypto/rand` (`prepareTempPath:15` at `stage.go`); proven by `TestConcurrentWriteRACE` (10 divergent writers, integrity check).                                                                                      |
 | POSIX atomic rename + dir fsync | 🟢 `FULLY_FUNCTIONAL`     | Single `rename(2)` in `rename_unix.go`; no two-rename window.                                                                                                                                                                  |
 | Windows rename with retry       | 🟡 `PARTIALLY_FUNCTIONAL` | `rename_windows.go` retries `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`; **untested on real Windows hardware** (build-tag compiles only).                                                                                  |
-| File permission preservation    | 🟢 `FULLY_FUNCTIONAL`     | Mode copied from existing file, defaults `0o644` (`prepareTempPath:181`); covered by `TestWritePreservesPermissions`, `TestWriteFunc_PreservesPermissions`.                                                                    |
+| File permission preservation    | 🟢 `FULLY_FUNCTIONAL`     | Mode copied from existing file, defaults `0o644` (`prepareTempPath:15` at `stage.go`); covered by `TestWritePreservesPermissions`, `TestWriteFunc_PreservesPermissions`.                                                                    |
 | Temp-file cleanup on failure    | 🟢 `FULLY_FUNCTIONAL`     | Write, sync, verification, lock, and rename failures all remove the staged file (`cleanupTmp`, `commitRename`); covered by `TestTempFileCleanedUpOnError`, `TestWriteFunc_CallbackError`, `TestRenameFailureCleansUpTempFile`. |
 | Stale temp-file self-cleanup    | ⚪ `PLANNED`              | Crashed writes leave `.tmp` files (unique names prevent interference). No sweeper exists. Known caveat in CHANGELOG v0.2.0.                                                                                                    |
 

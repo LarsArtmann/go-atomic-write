@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed (Go module)
 
+- **Source split into focused files** — the single `atomicwrite.go` had grown past BuildFlow's 350-line file budget (391 lines) while mixing four concerns. Same flat single package, now four files: `atomicwrite.go` (public write API), `fingerprint.go` (xxhash64 fingerprinting), `commit.go` (verification + locking + rename commit), `stage.go` (temp-file staging + fsync). Test files split to mirror them. No API or behavior change; all 31 tests moved verbatim.
+
 - **`go` directive is now `go 1.27`** (fleet minor policy, ADR-0001 in go-version-auto-configure) — raised from the patch-form `go 1.26.7` that v0.5.2 published. Environments must provide a Go 1.27 toolchain; the directive is major.minor only, so any 1.27.x toolchain satisfies it and `GOTOOLCHAIN=auto` picks one up automatically.
 
 ### Fixed (Go module)

@@ -28,13 +28,20 @@ No Makefile; all commands are plain `go` toolchain. CI (`.github/workflows/ci.ym
 
 Flat single-package layout — all source in the repository root:
 
-| File                  | Purpose                                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `atomicwrite.go`      | Public API + staging: `Fingerprint`, `Write`, `WriteVerified`, `WriteIfChanged`, `FingerprintFile`, `writeAndSync`, `randomSuffix` |
-| `rename_unix.go`      | POSIX `atomicRename` (single `rename(2)` + directory `fsync`)                                                                      |
-| `rename_windows.go`   | Windows `atomicRename` (retry on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`)                                                  |
-| `atomicwrite_test.go` | Unit + concurrency + integrity tests                                                                                               |
-| `hash_bench_test.go`  | xxhash64 vs SHA-256 benchmarks                                                                                                     |
+| File                     | Purpose                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `atomicwrite.go`         | Package doc + public write API: `Write`, `WriteWithPerm`, `WriteVerified`, `WriteIfChanged`, `WriteFunc`, `WriteFuncVerified`        |
+| `fingerprint.go`         | Fingerprinting: `Fingerprint`, `IsZero`, `Matches`, `FingerprintFromBytes`, `FingerprintFile`                                        |
+| `commit.go`              | Commit path: `ErrConcurrentModification`, `commitVerified` (flock + verify), `commitRename`                                          |
+| `stage.go`               | Staging: `prepareTempPath`, `tempPathFor`, `randomSuffix`, `writeAndSync`, `writeFuncAndSync`, `cleanupTmp`                           |
+| `rename_unix.go`         | POSIX `atomicRename` (single `rename(2)` + directory `fsync`)                                                                        |
+| `rename_windows.go`      | Windows `atomicRename` (retry on `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`)                                                    |
+| `atomicwrite_test.go`    | Write/WriteVerified/WriteWithPerm tests + shared helpers (`tempFile`, `assertFileContent`)                                           |
+| `fingerprint_test.go`    | Fingerprint tests                                                                                                                    |
+| `writeifchanged_test.go` | WriteIfChanged tests                                                                                                                 |
+| `commit_test.go`         | Concurrency (`TestConcurrentWriteRACE`) + rename-failure tests                                                                       |
+| `writefunc_test.go`      | WriteFunc streaming tests                                                                                                            |
+| `hash_bench_test.go`     | xxhash64 vs SHA-256 benchmarks                                                                                                       |
 
 ## Website
 
@@ -101,7 +108,7 @@ Key internal functions:
 - `WriteIfChanged()` — idempotent write; skips if content matches disk, delegates to `Write` (first-write) or `WriteVerified` (content change)
 - `writeAndSync()` — creates temp file, writes data, fsyncs, closes (with cleanup on error)
 - `randomSuffix()` — generates random hex suffix for unique temp file names (crypto/rand)
-- `commitWithVerification()` — acquires exclusive `flock`, re-reads target, verifies match, renames
+- `commitVerified()` (`commit.go`) — acquires exclusive `flock`, re-reads target, verifies match, renames
 - `atomicRename()` — single `os.Rename` + directory fsync (POSIX); retry loop (Windows)
 - `syncDir()` — opens and fsyncs the target directory after rename (POSIX only)
 

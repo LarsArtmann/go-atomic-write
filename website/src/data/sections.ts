@@ -76,7 +76,7 @@ export const faqItems: FaqItem[] = [
   {
     question: "What does a write cost?",
     answer:
-      "One xxhash64 pass (~27 GB/s, zero allocations), one advisory lock, and one full re-read of the file while the lock is held. Negligible for config, state, and checkpoint files; measurable for multi-gigabyte files.",
+      "One xxhash64 pass (~23 GB/s, zero allocations), one advisory lock, and one full re-read of the file while the lock is held. Negligible for config, state, and checkpoint files; measurable for multi-gigabyte files.",
   },
   {
     question: "What happens when two writers race?",

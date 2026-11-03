@@ -1,0 +1,23 @@
+# BuildFlow Configuration — non-default settings only. Everything else is
+# BuildFlow's compiled-in default; a missing config file is fully valid.
+# Canonical keys: config/koanf.go (unknown keys warn at every load).
+
+# website/dist is gitignored build output (Astro). Scanning it produced only
+# false positives: jscpd flagged dist/js/*.js as duplicates of the
+# website/public/js sources they are copied from, and go-structure-linter
+# suggested assets//internal/ directories from dist/_astro chunks.
+exclude:
+  - website/dist
+
+# BuildFlow's generic type-check runs plain `tsc --noEmit`, which cannot
+# resolve Astro virtual modules (`astro:content`, `astro:types`) or the
+# Starlight subpath exports in src/content.config.ts, so it always reports
+# 4 structural errors here even when the real checker is green
+# (`pnpm run typecheck` = astro check: 0 errors, 33 files, verified 2026-11-03).
+# The honest TS gate for this repo is astro check, which website CI already
+# runs (.github/workflows/website.yml) and which BuildFlow does not provide
+# (no astro provider; only vue-tsc has a special case). Skip is project
+# policy until BuildFlow ships one; Go type safety is unaffected (it flows
+# through go build/vet/golangci-lint).
+skip_steps:
+  - type-check

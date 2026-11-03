@@ -214,20 +214,20 @@ if fp.Matches(currentData) {
 
 xxhash64 vs `crypto/sha256` — 100K iterations per benchmark, single core.
 
-**Hardware:** AMD Ryzen AI MAX+ 395, Go 1.26.3, linux/amd64
+**Hardware:** AMD Ryzen AI MAX+ 395, Go 1.27.0, linux/amd64 (re-measured 2026-11-03)
 
 | Hash     | Size   |   ns/op |  Throughput | Allocations |
 | -------- | ------ | ------: | ----------: | :---------- |
-| xxhash64 | 1 KB   |      42 | 24,443 MB/s | 0           |
-| SHA-256  | 1 KB   |     486 |  2,106 MB/s | 1 × 32 B    |
-| xxhash64 | 10 KB  |     383 | 26,708 MB/s | 0           |
-| SHA-256  | 10 KB  |   4,253 |  2,408 MB/s | 1 × 32 B    |
-| xxhash64 | 100 KB |   3,744 | 27,349 MB/s | 0           |
-| SHA-256  | 100 KB |  41,760 |  2,452 MB/s | 1 × 32 B    |
-| xxhash64 | 1 MB   |  37,954 | 27,628 MB/s | 0           |
-| SHA-256  | 1 MB   | 429,268 |  2,443 MB/s | 1 × 32 B    |
+| xxhash64 | 1 KB   |      46 | 22,318 MB/s | 0           |
+| SHA-256  | 1 KB   |     547 |  1,871 MB/s | 1 × 32 B    |
+| xxhash64 | 10 KB  |     433 | 23,647 MB/s | 0           |
+| SHA-256  | 10 KB  |   4,909 |  2,086 MB/s | 1 × 32 B    |
+| xxhash64 | 100 KB |   4,559 | 22,460 MB/s | 0           |
+| SHA-256  | 100 KB |  48,587 |  2,108 MB/s | 1 × 32 B    |
+| xxhash64 | 1 MB   |  45,278 | 23,159 MB/s | 0           |
+| SHA-256  | 1 MB   | 518,716 |  2,021 MB/s | 1 × 32 B    |
 
-**xxhash64 is ~11× faster** than SHA-256, zero allocations, and hits ~27 GB/s — effectively RAM bandwidth. No hardware accelerator exists or is needed; the hash is memory-bound, not compute-bound. SHA-256 results already include SHA-NI hardware acceleration.
+**xxhash64 is ~11× faster** than SHA-256, zero allocations, and hits ~23 GB/s — effectively RAM bandwidth. No hardware accelerator exists or is needed; the hash is memory-bound, not compute-bound. SHA-256 results already include SHA-NI hardware acceleration.
 
 Run yourself:
 

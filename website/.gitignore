@@ -23,3 +23,7 @@ Thumbs.db
 
 # Bun (CI uses npm)
 bun.lock
+
+# Generated Tailwind output (fleet sweeps keep regenerating it; the build
+# runs Tailwind through the Vite plugin, so no *.out.css may ever exist)
+src/styles/*.out.css

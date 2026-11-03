@@ -9,7 +9,7 @@ export const features: Feature[] = [
   {
     icon: "lightning",
     title: "Zero-cost fingerprinting",
-    desc: "~11x faster than SHA-256, zero allocations, ~27 GB/s throughput. Memory-bound, not compute-bound.",
+    desc: "~11x faster than SHA-256, zero allocations, ~23 GB/s throughput. Memory-bound, not compute-bound.",
   },
   {
     icon: "lock",

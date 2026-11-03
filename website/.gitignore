@@ -21,7 +21,7 @@ Thumbs.db
 # Lighthouse CI
 .lighthouseci/
 
-# Bun (CI uses npm)
+# Bun (CI and the lockfile of record use pnpm)
 bun.lock
 
 # Generated Tailwind output (fleet sweeps keep regenerating it; the build

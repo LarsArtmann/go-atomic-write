@@ -7,10 +7,16 @@ on:
     paths:
       - "website/**"
       - ".github/workflows/website.yml"
+      - "CHANGELOG.md"
+      - "README.md"
+      - "go.mod"
   pull_request:
     branches: [master]
     paths:
       - "website/**"
+      - "CHANGELOG.md"
+      - "README.md"
+      - "go.mod"
 
 permissions:
   contents: read

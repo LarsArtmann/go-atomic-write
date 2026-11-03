@@ -8,9 +8,13 @@
 
 ## Executive Summary
 
-This is a **well-crafted, focused library** that does exactly one thing and does it correctly. 127 LOC of production code, 295 LOC of tests, clean API, minimal dependencies. The codebase demonstrates good taste.
+This is a **well-crafted, focused library** that does exactly one thing and does it correctly. ~~127 LOC of production code, 295 LOC of tests, clean API, minimal dependencies.~~ The codebase demonstrates good taste.
 
 **Overall Grade: A-** — Excellent foundation with a few meaningful improvements possible.
+
+> **2026-11-03 status:** superseded for every `.bak`- and 3-arg-`Write`-related finding
+> (v0.2.0 atomicity overhaul, v0.4.0 API split). Every improvement-plan item carries an
+> inline verdict below; the two still-open edge tests are tracked in `TODO_LIST.md`.
 
 All tests pass (including race detector). `go vet` clean. Build clean. Benchmarks confirm the xxhash64 choice (~10× faster than SHA-256).
 
@@ -26,7 +30,7 @@ All tests pass (including race detector). `go vet` clean. Build clean. Benchmark
 - `Fingerprint` as a named type (`[8]byte`) with methods — good domain modeling
 - `ErrConcurrentModification` as a sentinel error with `errors.Is` support — idiomatic
 - Permission preservation from existing file — thoughtful
-- `.bak` creation for crash recovery — good safety net
+- ~~`.bak` creation for crash recovery — good safety net~~ Removed in v0.2.0 — the `.bak` two-rename pattern was itself an atomicity bug; a single `rename(2)` + directory fsync replaced it.
 - Proper error wrapping with `%w` throughout
 
 **Issues Found:**

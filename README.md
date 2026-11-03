@@ -14,6 +14,8 @@
 
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 
+<a href="https://github.com/LarsArtmann/go-atomic-write/actions/workflows/ci.yml"><img src="https://github.com/LarsArtmann/go-atomic-write/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+
 </p>
 
 <p align="center">
@@ -195,7 +197,7 @@ if fp.Matches(currentData) {
 
 ## Design decisions
 
-- **xxhash64 over SHA-256** — the fingerprint detects changes, not attackers. xxhash64 is ~11× faster, zero allocations, and hits ~27 GB/s. SHA-NI hardware acceleration is already included in the SHA-256 numbers.
+- **xxhash64 over SHA-256** — the fingerprint detects changes, not attackers. xxhash64 is ~11× faster, zero allocations, and reaches ~23–27 GB/s on an idle machine. SHA-NI hardware acceleration is already included in the SHA-256 numbers.
 - **Unique temp files via `crypto/rand`** — each writer gets a uniquely-named staging file (`path + "." + randomHex + ".tmp"`), preventing concurrent writers from corrupting a shared temp file.
 - **`flock`, not mutexes** — file locks protect across processes, not just goroutines. `flock(2)` on Unix, `LockFileEx` on Windows.
 - **Single `rename(2)` on POSIX** — one atomic syscall replaces the target. No two-rename window where the file could be missing.

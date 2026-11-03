@@ -1,9 +1,9 @@
 import { defineConfig, fontProviders } from "astro/config";
-import starlight from "@astrojs/starlight";
-import sitemap from "@astrojs/sitemap";
 
-import tailwindcss from "@tailwindcss/vite";
 import { siteConfig } from "./src/data/config.ts";
+import sitemap from "@astrojs/sitemap";
+import starlight from "@astrojs/starlight";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
 	site: "https://atomicwrite.lars.software",

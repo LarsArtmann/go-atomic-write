@@ -1,7 +1,7 @@
 ---
-import { siteConfig } from '../data/config';
 import { heroCode, highlightedHeroCode } from '../data/hero-code';
 import Icon from './Icon.astro';
+import { siteConfig } from '../data/config';
 
 async function getGitHubStars(): Promise<number | null> {
   try {
@@ -10,7 +10,9 @@ async function getGitHubStars(): Promise<number | null> {
         'Accept': 'application/vnd.github.v3+json',
       },
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      return null;
+    }
     const data = await response.json();
     return data.stargazers_count as number;
   } catch {

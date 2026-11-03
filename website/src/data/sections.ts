@@ -1,4 +1,4 @@
-import type { StepCard, UseCase, ComparisonMatrix, FaqItem } from "./types";
+import type { ComparisonMatrix, FaqItem, StepCard, UseCase } from "./types";
 
 export const steps: StepCard[] = [
   {

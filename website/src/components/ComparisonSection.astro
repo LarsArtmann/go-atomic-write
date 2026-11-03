@@ -1,14 +1,20 @@
 ---
-import { comparisonMatrix } from '../data/sections';
 import SectionHeader from './SectionHeader.astro';
+import { comparisonMatrix } from '../data/sections';
 
 const checkSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
 const xSvg = '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
 
 const readableValue = (value: string): string => {
-  if (value === 'yes') return 'Yes';
-  if (value === 'no') return 'No';
-  if (value === 'partial') return 'Partial';
+  if (value === 'yes') {
+    return 'Yes';
+  }
+  if (value === 'no') {
+    return 'No';
+  }
+  if (value === 'partial') {
+    return 'Partial';
+  }
   return value;
 };
 ---

@@ -255,6 +255,7 @@ const ARTIFACTS = [
   { path: "assets/brand/lockup-stacked-dark.svg", content: () => GENERATED_NOTICE + lockupStacked(LOCKUP_STACKED_WIDTH, LOCKUP_STACKED_HEIGHT, LOCKUP_STACKED_BASELINE, "dark") },
   { path: "website/src/components/Logo.astro", content: () => logoAstro },
   { path: "website/public/favicon.svg", content: () => GENERATED_NOTICE + faviconSvg() },
+  { path: "website/src/assets/brand.svg", content: () => faviconSvg() },
   { path: "website/public/og-image.svg", content: () => GENERATED_NOTICE + ogImageSvg },
 ];
 

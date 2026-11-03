@@ -41,6 +41,7 @@ export default defineConfig({
 		starlight({
 			title: "go-atomic-write",
 			favicon: "/favicon.svg",
+			logo: { src: "./src/assets/brand.svg" },
 			customCss: ["./src/styles/starlight.css"],
 			expressiveCode: {
 				themes: ["github-light", "github-dark"],

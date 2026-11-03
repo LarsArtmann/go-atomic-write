@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/LarsArtmann/go-atomic-write/master/assets/brand/lockup-horizontal-dark.svg">
+    <img src="https://raw.githubusercontent.com/LarsArtmann/go-atomic-write/master/assets/brand/lockup-horizontal-light.svg" alt="go-atomic-write: the atomic swap" width="300" height="64">
+  </picture>
+</p>
+
 <h1 align="center">go-atomic-write</h1>
 
 <p align="center"><strong>Crash-safe, race-free file writes for Go.</strong></p>

@@ -55,6 +55,8 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 | `cd website && pnpm run typecheck`                                     | TypeScript + Astro type checking                                                  |
 | `cd website && pnpm run preview`                                       | Preview production build locally                                                  |
 | `cd website && pnpm run sync:changelog`                                | Regenerate changelog page from root `CHANGELOG.md`                                |
+| `cd website && pnpm run brand:generate`                                | Regenerate all brand artifacts from the single geometry (`scripts/generate-brand-assets.mjs`) |
+| `cd website && pnpm run brand:check`                                   | Exit 1 if any generated brand artifact drifted (CI gates on this)                 |
 | `cd website && pnpm run lighthouse`                                    | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)             |
 | `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                |
 
@@ -64,19 +66,22 @@ Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 
 | Path                            | Purpose                                                                                                                            |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `website/astro.config.mjs`      | Astro config: Starlight, fonts, sitemap                                                                                            |
+| `website/astro.config.mjs`      | Astro config: Starlight (incl. docs-header `logo`), fonts, sitemap                                                                 |
 | `website/src/pages/index.astro` | Landing page                                                                                                                       |
 | `website/src/components/`       | 16 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, FAQ, etc.)                                                         |
 | `website/src/data/`             | Typed content: config, features, sections, hero-code                                                                               |
+| `website/src/assets/brand.svg`  | GENERATED bundled copy of the mark for the Starlight docs header logo                                                              |
 | `website/src/content/docs/`     | 9 Starlight documentation pages                                                                                                    |
 | `website/src/styles/`           | global.css (emerald theme) + starlight.css                                                                                         |
 | `website/public/`               | favicon.svg, favicon.ico, og-image.svg (source) + og-image.png (1200×630), manifest, robots.txt, JS (theme, animations, copy-code) |
+| `assets/brand/`                 | GENERATED standalone logo marks + lockups (`mark.svg`, horizontal/stacked lockups in light+dark) + brand README                    |
 | `website/firebase.json`         | Hosting config with security headers                                                                                               |
 | `website/.firebaserc`           | Firebase project + hosting target                                                                                                  |
 | `website/lighthouserc.json`     | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)                                                       |
 | `website/.editorconfig`         | Standalone editor config for the website subtree (2-space indent, `root = true`)                                                   |
 | `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` + `verify-build.mjs` (postbuild)                                |
-| `.github/workflows/`            | CI (`ci.yml`: test/race + lint + cross-compile + govulncheck + drift guard) + website build/deploy (`website.yml`)                 |
+| `scripts/generate-brand-assets.mjs` | GENERATED brand system: one geometry → favicon, Logo.astro, OG card, lockups; `--check` mode gates CI                          |
+| `.github/workflows/`            | CI (`ci.yml`: test/race + lint + cross-compile + govulncheck + drift guard incl. brand:check) + website build/deploy (`website.yml`) |
 
 ### DNS
 
@@ -160,8 +165,10 @@ Both are intentional, minimal, and not candidates for replacement.
 - **Website CSP is hash-based and post-build** — `scripts/fix-csp.mjs` (`postbuild`) injects a per-file CSP `<meta>` from inline-script SHA-256 hashes. There is **no `'unsafe-inline'` for `script-src`**. If a new inline script breaks the site under CSP, either move it to an external `/js/*.js` file (loaded via `<script is:inline src=…>`) or confirm `fix-csp.mjs` hashed it.
 - **Do NOT add `website/src/pages/404.astro`** — Starlight ships its own `404.html`. A custom one causes a route collision (warning today, hard error in future Astro). The `404 was not found` line during build is a benign Starlight route log, not a warning.
 - The website's `pnpm run build` requires a clean `.astro` cache when content files are renamed/extension-changed: run `rm -rf .astro dist node_modules/.cache` if the content layer fails to resolve a renamed doc.
-- **OG image is static, not dynamic** — `public/og-image.svg` is the editable source; `public/og-image.png` is the generated 1200×630 output. Regenerate with `magick -background none public/og-image.svg -resize 1200x630! public/og-image.png` (ImageMagick 7). No `astro-og-canvas` dependency needed.
+- **OG image is static, not dynamic** — `public/og-image.svg` is GENERATED by the brand generator (its embedded logo slot can never drift from the mark); `public/og-image.png` is the generated 1200×630 output. Regenerate the PNG with `magick -background none public/og-image.svg -resize 1200x630! public/og-image.png` (ImageMagick 7). No `astro-og-canvas` dependency needed.
 - **Lighthouse CI needs chromium** — `pnpm run lighthouse` requires Chrome/Chromium. The Nix devShell provides it and sets `CHROME_PATH`. Run via `nix develop` or `nix shell nixpkgs#nodejs_24 nixpkgs#chromium`.
+- **Brand assets are GENERATED — never hand-edit them** (2026-11-03): `assets/brand/*.svg`, `website/src/components/Logo.astro`, `website/public/favicon.svg`, `website/src/assets/brand.svg`, and `website/public/og-image.svg` are all written by `scripts/generate-brand-assets.mjs` (identity: "the atomic swap" — emerald squircle, new bytes in →, old bytes out ←). Edit the generator, then `cd website && pnpm run brand:generate`. `brand:check` (exact-bytes compare) runs as the first CI drift-guard step and in the Website workflow, so hand-edits fail CI. `favicon.ico` and `og-image.png` are ImageMagick-rasterized and NOT byte-gated — regenerate them after changing the SVGs (commands in `assets/brand/README.md`).
+- **Starlight's `logo.src` resolves through the Astro asset pipeline, not public URLs** — `logo: { src: "/favicon.svg" }` fails the build with `ImageNotFound`; point it at a bundled copy instead (`logo: { src: "./src/assets/brand.svg" }`, the generator writes that copy). Same pattern typespec-asyncapi uses.
 - **`website/.editorconfig` uses `root = true`** — this intentionally decouples the website from the Go-rooted `.editorconfig` (which uses tabs). The website uses 2-space indentation for all files.
 - **`astro check` requires TypeScript 6.x** — TS7's native compiler dropped the programmatic API that `astro check` needs. The fleet npm sweep re-bumps the manifest to `^7.0.2` (three times on 2026-11-03 alone); the `"typescript@>=7": ^6.0.3` override in `pnpm-workspace.yaml` self-heals any 7.x demand back to 6.0.3 (verified: manifest at `^7.0.2` resolves 6.0.3). Do NOT fight the manifest — leave it, the override wins. Website CI's `pnpm run typecheck` is the alarm if the guard is ever removed.
 - **The auto-commit daemon commits manifest changes without lockfiles** — this caused four `pnpm install --frozen-lockfile` CI failures (09-09, 09-13, 09-15, 09-17) and another four-package drift on 11-03. The CI drift-guard job now fails fast on it. After any `package.json`/`go.mod` change, regenerate the lockfile (`pnpm install`, `go mod tidy`) in the same change or CI breaks.

@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added (website)
 
+- **Brand identity: "the atomic swap" logo** — an emerald squircle holding two opposing arrows (new bytes in, old bytes out), generated from a single geometry in `scripts/generate-brand-assets.mjs` into every surface: favicon (SVG + ICO), site header/footer logo, Starlight docs header, the OG card (SVG + PNG), the README hero lockup (dark/light variants), and standalone marks in `assets/brand/`. The old identity was a squircle with the letter "A", hand-copied (and drifted) across the favicon, the logo component and the OG image. `pnpm run brand:check` (wired into both CI workflows) fails if any generated artifact drifts from the generator.
 - **Landing page FAQ** — answers "why not a temp file plus rename?", "what does a write cost?", "what happens when two writers race?", and "when should I not use this?".
 - **Build-time verification gate** (`website/scripts/verify-build.mjs`, run from `postbuild`) — asserts the hero code shown in `dist/index.html` is byte-identical to the code its copy button copies, that the install command matches the `go.mod` module path, and that every `[data-copy]` button carries a non-empty payload. A regression of the hero split brain now fails the build.
 - **`pnpm run validate`** — runs `html-validate` on the built landing page; wired into the Website CI workflow.

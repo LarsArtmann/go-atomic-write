@@ -109,6 +109,7 @@ Key internal functions:
 - `writeAndSync()` — creates temp file, writes data, fsyncs, closes (with cleanup on error)
 - `randomSuffix()` — generates random hex suffix for unique temp file names (crypto/rand)
 - `commitVerified()` (`commit.go`) — acquires exclusive `flock`, re-reads target, verifies match, renames
+- `commitRename()` (`commit.go`) — the single rename site; removes the staged `.tmp` when the rename fails (temp-leak fix)
 - `atomicRename()` — single `os.Rename` + directory fsync (POSIX); retry loop (Windows)
 - `syncDir()` — opens and fsyncs the target directory after rename (POSIX only)
 
@@ -134,11 +135,12 @@ Both are intentional, minimal, and not candidates for replacement.
 1. `golangci-lint run ./...` exits with `0 issues` — the gate; fix before anything else
 2. CI green on `master` BEFORE tagging (test + race, lint, cross-compile, govulncheck, drift guard) — v0.5.1 shipped a Windows compile break because Linux-only CI passed while the tag was already cut
 3. `go build ./...` and `go test -race ./...` locally
-4. Move `CHANGELOG.md` `[Unreleased]` content into a new `[X.Y.Z]` section
-5. If the toolchain changed, bump the version trio together (`go.mod`, `.golangci.yml` `run.go`, this file) — CI now fails on drift
-6. Annotated tag `vX.Y.Z`, push the tag — never re-tag/delete tags (module proxy poisoning)
-7. Verify `pkg.go.dev` shows the new version and `go get github.com/larsartmann/go-atomic-write@vX.Y.Z` resolves
-8. Website: changelog page syncs on build; deploy rides the `Website` workflow or `firebase deploy --only hosting:atomicwrite`
+4. Move `CHANGELOG.md` `[Unreleased]` content into a new `[X.Y.Z]` section — BEFORE tagging. v0.6.0 (2026-09-22) was tagged with no `[0.6.0]` section at all; the section had to be reconstructed on 2026-11-03 from commit archaeology. The tag commit should BE the changelog move.
+5. If the brand glyph changed, regenerate the rasters (`magick` for `favicon.ico` + `og-image.png` — commands in `assets/brand/README.md`). `brand:check` byte-gates only the SVG artifacts, not rasters.
+6. If the toolchain changed, bump the version trio together (`go.mod`, `.golangci.yml` `run.go`, this file) — CI now fails on drift
+7. Annotated tag `vX.Y.Z`, push the tag — never re-tag/delete tags (module proxy poisoning)
+8. Verify `pkg.go.dev` shows the new version and `go get github.com/larsartmann/go-atomic-write@vX.Y.Z` resolves
+9. Website: changelog page syncs on build; deploy rides the `Website` workflow or `firebase deploy --only hosting:atomicwrite`
 
 ## Gotchas
 
@@ -183,7 +185,7 @@ Both are intentional, minimal, and not candidates for replacement.
 - **The auto-commit daemon commits manifest changes without lockfiles** — this caused four `pnpm install --frozen-lockfile` CI failures (09-09, 09-13, 09-15, 09-17) and another four-package drift on 11-03. The CI drift-guard job now fails fast on it. After any `package.json`/`go.mod` change, regenerate the lockfile (`pnpm install`, `go mod tidy`) in the same change or CI breaks.
 - **No npm manifest at the repo root** — a stray `npm init -y` stub was auto-committed 2026-09-22 (commit 5a6302f) and the `npm directory: /` Dependabot entry then failed on every run (no lockfile, no deps). The stub is deleted and the Dependabot entry removed (11-03); it recurred the SAME day (a second stub committed alongside a lockfile-less `npm directory: /` entry, also removed 11-03) — if a JS tool ever needs a root-level package.json, add the lockfile AND a matching Dependabot entry together, never either alone.
 - **CI pins `GOTOOLCHAIN: local`** — no rogue toolchain download can silently pick a different Go; raising `go.mod`'s directive relies on setup-go installing that version from `go-version-file`.
-- **A fleet npm sweep force-bumps devDeps to latest majors on a schedule** — on 2026-11-03 within one session it bumped `typescript` ×3, regenerated `global.out.css` ×2, and dprint re-quoted `pnpm-workspace.yaml`, daemon-committing each pass. Guards in place: `typescript@>=7` override (self-heal), `src/styles/*.out.css` gitignore, CI drift-guard + Website typecheck. When unexplained artifacts appear after a sweep, add the missing gitignore/override guard rather than re-deleting by hand. The `basic-ftp: ^6.2.1` override is deliberate: get-uri declares ^5 but 6.2.5 was verified CJS-loadable (2026-11-03) — if Lighthouse browser download ever breaks, remove that override first.
+- **A fleet npm sweep force-bumps devDeps to latest majors on a schedule** — on 2026-11-03 within one session it bumped `typescript` ×3, regenerated `global.out.css` ×2, and dprint re-quoted `pnpm-workspace.yaml`, daemon-committing each pass. A sibling fleet **oxlint autofix sweep** also restyled 20 files mid-session (const style, quote style) — re-run `brand:check` + the website build AFTER the last observed external mutation, not before. Guards in place: `typescript@>=7` override (self-heal), `src/styles/*.out.css` gitignore, CI drift-guard + Website typecheck. When unexplained artifacts appear after a sweep, add the missing gitignore/override guard rather than re-deleting by hand. The `basic-ftp: ^6.2.1` override is deliberate: get-uri declares ^5 but 6.2.5 was verified CJS-loadable (2026-11-03) — if Lighthouse browser download ever breaks, remove that override first.
 - **Website deploy needs `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE`** — a repo secret holding a JSON key for `github-website-deploy@lars-software.iam.gserviceaccount.com` (the shared GitHub-deploy SA; templ-components uses the same SA pattern). Without it every CI deploy fails at the final step and the live site silently freezes (it was stale 2026-07-26 → 2026-09-17 for exactly this reason). Local deploys work without the secret: `nix shell nixpkgs#nodejs nixpkgs#firebase-tools -c firebase deploy --only hosting:atomicwrite --project lars-software` (firebase-tools is logged in as `lartyhd@gmail.com`). IAM for `lars-software` is only visible to `lartyhd@gmail.com`, not `lars@helpless.ai`.
 - **The `firebase-adminsdk` SA has hit GCP's 10-key cap** — minting new keys for it fails with `FAILED_PRECONDITION`. Use `github-website-deploy@lars-software` for new CI keys instead.
 - **The landing-page hero snippet has one source of truth** — `website/src/data/hero-code.ts` holds a token list; `heroCode` (clipboard payload) and `highlightedHeroCode()` (rendered markup) are both derived from it, so displayed and copied code cannot diverge (they did: the markup showed a 3-arg `Write` that does not compile). Edit the token list, never the markup in `HeroSection.astro`. Tailwind scans this `.ts` file for the syntax classes (`text-amber`, `text-code-comment`, ...), so keep those as literal strings.

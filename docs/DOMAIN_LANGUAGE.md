@@ -29,6 +29,7 @@ TOCTOU check; a `*Verified` write adds fingerprint verification under an exclusi
 | Term                 | Definition                                                                 | Context                                                                   |
 | -------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | Write                | Stage `.tmp` → fsync → atomic rename. No TOCTOU check.                     | Common case: temp files, first-time creation, single-writer scenarios     |
+| WriteWithPerm        | Like `Write` but with an explicit `fs.FileMode` instead of preserve/default | Installs, fixtures, or any caller that must not inherit the old mode      |
 | WriteVerified        | Stage `.tmp` → fsync → lock → re-read → verify fingerprint → atomic rename | TOCTOU protection. Zero-value fingerprint means "file must not yet exist" |
 | WriteIfChanged       | Fingerprint disk → skip if unchanged, else `Write`/`WriteVerified`         | Idempotent writes for config files and code generators                    |
 | WriteFunc            | Like `Write` but streams content via a callback (64KB buffer)              | Large or incrementally-produced content                                   |

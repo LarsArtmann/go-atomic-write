@@ -1,12 +1,16 @@
 (function () {
-  var resetDelay = 2000;
+  const resetDelay = 2000;
 
-  if (document.documentElement.dataset.copyBound) return;
+  if (document.documentElement.dataset.copyBound) {
+    return;
+  }
   document.documentElement.dataset.copyBound = "true";
 
   function announce(message) {
-    var region = document.getElementById("copy-status");
-    if (region) region.textContent = message;
+    const region = document.querySelector("#copy-status");
+    if (region) {
+      region.textContent = message;
+    }
   }
 
   function restore(button) {
@@ -14,31 +18,35 @@
     button.classList.remove("text-success");
   }
 
-  document.addEventListener("click", function (event) {
-    var target = event.target;
-    if (!(target instanceof Element)) return;
-    var button = target.closest("[data-copy]");
-    if (!button) return;
+  document.addEventListener("click", (event) => {
+    const { target } = event;
+    if (!(target instanceof Element)) {
+      return;
+    }
+    const button = target.closest("[data-copy]");
+    if (!button) {
+      return;
+    }
 
     if (!button.dataset.copyLabel) {
       button.dataset.copyLabel = button.textContent || "Copy";
     }
 
-    var code = button.getAttribute("data-code") || "";
+    const code = button.dataset.code || "";
 
     navigator.clipboard.writeText(code).then(
-      function () {
+      () => {
         button.textContent = "Copied";
         button.classList.add("text-success");
         announce("Copied to clipboard");
-        setTimeout(function () {
+        setTimeout(() => {
           restore(button);
         }, resetDelay);
       },
-      function () {
+      () => {
         button.textContent = "Failed";
         announce("Copy failed. Select the code and copy it manually.");
-        setTimeout(function () {
+        setTimeout(() => {
           restore(button);
         }, resetDelay);
       },

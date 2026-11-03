@@ -7,9 +7,9 @@
 // which is the accepted tradeoff since style-based exfiltration is limited.
 //
 // Runs as `postbuild`, after `astro build` produces dist/.
-import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 const here = import.meta.dirname;
 const distDir = resolve(here, "../dist");

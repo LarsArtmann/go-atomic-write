@@ -130,7 +130,7 @@ ${wordmark({ x: 74, y: 42.5, size: 30, palette })}
 };
 
 /** Emblem centered above the centered wordmark. For square-ish slots. */
-const lockupStacked = (width, height, baselineY, variant) => {
+const lockupStacked = ({ width, height, baselineY, variant }) => {
   const palette = PALETTES[variant];
   const id = `gawLs${variant}`;
   const centerX = width / 2;
@@ -251,8 +251,8 @@ const ARTIFACTS = [
   { path: "assets/brand/mark.svg", content: () => GENERATED_NOTICE + markSvg() },
   { path: "assets/brand/lockup-horizontal-light.svg", content: () => GENERATED_NOTICE + lockupHorizontal(LOCKUP_HORIZONTAL_WIDTH, "light") },
   { path: "assets/brand/lockup-horizontal-dark.svg", content: () => GENERATED_NOTICE + lockupHorizontal(LOCKUP_HORIZONTAL_WIDTH, "dark") },
-  { path: "assets/brand/lockup-stacked-light.svg", content: () => GENERATED_NOTICE + lockupStacked(LOCKUP_STACKED_WIDTH, LOCKUP_STACKED_HEIGHT, LOCKUP_STACKED_BASELINE, "light") },
-  { path: "assets/brand/lockup-stacked-dark.svg", content: () => GENERATED_NOTICE + lockupStacked(LOCKUP_STACKED_WIDTH, LOCKUP_STACKED_HEIGHT, LOCKUP_STACKED_BASELINE, "dark") },
+  { path: "assets/brand/lockup-stacked-light.svg", content: () => GENERATED_NOTICE + lockupStacked({ width: LOCKUP_STACKED_WIDTH, height: LOCKUP_STACKED_HEIGHT, baselineY: LOCKUP_STACKED_BASELINE, variant: "light" }) },
+  { path: "assets/brand/lockup-stacked-dark.svg", content: () => GENERATED_NOTICE + lockupStacked({ width: LOCKUP_STACKED_WIDTH, height: LOCKUP_STACKED_HEIGHT, baselineY: LOCKUP_STACKED_BASELINE, variant: "dark" }) },
   { path: "website/src/components/Logo.astro", content: () => logoAstro },
   { path: "website/public/favicon.svg", content: () => GENERATED_NOTICE + faviconSvg() },
   { path: "website/src/assets/brand.svg", content: () => faviconSvg() },
@@ -272,13 +272,17 @@ for (const artifact of ARTIFACTS) {
     drifted.push(`${artifact.path} (missing)`);
     continue;
   }
-  if (current !== expected) drifted.push(artifact.path);
+  if (current !== expected) {
+    drifted.push(artifact.path);
+  }
 }
 
 if (checkMode) {
   if (drifted.length > 0) {
     console.error(`brand:check failed - ${drifted.length} artifact(s) drifted from scripts/generate-brand-assets.mjs:`);
-    for (const artifactPath of drifted) console.error(`  - ${artifactPath}`);
+    for (const artifactPath of drifted) {
+      console.error(`  - ${artifactPath}`);
+    }
     console.error("Run `node scripts/generate-brand-assets.mjs` to regenerate, or `pnpm run brand:generate` in website/.");
     process.exit(1);
   }

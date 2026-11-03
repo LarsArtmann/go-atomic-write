@@ -117,6 +117,17 @@ Both are intentional, minimal, and not candidates for replacement.
 - `tempFile(t, content)` helper creates a file in a temp dir
 - Concurrency test (`TestConcurrentWriteRACE`) uses `sync.WaitGroup.Go` and `atomic.Int32` with divergent content per writer — verifies both `flock` contention and data integrity (no byte interleaving)
 
+## Release Checklist
+
+1. `golangci-lint run ./...` exits with `0 issues` — the gate; fix before anything else
+2. CI green on `master` BEFORE tagging (test + race, lint, cross-compile, govulncheck, drift guard) — v0.5.1 shipped a Windows compile break because Linux-only CI passed while the tag was already cut
+3. `go build ./...` and `go test -race ./...` locally
+4. Move `CHANGELOG.md` `[Unreleased]` content into a new `[X.Y.Z]` section
+5. If the toolchain changed, bump the version trio together (`go.mod`, `.golangci.yml` `run.go`, this file) — CI now fails on drift
+6. Annotated tag `vX.Y.Z`, push the tag — never re-tag/delete tags (module proxy poisoning)
+7. Verify `pkg.go.dev` shows the new version and `go get github.com/larsartmann/go-atomic-write@vX.Y.Z` resolves
+8. Website: changelog page syncs on build; deploy rides the `Website` workflow or `firebase deploy --only hosting:atomicwrite`
+
 ## Gotchas
 
 - **Website build (pnpm 11): build-script approvals live in `website/pnpm-workspace.yaml` under `allowBuilds:`** (`esbuild: true`) — pnpm v11 ignores `pnpm.*` in `package.json` and silently skips unapproved postinstall scripts, so `astro build` then fails on a missing esbuild binary. A placeholder value (e.g. `esbuild: set this to true or false`) silently disables the whole key (cmdguard incident, fixed 2026-09-19).

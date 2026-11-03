@@ -20,9 +20,9 @@ Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerp
 | `golangci-lint run ./...`       | Run all configured linters — MUST exit with `0 issues` before merging |
 | `golangci-lint run ./... --fix` | Auto-fix formatting/imports (gci, gofumpt, goimports, golines)        |
 
-`golangci-lint` config is the **gating quality check** of this project. The configuration lives in `.golangci.yml` and enables ~100 linters at their strictest defaults. Adding a new third-party import requires updating the `depguard.rules.main.allow` list.
+`golangci-lint` config is the **gating quality check** of this project. The configuration lives in `.golangci.yml` and enables ~100 linters at their strictest defaults (`depguard` and `noinlineerr` are disabled by the converged config).
 
-No Makefile, no CI config. All commands are plain `go` toolchain.
+No Makefile; all commands are plain `go` toolchain. CI (`.github/workflows/ci.yml`) gates merges with test + race, lint, cross-compile (windows/amd64, darwin/amd64+arm64), `govulncheck`, and a drift guard (`go mod tidy -diff`, version-trio check, `pnpm install --frozen-lockfile`).
 
 ## Structure
 
@@ -76,7 +76,7 @@ Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 | `website/lighthouserc.json`     | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)                                                       |
 | `website/.editorconfig`         | Standalone editor config for the website subtree (2-space indent, `root = true`)                                                   |
 | `website/scripts/`              | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` + `verify-build.mjs` (postbuild)                                |
-| `.github/workflows/`            | CI (`ci.yml`: Go gate) + website build/deploy (`website.yml`)                                                                      |
+| `.github/workflows/`            | CI (`ci.yml`: test/race + lint + cross-compile + govulncheck + drift guard) + website build/deploy (`website.yml`)                 |
 
 ### DNS
 
@@ -120,7 +120,7 @@ Both are intentional, minimal, and not candidates for replacement.
 ## Gotchas
 
 - **Website build (pnpm 11): build-script approvals live in `website/pnpm-workspace.yaml` under `allowBuilds:`** (`esbuild: true`) — pnpm v11 ignores `pnpm.*` in `package.json` and silently skips unapproved postinstall scripts, so `astro build` then fails on a missing esbuild binary. A placeholder value (e.g. `esbuild: set this to true or false`) silently disables the whole key (cmdguard incident, fixed 2026-09-19).
-- **Keep the Go version above in sync with `go.mod`** — this drift has recurred three times (1.26.3 → 1.26.4 → 1.26.5); whenever `go.mod`'s `go` directive bumps, update the `**Go version:**` line in the Project section above
+- **Keep the Go version trio in sync (`go.mod` / `.golangci.yml` `run.go` / this file)** — drift has recurred four times (1.26.3 → 1.26.4 → 1.26.5 → 1.27); the CI drift-guard job now fails on mismatch, so bump all three together
 - `.tmp` files use unique names (`path + "." + randomHex + ".tmp"`) to prevent concurrent writers from corrupting a shared staging file
 - `.tmp` files are created alongside the target file (same directory) — callers need write permissions on the directory, not just the file
 - `.tmp` files are in `.gitignore`; `.bak` files are no longer created (the `.bak` pattern was removed — it broke POSIX atomicity)
@@ -140,8 +140,8 @@ Both are intentional, minimal, and not candidates for replacement.
   - 0o644 in tests triggers `gosec G306` — annotate with `//nolint:gosec` and rationale
   - `os.ReadFile(path)`/`os.OpenFile` with a variable path triggers `gosec G304` — annotate with `//nolint:gosec` and rationale
   - Blank line between error assignment and `if err != nil` triggers `wsl_v5` — put the blank line above the assignment instead
-  - New third-party imports require updating `.golangci.yml` `depguard.rules.main.allow`
-  - `exhaustruct` was deprecated in golangci-lint v2.13.0 — migration to `exhaustruct_v5` is pending (tracked in TODO_LIST.md)
+  - `depguard` is disabled in the converged config — new third-party imports need no allow-list edit
+  - `exhaustruct` → `exhaustruct_v5` migration is DONE (config enables `exhaustruct_v5`; do not re-add the old name)
 - **Website changelog page is GENERATED** — `website/src/content/docs/changelog.mdx` is produced from root `CHANGELOG.md` by `scripts/sync-changelog.mjs` (runs on `prebuild`/`predev`). Edit `CHANGELOG.md`, never the `.mdx`. If the build breaks with an MDX "unexpected character" error, a changelog entry likely contains a raw `<`; the sync script escapes `<` but check new entries.
 - **Website CSP is hash-based and post-build** — `scripts/fix-csp.mjs` (`postbuild`) injects a per-file CSP `<meta>` from inline-script SHA-256 hashes. There is **no `'unsafe-inline'` for `script-src`**. If a new inline script breaks the site under CSP, either move it to an external `/js/*.js` file (loaded via `<script is:inline src=…>`) or confirm `fix-csp.mjs` hashed it.
 - **Do NOT add `website/src/pages/404.astro`** — Starlight ships its own `404.html`. A custom one causes a route collision (warning today, hard error in future Astro). The `404 was not found` line during build is a benign Starlight route log, not a warning.
@@ -150,7 +150,9 @@ Both are intentional, minimal, and not candidates for replacement.
 - **Lighthouse CI needs chromium** — `pnpm run lighthouse` requires Chrome/Chromium. The Nix devShell provides it and sets `CHROME_PATH`. Run via `nix develop` or `nix shell nixpkgs#nodejs_24 nixpkgs#chromium`.
 - **`website/.editorconfig` uses `root = true`** — this intentionally decouples the website from the Go-rooted `.editorconfig` (which uses tabs). The website uses 2-space indentation for all files.
 - **`astro check` requires TypeScript 6.x** — TS7's native compiler dropped the programmatic API that `astro check` needs; `website/package.json` pins `typescript` `^6.0.3` deliberately. Do not let Dependabot/auto-updaters bump it to 7.
-- **The auto-commit daemon commits manifest changes without lockfiles** — this caused four `pnpm install --frozen-lockfile` CI failures (09-09, 09-13, 09-15, 09-17). After any `package.json`/`go.mod` change, regenerate the lockfile (`pnpm install`, `go mod tidy`) in the same change or CI breaks.
+- **The auto-commit daemon commits manifest changes without lockfiles** — this caused four `pnpm install --frozen-lockfile` CI failures (09-09, 09-13, 09-15, 09-17) and another four-package drift on 11-03. The CI drift-guard job now fails fast on it. After any `package.json`/`go.mod` change, regenerate the lockfile (`pnpm install`, `go mod tidy`) in the same change or CI breaks.
+- **No npm manifest at the repo root** — a stray `npm init -y` stub was auto-committed 2026-09-22 (commit 5a6302f) and the `npm directory: /` Dependabot entry then failed on every run (no lockfile, no deps). The stub is deleted and the Dependabot entry removed (11-03); if a JS tool ever needs a root-level package.json, add the lockfile AND a matching Dependabot entry together.
+- **CI pins `GOTOOLCHAIN: local`** — no rogue toolchain download can silently pick a different Go; raising `go.mod`'s directive relies on setup-go installing that version from `go-version-file`.
 - **Website deploy needs `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE`** — a repo secret holding a JSON key for `github-website-deploy@lars-software.iam.gserviceaccount.com` (the shared GitHub-deploy SA; templ-components uses the same SA pattern). Without it every CI deploy fails at the final step and the live site silently freezes (it was stale 2026-07-26 → 2026-09-17 for exactly this reason). Local deploys work without the secret: `nix shell nixpkgs#nodejs nixpkgs#firebase-tools -c firebase deploy --only hosting:atomicwrite --project lars-software` (firebase-tools is logged in as `lartyhd@gmail.com`). IAM for `lars-software` is only visible to `lartyhd@gmail.com`, not `lars@helpless.ai`.
 - **The `firebase-adminsdk` SA has hit GCP's 10-key cap** — minting new keys for it fails with `FAILED_PRECONDITION`. Use `github-website-deploy@lars-software` for new CI keys instead.
 - **The landing-page hero snippet has one source of truth** — `website/src/data/hero-code.ts` holds a token list; `heroCode` (clipboard payload) and `highlightedHeroCode()` (rendered markup) are both derived from it, so displayed and copied code cannot diverge (they did: the markup showed a 3-arg `Write` that does not compile). Edit the token list, never the markup in `HeroSection.astro`. Tailwind scans this `.ts` file for the syntax classes (`text-amber`, `text-code-comment`, ...), so keep those as literal strings.

@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+env:
+  # Refuse any toolchain other than the one setup-go installed, so a
+  # rogue `toolchain` bump cannot silently download a different Go.
+  GOTOOLCHAIN: local
+
 jobs:
   test:
     name: Test + Vet + Build + Lint
@@ -39,3 +44,88 @@ jobs:
         with:
           version: v2.13.2
           args: --timeout=5m
+
+  cross-compile:
+    name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: windows
+            goarch: amd64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build for ${{ matrix.goos }}/${{ matrix.goarch }}
+        run: go build ./...
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+
+  govulncheck:
+    name: Vulnerability scan (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: golang/govulncheck-action@032d45514ae346b1db93c04b0c90b841c370344f # v1.1.0
+        with:
+          go-version-file: go.mod
+          go-package: ./...
+
+  drift-guard:
+    name: Dependency drift guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: go mod tidy leaves nothing to change
+        run: go mod tidy -diff
+
+      - name: Version trio is consistent (go.mod / .golangci.yml / AGENTS.md)
+        run: |
+          go_mod=$(grep -oP '^go \K[0-9]+\.[0-9]+' go.mod)
+          lint_go=$(grep -oP '^  go: "\K[0-9]+\.[0-9]+' .golangci.yml)
+          agents_go=$(grep -oP '^\s*-\s+\*\*Go version:\*\* \K[0-9]+\.[0-9]+' AGENTS.md)
+          echo "go.mod=$go_mod .golangci.yml=$lint_go AGENTS.md=$agents_go"
+          if [ -z "$go_mod" ] || [ -z "$lint_go" ] || [ -z "$agents_go" ]; then
+            echo "::error::Could not extract at least one of the version trio values (go.mod, .golangci.yml run.go, AGENTS.md Go version)"
+            exit 1
+          fi
+          if [ "$go_mod" != "$lint_go" ] || [ "$go_mod" != "$agents_go" ]; then
+            echo "::error::Version trio drifted: go.mod ($go_mod) vs .golangci.yml ($lint_go) vs AGENTS.md ($agents_go). Update all three together."
+            exit 1
+          fi
+
+      - name: Enable pnpm via corepack
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          corepack enable --install-directory "$HOME/.local/bin"
+          corepack prepare pnpm@11.20.0 --activate
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: website/pnpm-lock.yaml
+
+      - name: pnpm lockfile matches package.json
+        working-directory: website
+        run: pnpm install --frozen-lockfile

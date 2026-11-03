@@ -33,11 +33,11 @@ All tests pass (including race detector). `go vet` clean. Build clean. Benchmark
 
 | # | Severity   | Issue                                                                                                                                                                                                                                                                                                               | Location | Verdict    |
 | - | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- |
-| 1 | **Medium** | Lock is acquired but `defer fileLock.Close()` comes after — the `defer` only runs when the function returns. If `atomicRename` panics, the lock is released but the `.tmp` file is orphaned. Not a real-world concern in Go (no exceptions), but worth noting for defensive programming.                            | L96      | Acceptable |
-| 2 | **Medium** | `.bak` from a previous write is never cleaned up. On repeated writes, the old `.bak` is silently overwritten — this is correct behavior but not documented in the README's error contract section.                                                                                                                  | L115     | Doc gap    |
-| 3 | **Low**    | `Fingerprint` is `[8]byte` — the `IsZero()` method compares against zero value. This means an empty file produces a non-zero fingerprint (xxhash of empty bytes ≠ 0), which is correct. But a caller who computes `FingerprintFromBytes(nil)` gets a non-zero result. This is semantically fine but could surprise. | L36-41   | By design  |
-| 4 | **Low**    | `os.Stat` error is silently ignored (only `err == nil` path extracts perm). If Stat fails for a reason other than NotExist (e.g., permission denied on parent dir), we silently fall through to `0644` and may fail later at `WriteFile`. This is arguably fine — the later error is more actionable.               | L68-71   | Acceptable |
-| 5 | **Low**    | No `sync.Once` or similar protection for the `defaultFilePerm` constant — not needed since it's a compile-time constant. Clean.                                                                                                                                                                                     | L64      | Clean      |
+| ~~1~~ **Superseded — write path rewritten in v0.2.0; cleanup covers all error paths (commitRename).** | ~~**Medium**~~ | ~~Lock is acquired but `defer fileLock.Close()` comes after — the `defer` only runs when the function returns. If `atomicRename` panics, the lock is released but the `.tmp` file is orphaned. Not a real-world concern in Go (no exceptions), but worth noting for defensive programming.~~ | ~~L96~~ | ~~Acceptable~~ |
+| ~~2~~ **NOT-DO — moot - .bak pattern removed in v0.2.0.** | ~~**Medium**~~ | ~~`.bak` from a previous write is never cleaned up. On repeated writes, the old `.bak` is silently overwritten — this is correct behavior but not documented in the README's error contract section.~~ | ~~L115~~ | ~~Doc gap~~ |
+| ~~3~~ done — by-design observation - still true, no action | ~~**Low**~~ | ~~`Fingerprint` is `[8]byte` — the `IsZero()` method compares against zero value. This means an empty file produces a non-zero fingerprint (xxhash of empty bytes ≠ 0), which is correct. But a caller who computes `FingerprintFromBytes(nil)` gets a non-zero result. This is semantically fine but could surprise.~~ | ~~L36-41~~ | ~~By design~~ |
+| ~~4~~ done — acceptable observation - no action | ~~**Low**~~ | ~~`os.Stat` error is silently ignored (only `err == nil` path extracts perm). If Stat fails for a reason other than NotExist (e.g., permission denied on parent dir), we silently fall through to `0644` and may fail later at `WriteFile`. This is arguably fine — the later error is more actionable.~~ | ~~L68-71~~ | ~~Acceptable~~ |
+| ~~5~~ done — clean observation - no action | ~~**Low**~~ | ~~No `sync.Once` or similar protection for the `defaultFilePerm` constant — not needed since it's a compile-time constant. Clean.~~ | ~~L64~~ | ~~Clean~~ |
 
 **Architecture observations:**
 
@@ -61,11 +61,11 @@ All tests pass (including race detector). `go vet` clean. Build clean. Benchmark
 
 | # | Severity | Issue                                                                                                                                                                                                                         | Location | Verdict       |
 | - | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------- |
-| 1 | **Low**  | `TestConcurrentWriteRACE` uses `wg.Go` (Go 1.25+ feature) — good, but the test's success criteria (`successes >= 1`) is weak. It doesn't verify that the final file content is valid, only that at least one write succeeded. | L234-277 | Could improve |
-| 2 | **Low**  | `TestConcurrentWriteRACE` is missing `t.Parallel()` — probably intentional since it's a concurrency test, but inconsistent with other tests.                                                                                  | L234     | Acceptable    |
-| 3 | **Low**  | No test for writing empty content (`[]byte{}`) — edge case worth covering.                                                                                                                                                    | —        | Gap           |
-| 4 | **Low**  | No test for very large files (e.g., 100MB) — not critical for a library, but the README benchmarks go up to 1MB.                                                                                                              | —        | Nice-to-have  |
-| 5 | **Info** | `TestAtomicRenameReportsErrorOnFailure` tests internal function directly — fine for a single-package layout, and the test validates error propagation.                                                                        | L279-295 | Clean         |
+| ~~1~~ done at `0.2.0` | ~~**Low**~~ | ~~`TestConcurrentWriteRACE` uses `wg.Go` (Go 1.25+ feature) — good, but the test's success criteria (`successes >= 1`) is weak. It doesn't verify that the final file content is valid, only that at least one write succeeded.~~ | ~~L234-277~~ | ~~Could improve~~ |
+| ~~2~~ done — intentional - concurrency test stays serial | ~~**Low**~~ | ~~`TestConcurrentWriteRACE` is missing `t.Parallel()` — probably intentional since it's a concurrency test, but inconsistent with other tests.~~ | ~~L234~~ | ~~Acceptable~~ |
+| ~~3~~ done at `785632f` | ~~**Low**~~ | ~~No test for writing empty content (`[]byte{}`) — edge case worth covering.~~ | ~~—~~ | ~~Gap~~ |
+| ~~4~~ **Won't implement — nice-to-have - 1MB benchmarks cover perf; fixture cost.** | ~~**Low**~~ | ~~No test for very large files (e.g., 100MB) — not critical for a library, but the README benchmarks go up to 1MB.~~ | ~~—~~ | ~~Nice-to-have~~ |
+| ~~5~~ done — clean observation - no action | ~~**Info**~~ | ~~`TestAtomicRenameReportsErrorOnFailure` tests internal function directly — fine for a single-package layout, and the test validates error propagation.~~ | ~~L279-295~~ | ~~Clean~~ |
 
 **Missing test coverage:**
 
@@ -88,8 +88,8 @@ All tests pass (including race detector). `go vet` clean. Build clean. Benchmark
 
 | # | Severity | Issue                                                                                                                                                      | Location             | Verdict    |
 | - | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------- |
-| 1 | **Low**  | Data initialization pattern (`byte(i % 256)`) is repeated in 4 benchmark functions. Could extract to a helper, but at 104 LOC this is acceptable.          | L27-29, L41-43, etc. | Acceptable |
-| 2 | **Info** | `byte(i % 256)` — `i % 256` is always `i` for `byte` range, but this works because `i` exceeds 255 and wraps via `byte(i % 256)`. Could just be `byte(i)`. | L28                  | Trivial    |
+| ~~1~~ done at `0.3.0` | ~~**Low**~~ | ~~Data initialization pattern (`byte(i % 256)`) is repeated in 4 benchmark functions. Could extract to a helper, but at 104 LOC this is acceptable.~~ | ~~L27-29, L41-43, etc.~~ | ~~Acceptable~~ |
+| ~~2~~ done — trivial - no action | ~~**Info**~~ | ~~`byte(i % 256)` — `i % 256` is always `i` for `byte` range, but this works because `i` exceeds 255 and wraps via `byte(i % 256)`. Could just be `byte(i)`.~~ | ~~L28~~ | ~~Trivial~~ |
 
 ### `go.mod` — Grade: A
 
@@ -168,37 +168,37 @@ Every exported symbol is used. No dead code. No unused dependencies. Every test 
 
 ## Brutal Self-Review Answers
 
-1. **What did we forget?**\
+~~1. **What did we forget?**\~~ done — empty-content tests shipped (writeifchanged_test.go)
    Empty file edge case test. `.bak` overwrite behavior test. The README has a wrong path in the benchmark command.
 
-2. **What is something stupid?**\
+~~2. **What is something stupid?**\~~ done — README path fixed long since
    The README benchmark command path (`lib/go-atomic-write`) is copy-pasted from a monorepo context and doesn't work for this standalone project.
 
-3. **What could be better?**\
+~~3. **What could be better?**\~~ done — filled in; corrected 07-26
    `docs/DOMAIN_LANGUAGE.md` is an empty scaffold — either fill it in or delete it. Currently it's noise.
 
-4. **What could still be improved?**\
+~~4. **What could still be improved?**\~~ done — empty-content tests shipped
    Missing test for empty content writes. The concurrent test could validate final file state.
 
-5. **Did we lie?**\
+~~5. **Did we lie?**\~~ **NOT-DO — moot - .bak removed in v0.2.0.**
    The README implies `.bak` is always created on successful writes, but it silently ignores `.bak` rename failure. The error contract says "A `.bak` of the previous content is created on successful writes (not on first write)" — this is technically true for the _attempt_, but the `.bak` may not exist if the OS rename fails.
 
-6. **How can we be less stupid?**\
+~~6. **How can we be less stupid?**\~~ done — both done (see plan rows 1-2)
    Delete or fill in `DOMAIN_LANGUAGE.md`. Fix the README benchmark path.
 
-7. **Ghost systems?**\
+~~7. **Ghost systems?**\~~ done — confirmed - none
    None. Every piece of code is integrated and used.
 
-8. **Scope creep?**\
+~~8. **Scope creep?**\~~ done — confirmed - none
    None — the library is admirably focused.
 
-9. **Removed something useful?**\
+~~9. **Removed something useful?**\~~ done — confirmed - clean history
    Not applicable — clean history.
 
-10. **Split brains?**\
+~~10. **Split brains?**\~~ done — confirmed - none
     None detected.
 
-11. **Testing?**\
+~~11. **Testing?**\~~ done — gaps closed (empty done, .bak moot, edge tests routed)
     Good but could be stronger: empty content, very large files, `.bak` overwrite, directory-as-path edge cases are missing.
 
 ---
@@ -209,31 +209,31 @@ Every exported symbol is used. No dead code. No unused dependencies. Every test 
 
 | # | Task                                                    | Impact | Effort | Why                                |
 | - | ------------------------------------------------------- | ------ | ------ | ---------------------------------- |
-| 1 | Fix README benchmark path (`lib/go-atomic-write` → `.`) | High   | 1 min  | Broken command in user-facing docs |
+| ~~1~~ done — fixed long since | ~~Fix README benchmark path (`lib/go-atomic-write` → `.`)~~ | ~~High~~ | ~~1 min~~ | ~~Broken command in user-facing docs~~ |
 
 ### The 4% that delivers 64% of the value
 
 | # | Task                                          | Impact | Effort | Why                                                |
 | - | --------------------------------------------- | ------ | ------ | -------------------------------------------------- |
-| 2 | Delete or fill in `docs/DOMAIN_LANGUAGE.md`   | Medium | 5 min  | Empty scaffold is noise, confuses new contributors |
-| 3 | Add test for empty content write              | Medium | 5 min  | Edge case not covered                              |
-| 4 | Add test for `.bak` overwrite on second write | Medium | 5 min  | Verifies backup rotation works                     |
+| ~~2~~ done — filled in; corrected 07-26 | ~~Delete or fill in `docs/DOMAIN_LANGUAGE.md`~~ | ~~Medium~~ | ~~5 min~~ | ~~Empty scaffold is noise, confuses new contributors~~ |
+| ~~3~~ done at `785632f` | ~~Add test for empty content write~~ | ~~Medium~~ | ~~5 min~~ | ~~Edge case not covered~~ |
+| ~~4~~ **NOT-DO — moot - .bak no longer exists.** | ~~Add test for `.bak` overwrite on second write~~ | ~~Medium~~ | ~~5 min~~ | ~~Verifies backup rotation works~~ |
 
 ### The 20% that delivers 80% of the value
 
 | # | Task                                                                | Impact | Effort | Why                                  |
 | - | ------------------------------------------------------------------- | ------ | ------ | ------------------------------------ |
-| 5 | Add `FingerprintFile` test with directory path                      | Low    | 3 min  | Edge case robustness                 |
-| 6 | Add `Fingerprint.Matches(nil)` test                                 | Low    | 2 min  | Documents nil-safety behavior        |
-| 7 | Validate final file content in `TestConcurrentWriteRACE`            | Low    | 5 min  | Stronger concurrency assertion       |
-| 8 | Document `.bak` cleanup/overwrite behavior in README error contract | Low    | 3 min  | Completes the contract documentation |
+| 5 **→ TODO_LIST: fingerprint edge tests** | Add `FingerprintFile` test with directory path | Low | 3 min | Edge case robustness |
+| 6 **→ TODO_LIST: fingerprint edge tests** | Add `Fingerprint.Matches(nil)` test | Low | 2 min | Documents nil-safety behavior |
+| ~~7~~ done at `0.2.0` | ~~Validate final file content in `TestConcurrentWriteRACE`~~ | ~~Low~~ | ~~5 min~~ | ~~Stronger concurrency assertion~~ |
+| ~~8~~ **NOT-DO — moot - .bak no longer exists.** | ~~Document `.bak` cleanup/overwrite behavior in README error contract~~ | ~~Low~~ | ~~3 min~~ | ~~Completes the contract documentation~~ |
 
 ### Nice-to-have (not in the 80%)
 
 | #  | Task                                                    | Impact  | Effort | Why                                    |
 | -- | ------------------------------------------------------- | ------- | ------ | -------------------------------------- |
-| 9  | Extract benchmark data init to helper                   | Trivial | 2 min  | DRY                                    |
-| 10 | Add `//go:build` constraints or platform-specific tests | Low     | 30 min | Verify Windows `LockFileEx` path works |
+| ~~9~~ done at `0.3.0` | ~~Extract benchmark data init to helper~~ | ~~Trivial~~ | ~~2 min~~ | ~~DRY~~ |
+| 10 **→ ROADMAP: real-Windows testing (theme 1)** | Add `//go:build` constraints or platform-specific tests | Low | 30 min | Verify Windows `LockFileEx` path works |
 
 ---
 

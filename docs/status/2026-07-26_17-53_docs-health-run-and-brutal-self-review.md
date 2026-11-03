@@ -100,16 +100,16 @@ The 2026-07-09 report explicitly flagged "Add `website/` section to root CONTRIB
 
 ### On my process (this session)
 
-1. **Verify before claiming status.** Every `FULLY_FUNCTIONAL` / "pass" must trace to a file I opened or a command I ran. "Trusted the prior report" is how split brains survive.
-2. **Run the actual quality gate, name every command.** Never say "clean" without the command. The docs-health skill literally lists this as mandatory and I under-read it.
-3. **Finish failed checks.** A grep that errors is not a completed check. Retry or do it another way before reporting "pass."
-4. **Audit every doc in the model, not just the ones I'm building.** CONTRIBUTING.md and DOMAIN_LANGUAGE.md are living docs; skipping them makes "AUDIT" a mislabel.
+~~1. **Verify before claiming status.** Every `FULLY_FUNCTIONAL` / "pass" must trace to a file I opened or a command I ran. "Trusted the prior report" is how split brains survive.~~ done — process lesson - enacted by later sessions
+~~2. **Run the actual quality gate, name every command.** Never say "clean" without the command. The docs-health skill literally lists this as mandatory and I under-read it.~~ done — process lesson - golangci-lint now the CI gate
+~~3. **Finish failed checks.** A grep that errors is not a completed check. Retry or do it another way before reporting "pass."~~ done — process lesson - no open artifact
+~~4. **Audit every doc in the model, not just the ones I'm building.** CONTRIBUTING.md and DOMAIN_LANGUAGE.md are living docs; skipping them makes "AUDIT" a mislabel.~~ done at `e765d0e`
 
 ### On the codebase (found this session, not mine to fix silently)
 
-5. **Website docs are stale against `[Unreleased]`.** 4 of 9 pages teach removed API. Highest-leverage doc fix available.
-6. **Two changelogs is one too many.** Pick one source of truth; have the website generate from root CHANGELOG or symlink, don't hand-maintain two.
-7. **The Go-version drift recurs because nothing enforces it.** I added a gotcha; a CI lint or a `go.mod`-derived value would be stronger than a comment.
+~~5. **Website docs are stale against `[Unreleased]`.** 4 of 9 pages teach removed API. Highest-leverage doc fix available.~~ done at `07546e4`
+~~6. **Two changelogs is one too many.** Pick one source of truth; have the website generate from root CHANGELOG or symlink, don't hand-maintain two.~~ done at `e765d0e`
+~~7. **The Go-version drift recurs because nothing enforces it.** I added a gotcha; a CI lint or a `go.mod`-derived value would be stronger than a comment.~~ done at `4481908`
 
 ---
 
@@ -117,35 +117,35 @@ The 2026-07-09 report explicitly flagged "Add `website/` section to root CONTRIB
 
 ### Critical — fix the split brain I helped obscure
 
-1. Rewrite `website/src/content/docs/api-reference.mdx` to current API: add `WriteVerified`, `WriteIfChanged`, `WriteFuncVerified`; fix `Write`/`WriteFunc` signatures.
-2. Rewrite all 4 code examples in `website/src/content/docs/getting-started/quick-start.mdx` to `WriteVerified`/`Write`.
-3. Fix `website/src/content/docs/guides/error-handling.mdx` API references.
-4. Resolve the dual-changelog: make `website/src/content/docs/changelog.mdx` generated from root `CHANGELOG.md`, or delete it and link out.
-5. Re-run `FEATURES.md` "Documentation site" row once docs are fixed → back to `FULLY_FUNCTIONAL`.
+~~1. Rewrite `website/src/content/docs/api-reference.mdx` to current API: add `WriteVerified`, `WriteIfChanged`, `WriteFuncVerified`; fix `Write`/`WriteFunc` signatures.~~ done at `07546e4`
+~~2. Rewrite all 4 code examples in `website/src/content/docs/getting-started/quick-start.mdx` to `WriteVerified`/`Write`.~~ done at `07546e4`
+~~3. Fix `website/src/content/docs/guides/error-handling.mdx` API references.~~ done at `07546e4`
+~~4. Resolve the dual-changelog: make `website/src/content/docs/changelog.mdx` generated from root `CHANGELOG.md`, or delete it and link out.~~ done at `e765d0e`
+~~5. Re-run `FEATURES.md` "Documentation site" row once docs are fixed → back to `FULLY_FUNCTIONAL`.~~ done at `4c9ffe5`
 
 ### High — finish the audit I cut short
 
-6. VERIFY `docs/DOMAIN_LANGUAGE.md` against code (never read this session).
-7. VERIFY `CONTRIBUTING.md`; add the `website/` section (open item F.49).
-8. Complete the internal-markdown-link check across all `.md` files.
-9. Run `pnpm run build` + `pnpm run typecheck` in `website/`.
-10. Run `nix flake check` on `website/flake.nix`.
+~~6. VERIFY `docs/DOMAIN_LANGUAGE.md` against code (never read this session).~~ done at `4c9ffe5`
+~~7. VERIFY `CONTRIBUTING.md`; add the `website/` section (open item F.49).~~ done at `4c9ffe5`
+~~8. Complete the internal-markdown-link check across all `.md` files.~~ done at `4c9ffe5`
+~~9. Run `pnpm run build` + `pnpm run typecheck` in `website/`.~~ done at `5726b1d`
+~~10. Run `nix flake check` on `website/flake.nix`.~~ done at `5726b1d`
 
 ### High — from TODO_LIST (existing, verified)
 
-11. Remove dead website code (`comparisons`, `ComparisonItem`, `fade-in-up`).
-12. Fix pulse-dot `prefers-reduced-motion`.
-13. Fix the `404 was not found` build warning (add `404.astro`).
-14. Create `.github/workflows/` (Go CI + website deploy).
-15. Re-add CSP to the website build.
+~~11. Remove dead website code (`comparisons`, `ComparisonItem`, `fade-in-up`).~~ done at `4c9ffe5`
+~~12. Fix pulse-dot `prefers-reduced-motion`.~~ done at `4c9ffe5`
+~~13. Fix the `404 was not found` build warning (add `404.astro`).~~ **NOT-DO — benign Starlight route log - AGENTS.md gotcha.**
+~~14. Create `.github/workflows/` (Go CI + website deploy).~~ done at `046e4ff`
+~~15. Re-add CSP to the website build.~~ done at `046e4ff`
 
 ### Medium
 
-16. Assess `docs/planning/2026-06-03_16-19-full-code-review.md` for staleness (annotate or note current).
-17. Add OG image generation.
-18. Add `favicon.ico`.
-19. WCAG contrast + aria-label audit on the comparison matrix.
-20. Lighthouse audit + `lighthouserc.json`.
+~~16. Assess `docs/planning/2026-06-03_16-19-full-code-review.md` for staleness (annotate or note current).~~ done — Resolution appendix added 07-26
+~~17. Add OG image generation.~~ done at `785632f`
+~~18. Add `favicon.ico`.~~ done at `785632f`
+~~19. WCAG contrast + aria-label audit on the comparison matrix.~~ done at `785632f`
+~~20. Lighthouse audit + `lighthouserc.json`.~~ done at `3387ca9`
 
 ---
 
@@ -167,14 +167,14 @@ It's a 7-week-old planning/review snapshot. I did not read it this session (you 
 
 ## Self-review scorecard (the skill's 11 questions, one line each)
 
-1. **What did you forget?** CONTRIBUTING.md, DOMAIN_LANGUAGE.md, the broken-link retry, `nix flake check`, and — critically — opening a single website doc page before certifying it.
-2. **Stupid thing we do anyway?** Hand-maintain two changelogs that immediately diverge.
-3. **What could I have done better?** Verified status claims against opened files; run the real gate; finished the failed grep.
-4. **What could I still improve?** Items 1–10 in §f.
-5. **Did I lie to you?** Yes — twice. FEATURES.md "FULLY_FUNCTIONAL" docs (corrected), and "quality gate clean" while skipping golangci-lint (true by luck). Reported honestly here.
-6. **How to be less stupid?** Make "opened the file" a hard precondition for any status word.
-7. **Ghost systems / integration?** The website docs are a _ghost of a prior API_ — they exist, build, deploy, and teach code that no longer compiles. Highest-priority integration fix.
-8. **Scope creep?** No — I stayed in docs. If anything I under-scoped the audit.
-9. **Removed something useful?** No.
-10. **Split brains?** Yes, two: (a) website docs vs current API, (b) dual changelog. Both in §d.
-11. **Tests?** Go tests pass (25). Website has no tests and I added none — out of scope, but the website has zero automated verification, which is why a stale API shipped undetected.
+~~1. **What did you forget?** CONTRIBUTING.md, DOMAIN_LANGUAGE.md, the broken-link retry, `nix flake check`, and — critically — opening a single website doc page before certifying it.~~ done — retrospective - covered by 18-27 session
+~~2. **Stupid thing we do anyway?** Hand-maintain two changelogs that immediately diverge.~~ **Superseded — sync-changelog.mjs replaced hand-maintenance.**
+~~3. **What could I have done better?** Verified status claims against opened files; run the real gate; finished the failed grep.~~ done — process lesson
+~~4. **What could I still improve?** Items 1–10 in §f.~~ done — all resolved - see section f rows above
+~~5. **Did I lie to you?** Yes — twice. FEATURES.md "FULLY_FUNCTIONAL" docs (corrected), and "quality gate clean" while skipping golangci-lint (true by luck). Reported honestly here.~~ done — accounting - corrected in-file
+~~6. **How to be less stupid?** Make "opened the file" a hard precondition for any status word.~~ done — process lesson
+~~7. **Ghost systems / integration?** The website docs are a _ghost of a prior API_ — they exist, build, deploy, and teach code that no longer compiles. Highest-priority integration fix.~~ done at `07546e4`
+~~8. **Scope creep?** No — I stayed in docs. If anything I under-scoped the audit.~~ done — retrospective - no action
+~~9. **Removed something useful?** No.~~ done — retrospective - no action
+~~10. **Split brains?** Yes, two: (a) website docs vs current API, (b) dual changelog. Both in §d.~~ done at `07546e4`
+~~11. **Tests?** Go tests pass (25). Website has no tests and I added none — out of scope, but the website has zero automated verification, which is why a stale API shipped undetected.~~ **Superseded — CI now typechecks, builds, html-validates, verify-build gates.**

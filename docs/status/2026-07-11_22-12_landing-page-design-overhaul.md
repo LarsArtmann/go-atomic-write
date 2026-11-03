@@ -125,25 +125,25 @@
 
 ### Design-Specific
 
-1. **Take screenshots** — Install a headless browser tool and actually look at the page in dark AND light mode, desktop AND mobile
-2. **Add text alternatives to comparison table** — `aria-label="yes"` / `aria-label="no"` on table cells
-3. **Cover pulse-dot in reduced-motion** — Add `@media (prefers-reduced-motion: reduce) { .animate-pulse-dot { animation: none; } }`
-4. **Audit color contrast** — `#78716c` muted text on `#0a0908` background is ~4.2:1, borderline AA
-5. **Remove dead code** — Delete unused `comparisons` array, `ComparisonItem` interface, and `fade-in-up` animation
-6. **Add a subtle gradient or texture to section backgrounds** — Currently every section has the same flat dot-grid; adding alternating subtle backgrounds would create visual rhythm
-7. **Consider a "stat bar" section** — Between hero and features, a full-width strip with large numbers (27 GB/s, 11x faster, 2 deps, 0 allocs) would add visual punch
-8. **Code syntax highlighting** — The hero code uses manual `<span>` tags; consider a proper highlighter (Shiki/Starlight's ExpressiveCode) for the landing page code blocks
-9. **Add hover states to comparison table rows** — Currently only `hover:bg-bg-card/50` on `<tr>`, could add cursor and click-to-expand details
-10. **Mobile how-it-works flow** — When stacked vertically, the cards lose the "flow" metaphor; consider a vertical connector line on mobile
+1. **Take screenshots** — Install a headless browser tool and actually look at the page in dark AND light mode, desktop AND mobile **→ TODO_LIST: browser verification sweep**
+~~2. **Add text alternatives to comparison table** — `aria-label="yes"` / `aria-label="no"` on table cells~~ done at `785632f`
+~~3. **Cover pulse-dot in reduced-motion** — Add `@media (prefers-reduced-motion: reduce) { .animate-pulse-dot { animation: none; } }`~~ done at `4c9ffe5`
+~~4. **Audit color contrast** — `#78716c` muted text on `#0a0908` background is ~4.2:1, borderline AA~~ done at `785632f`
+~~5. **Remove dead code** — Delete unused `comparisons` array, `ComparisonItem` interface, and `fade-in-up` animation~~ done at `4c9ffe5`
+6. **Add a subtle gradient or texture to section backgrounds** — Currently every section has the same flat dot-grid; adding alternating subtle backgrounds would create visual rhythm **→ ROADMAP: alternating backgrounds (theme 3)**
+7. **Consider a "stat bar" section** — Between hero and features, a full-width strip with large numbers (27 GB/s, 11x faster, 2 deps, 0 allocs) would add visual punch **→ ROADMAP: stat bar (theme 3)**
+~~8. **Code syntax highlighting** — The hero code uses manual `<span>` tags; consider a proper highlighter (Shiki/Starlight's ExpressiveCode) for the landing page code blocks~~ **Superseded — token-list single source kept deliberately.**
+9. **Add hover states to comparison table rows** — Currently only `hover:bg-bg-card/50` on `<tr>`, could add cursor and click-to-expand details **→ ROADMAP: matrix hover-expand (theme 3)**
+10. **Mobile how-it-works flow** — When stacked vertically, the cards lose the "flow" metaphor; consider a vertical connector line on mobile **→ ROADMAP: mobile connector (theme 3)**
 
 ### Architecture/Process
 
-11. **Fix the 404 build warning** — Create a proper `src/pages/404.astro` or configure Starlight's 404 handling
-12. **Re-add CSP** — Use `scripts/fix-csp.mjs` pattern from gogenfilter
-13. **Add OG images** — `astro-og-canvas` or static OG image generation
-14. **Create CI/CD** — GitHub Actions for Go CI + website deploy
-15. **Add `favicon.ico`** — Legacy browser support
-16. **Generate `flake.lock`** — Pin Nix dependencies
+~~11. **Fix the 404 build warning** — Create a proper `src/pages/404.astro` or configure Starlight's 404 handling~~ **NOT-DO — benign Starlight log - AGENTS.md gotcha.**
+~~12. **Re-add CSP** — Use `scripts/fix-csp.mjs` pattern from gogenfilter~~ done at `046e4ff`
+~~13. **Add OG images** — `astro-og-canvas` or static OG image generation~~ done at `785632f`
+~~14. **Create CI/CD** — GitHub Actions for Go CI + website deploy~~ done at `046e4ff`
+~~15. **Add `favicon.ico`** — Legacy browser support~~ done at `785632f`
+~~16. **Generate `flake.lock`** — Pin Nix dependencies~~ done at `4a61fb4`
 
 ---
 
@@ -151,71 +151,71 @@
 
 ### Design Polish (1-15)
 
-1. Take dark-mode desktop screenshot and audit
-2. Take light-mode desktop screenshot and audit
-3. Take mobile screenshot and audit
-4. Add `aria-label` to comparison table cells for screen readers
-5. Cover `animate-pulse-dot` in `prefers-reduced-motion` media query
-6. Remove dead `comparisons` array from `sections.ts`
-7. Remove dead `ComparisonItem` interface from `types.ts`
-8. Remove unused `fade-in-up` animation from `global.css`
-9. Audit WCAG AA color contrast on all text/background combinations
-10. Add alternating section background tones for visual rhythm
-11. Add a full-width stat bar section between hero and features
-12. Replace manual hero code highlighting with Shiki or ExpressiveCode
-13. Add vertical connector line for mobile how-it-works flow
-14. Add subtle hover-to-expand details on comparison table rows
-15. Animate the how-it-works flow arrows on scroll-into-view
+1. Take dark-mode desktop screenshot and audit **→ TODO_LIST: browser verification sweep**
+2. Take light-mode desktop screenshot and audit **→ TODO_LIST: browser verification sweep**
+3. Take mobile screenshot and audit **→ TODO_LIST: browser verification sweep**
+~~4. Add `aria-label` to comparison table cells for screen readers~~ done at `785632f`
+~~5. Cover `animate-pulse-dot` in `prefers-reduced-motion` media query~~ done at `4c9ffe5`
+~~6. Remove dead `comparisons` array from `sections.ts`~~ done at `4c9ffe5`
+~~7. Remove dead `ComparisonItem` interface from `types.ts`~~ done at `4c9ffe5`
+~~8. Remove unused `fade-in-up` animation from `global.css`~~ done at `4c9ffe5`
+~~9. Audit WCAG AA color contrast on all text/background combinations~~ done at `785632f`
+10. Add alternating section background tones for visual rhythm **→ ROADMAP: alternating backgrounds (theme 3)**
+11. Add a full-width stat bar section between hero and features **→ ROADMAP: stat bar (theme 3)**
+~~12. Replace manual hero code highlighting with Shiki or ExpressiveCode~~ **Superseded — token-list single source kept deliberately.**
+13. Add vertical connector line for mobile how-it-works flow **→ ROADMAP: mobile connector (theme 3)**
+14. Add subtle hover-to-expand details on comparison table rows **→ ROADMAP: matrix hover-expand (theme 3)**
+15. Animate the how-it-works flow arrows on scroll-into-view **→ ROADMAP: animate arrows on scroll (theme 3)**
 
 ### Landing Page Content (16-22)
 
-16. Write better hero subheadline (current is feature-list-y, not benefit-y)
-17. Add "Who is this for?" section with developer personas
-18. Add code example for error handling (ErrConcurrentModification) below the hero
-19. Add testimonials or social proof section (if/when available)
-20. Add FAQ section addressing common questions (Windows support? Performance overhead? etc.)
-21. Add "Migration from os.WriteFile" guide section on landing page
-22. Add animated diagram showing the write pipeline (SVG/CSS animation)
+~~16. Write better hero subheadline (current is feature-list-y, not benefit-y)~~ done at `07546e4`
+17. Add "Who is this for?" section with developer personas **→ ROADMAP: personas section (theme 3)**
+~~18. Add code example for error handling (ErrConcurrentModification) below the hero~~ **Superseded — FAQ covers the race/error ground.**
+19. Add testimonials or social proof section (if/when available) **→ ROADMAP: social proof (theme 3)**
+~~20. Add FAQ section addressing common questions (Windows support? Performance overhead? etc.)~~ done at `66f1623`
+21. Add "Migration from os.WriteFile" guide section on landing page **→ ROADMAP: migration guide (theme 2)**
+22. Add animated diagram showing the write pipeline (SVG/CSS animation) **→ ROADMAP: animated pipeline diagram (theme 3)**
 
 ### SEO & Meta (23-28)
 
-23. Add `og:image` meta tags to LandingLayout
-24. Generate static OG image for homepage
-25. Add `twitter:card` with `summary_large_image`
-26. Add `favicon.ico` for legacy browser support
-27. Add structured data for SoftwareLibrary schema type
-28. Add canonical URL handling for dual domains
+~~23. Add `og:image` meta tags to LandingLayout~~ done at `785632f`
+~~24. Generate static OG image for homepage~~ done at `785632f`
+~~25. Add `twitter:card` with `summary_large_image`~~ done at `785632f`
+~~26. Add `favicon.ico` for legacy browser support~~ done at `785632f`
+~~27. Add structured data for SoftwareLibrary schema type~~ done at `57010c9`
+~~28. Add canonical URL handling for dual domains~~ done at `57010c9`
 
 ### Build & Deploy (29-36)
 
-29. Fix the 404 build warning
-30. Re-add CSP via `scripts/fix-csp.mjs` post-build patcher
+~~29. Fix the 404 build warning~~ **NOT-DO — benign Starlight log - AGENTS.md gotcha.**
+~~30. Re-add CSP via `scripts/fix-csp.mjs` post-build patcher~~ done at `046e4ff`
 31. ~~Generate `flake.lock` in `website/`~~ DONE: 4a61fb4;
-32. Add `firebase.json` cache headers for CSS/JS (1-year immutable)
-33. Create GitHub Actions workflow for Go CI (`ci.yml`)
-34. Create GitHub Actions workflow for website deploy (`website.yml`)
-35. Add CI badge to README
-36. Set up preview deployments on PRs
+~~32. Add `firebase.json` cache headers for CSS/JS (1-year immutable)~~ done at `57010c9`
+~~33. Create GitHub Actions workflow for Go CI (`ci.yml`)~~ done at `046e4ff`
+~~34. Create GitHub Actions workflow for website deploy (`website.yml`)~~ done at `046e4ff`
+~~35. Add CI badge to README~~ done — fixed in-audit - CI badge added to README
+36. Set up preview deployments on PRs **→ ROADMAP: PR preview channel (theme 3)**
 
 ### Documentation (37-42)
 
-37. Update AGENTS.md with new design patterns and component structure
-38. Document the comparison matrix data pattern
-39. Document the eyebrow/SectionHeader pattern
+~~37. Update AGENTS.md with new design patterns and component structure~~ **Won't implement — AGENTS.md stays lean - patterns visible in code.**
+~~38. Document the comparison matrix data pattern~~ **Won't implement — AGENTS.md stays lean - patterns visible in code.**
+39. Document the eyebrow/SectionHeader pattern **→ ROADMAP: design-decisions page (theme 2)**
 40. Add design decisions section to website docs
-41. Update the status report from previous session with "design overhaul" addendum
-42. Add a CONTRIBUTING section about website design changes
+~~41. Update the status report from previous session with "design overhaul" addendum~~ done at `4c9ffe5`
+~~42. Add a CONTRIBUTING section about website design changes~~ done at `785632f`
 
 ### Code Quality (43-50)
 
-43. Run `golangci-lint` on Go code (verify still clean after no Go changes)
-44. Audit website for unused CSS/JS
-45. Check Lighthouse score on deployed site
-46. Verify sitemap includes all pages
-47. Add `robots.txt` sitemap reference
-48. Audit all `alt` text and `aria-label` attributes
-49. Test keyboard navigation flow on landing page
-50. Test theme toggle persistence across page navigation
+~~43. Run `golangci-lint` on Go code (verify still clean after no Go changes)~~ done at `046e4ff`
+~~44. Audit website for unused CSS/JS~~ done at `4c9ffe5`
+~~45. Check Lighthouse score on deployed site~~ done at `3387ca9`
+~~46. Verify sitemap includes all pages~~ done at `57010c9`
+~~47. Add `robots.txt` sitemap reference~~ done at `57010c9`
+~~48. Audit all `alt` text and `aria-label` attributes~~ done at `785632f`
+49. Test keyboard navigation flow on landing page **→ TODO_LIST: browser verification sweep**
+50. Test theme toggle persistence across page navigation **→ TODO_LIST: browser verification sweep**
 
 ---
 

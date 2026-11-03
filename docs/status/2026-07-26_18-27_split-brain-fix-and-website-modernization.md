@@ -133,20 +133,20 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 
 ### On my process (this session)
 
-1. **Verify a TODO's premise before executing it.** "Add 404.astro" was itself wrong. A 30-second check (does Starlight ship a 404?) before writing would have saved a create/destroy cycle. TODO items are hypotheses, not orders.
-2. **Know the file format before writing the file.** MDX ≠ MD for comments and `<`. I burned two build cycles re-learning this. Read the tool's docs or an existing working file first.
-3. **Compile-test examples immediately, not at the end.** I wrote 4 docs of examples and only set up the temp-module compile check near the close. If the API had been subtly off, all 4 would have been wrong together. The compile harness should have been step 1 after the first rewrite.
-4. **Scope the initial stale-API grep to the whole repo, not just `website/`.** I got lucky the README was already current. The first sweep should have included README/ROADMAP/CONTRIBUTING — I only checked README as a closing afterthought.
-5. **Don't write code I haven't mentally executed.** The double-`<` replace and the no-op `>` replace were nonsense I would have caught by tracing the regex once. "Wrote it fast" is not "wrote it right."
-6. **Fix the 2-minute nits on sight.** The flake Node-version mismatch and missing `meta.description` were detected and ticketed instead of done. AGENTS.md (global) says: "Fix immediately when detected... otherwise ticket it." These were under-5-minute fixes; ticketing them was the wrong call.
-7. **Re-verify line-number citations when I touch a doc.** Carrying `commitVerified:249` forward without opening the file is the trusted-the-prior-report pattern. Open the file or drop the line number.
+~~1. **Verify a TODO's premise before executing it.** "Add 404.astro" was itself wrong. A 30-second check (does Starlight ship a 404?) before writing would have saved a create/destroy cycle. TODO items are hypotheses, not orders.~~ done — process lesson
+~~2. **Know the file format before writing the file.** MDX ≠ MD for comments and `<`. I burned two build cycles re-learning this. Read the tool's docs or an existing working file first.~~ done — process lesson
+~~3. **Compile-test examples immediately, not at the end.** I wrote 4 docs of examples and only set up the temp-module compile check near the close. If the API had been subtly off, all 4 would have been wrong together. The compile harness should have been step 1 after the first rewrite.~~ done at `e765d0e`
+~~4. **Scope the initial stale-API grep to the whole repo, not just `website/`.** I got lucky the README was already current. The first sweep should have included README/ROADMAP/CONTRIBUTING — I only checked README as a closing afterthought.~~ done — process lesson
+~~5. **Don't write code I haven't mentally executed.** The double-`<` replace and the no-op `>` replace were nonsense I would have caught by tracing the regex once. "Wrote it fast" is not "wrote it right."~~ done — process lesson
+~~6. **Fix the 2-minute nits on sight.** The flake Node-version mismatch and missing `meta.description` were detected and ticketed instead of done. AGENTS.md (global) says: "Fix immediately when detected... otherwise ticket it." These were under-5-minute fixes; ticketing them was the wrong call.~~ done at `785632f`
+~~7. **Re-verify line-number citations when I touch a doc.** Carrying `commitVerified:249` forward without opening the file is the trusted-the-prior-report pattern. Open the file or drop the line number.~~ done — line refs re-derived this pass (code split into fingerprint/stage/commit.go)
 
 ### On the codebase (found this session, not mine to fix silently)
 
-8. **Meta-CSP is the wrong layer for `frame-ancestors`.** Move CSP to `firebase.json` headers (stronger, supports all directives) or drop unsupported directives from the meta.
-9. **`website/flake.nix` puts developers in a Node 22 shell while docs say Node 24.** Split brain between the flake and AGENTS.md. Trivial fix, real confusion for the next contributor.
-10. **Build scripts have no regression tests.** A future changelog `<` or a script-attribute `>` could silently break `pnpm run build`. The project's "all tests automated" mandate should cover build tooling too.
-11. **The website teaches an un-tagged API.** `WriteVerified`/`WriteIfChanged` exist only on `master`, not in any release. A user on the latest tag (v0.3.0) gets the old API; the new docs will mislead them. (Carried forward from the prior report's g.2 — still unresolved.)
+8. **Meta-CSP is the wrong layer for `frame-ancestors`.** Move CSP to `firebase.json` headers (stronger, supports all directives) or drop unsupported directives from the meta. **→ TODO_LIST: CSP header-vs-meta architecture**
+~~9. **`website/flake.nix` puts developers in a Node 22 shell while docs say Node 24.** Split brain between the flake and AGENTS.md. Trivial fix, real confusion for the next contributor.~~ done at `785632f`
+10. **Build scripts have no regression tests.** A future changelog `<` or a script-attribute `>` could silently break `pnpm run build`. The project's "all tests automated" mandate should cover build tooling too. **→ TODO_LIST: build-script regression tests**
+~~11. **The website teaches an un-tagged API.** `WriteVerified`/`WriteIfChanged` exist only on `master`, not in any release. A user on the latest tag (v0.3.0) gets the old API; the new docs will mislead them. (Carried forward from the prior report's g.2 — still unresolved.)~~ done at `5557d5c`
 
 ---
 
@@ -154,68 +154,68 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 
 ### Critical — correctness & honesty
 
-1. **Move CSP to `firebase.json` headers** (or drop `frame-ancestors`/`report-uri` from the meta). Decide the meta-vs-header architecture; document the tradeoff. (§d.6, §g.1)
-2. **Verify CSP in a real browser** — load the built site, confirm zero console violations (view transitions, theme toggle, Starlight search, copy-code, pagefind).
-3. **Tag v0.4.0 OR gate the doc rewrite on a tag.** The website now teaches `master`-only API. Resolve the release-strategy question (§g.2) before this misleads a tagged-release user.
-4. **Re-verify FEATURES.md line-number citations** (`commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`) against current `atomicwrite.go` — open the file, confirm or fix.
+1. **Move CSP to `firebase.json` headers** (or drop `frame-ancestors`/`report-uri` from the meta). Decide the meta-vs-header architecture; document the tradeoff. (§d.6, §g.1) **→ TODO_LIST: CSP header-vs-meta architecture**
+2. **Verify CSP in a real browser** — load the built site, confirm zero console violations (view transitions, theme toggle, Starlight search, copy-code, pagefind). **→ TODO_LIST: browser verification sweep**
+~~3. **Tag v0.4.0 OR gate the doc rewrite on a tag.** The website now teaches `master`-only API. Resolve the release-strategy question (§g.2) before this misleads a tagged-release user.~~ done at `5557d5c`
+~~4. **Re-verify FEATURES.md line-number citations** (`commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`) against current `atomicwrite.go` — open the file, confirm or fix.~~ done — fixed in-audit - FEATURES.md refs re-derived 2026-11-03
 
 ### High — finish what I deferred or left partial
 
-5. **Fix `website/flake.nix`**: `pkgs.nodejs` → `pkgs.nodejs_24` (matches AGENTS.md Node-24 requirement).
-6. **Add `meta.description` to the `deploy` app** in `website/flake.nix` (clears the `nix flake check` warning).
-7. **Read & update `ROADMAP.md`** — never touched this session; the CSP/CI work may shift its themes.
-8. **Add a smoke test for `fix-csp.mjs`** — run it twice on the same `dist/`, assert exactly one CSP meta per file (idempotency regression guard).
-9. **Add a unit test for `sync-changelog.mjs`** — feed a CHANGELOG with a `<` entry, assert it's escaped and the output builds.
-10. **Prove the CI workflows on GitHub** — push to a branch, confirm `ci.yml` and `website.yml` build jobs go green; set `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret (or remove the deploy job if manual deploy is intended — §g.3).
-11. **Remove the create/delete 404.astro noise from history** if the daemon committed it (verify with `git log -- website/src/pages/404.astro`; if present as +then-, leave it — history is history, but note it).
+~~5. **Fix `website/flake.nix`**: `pkgs.nodejs` → `pkgs.nodejs_24` (matches AGENTS.md Node-24 requirement).~~ done at `785632f`
+~~6. **Add `meta.description` to the `deploy` app** in `website/flake.nix` (clears the `nix flake check` warning).~~ done at `785632f`
+~~7. **Read & update `ROADMAP.md`** — never touched this session; the CSP/CI work may shift its themes.~~ done at `b102ee6`
+8. **Add a smoke test for `fix-csp.mjs`** — run it twice on the same `dist/`, assert exactly one CSP meta per file (idempotency regression guard). **→ TODO_LIST: build-script regression tests**
+9. **Add a unit test for `sync-changelog.mjs`** — feed a CHANGELOG with a `<` entry, assert it's escaped and the output builds. **→ TODO_LIST: build-script regression tests**
+~~10. **Prove the CI workflows on GitHub** — push to a branch, confirm `ci.yml` and `website.yml` build jobs go green; set `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret (or remove the deploy job if manual deploy is intended — §g.3).~~ done at `c30d40b`
+~~11. **Remove the create/delete 404.astro noise from history** if the daemon committed it (verify with `git log -- website/src/pages/404.astro`; if present as +then-, leave it — history is history, but note it).~~ **NOT-DO — history-only - 404.astro absent today.**
 
 ### Medium — from TODO_LIST (existing, verified)
 
-12. Add OG / social-share image generation (`astro-og-canvas`, `og:image`).
-13. Add `favicon.ico` for legacy browser support.
-14. Add `aria-label`s to comparison matrix cells + WCAG AA contrast audit (`#78716c` on `#0a0908` is borderline).
-15. Run a Lighthouse audit + add `lighthouserc.json` budgets.
-16. Add `website/.editorconfig` for editor consistency.
-17. Verify sitemap completeness (all 11 pages) + add `robots.txt` sitemap reference.
-18. Add `firebase.json` long-term immutable cache headers for hashed CSS/JS assets (may already be partially there — verify).
+~~12. Add OG / social-share image generation (`astro-og-canvas`, `og:image`).~~ done at `785632f`
+~~13. Add `favicon.ico` for legacy browser support.~~ done at `785632f`
+~~14. Add `aria-label`s to comparison matrix cells + WCAG AA contrast audit (`#78716c` on `#0a0908` is borderline).~~ done at `785632f`
+~~15. Run a Lighthouse audit + add `lighthouserc.json` budgets.~~ done at `3387ca9`
+~~16. Add `website/.editorconfig` for editor consistency.~~ done at `785632f`
+~~17. Verify sitemap completeness (all 11 pages) + add `robots.txt` sitemap reference.~~ done at `785632f`
+~~18. Add `firebase.json` long-term immutable cache headers for hashed CSS/JS assets (may already be partially there — verify).~~ done at `785632f`
 
 ### Medium — test coverage gaps (from the 2026-06-03 review, still open)
 
-19. Add `FingerprintFile` test with a directory path (not a file).
-20. Add `Fingerprint.Matches(nil)` test (documents nil-safety).
-21. Test Windows `LockFileEx` path on real hardware (or a CI Windows runner — now that `ci.yml` exists, add a `windows-latest` job).
+19. Add `FingerprintFile` test with a directory path (not a file). **→ TODO_LIST: fingerprint edge tests**
+20. Add `Fingerprint.Matches(nil)` test (documents nil-safety). **→ TODO_LIST: fingerprint edge tests**
+21. Test Windows `LockFileEx` path on real hardware (or a CI Windows runner — now that `ci.yml` exists, add a `windows-latest` job). **→ ROADMAP: real-Windows testing (theme 1)**
 
 ### Lower — polish & resilience
 
-22. Add a `pnpm run check` aggregate script (typecheck + build + csp + lint) for a single pre-merge gate.
-23. Add `html-validate` to the website CI step (dep is already in `devDependencies` but not wired).
-24. Document the meta-vs-header CSP decision in `AGENTS.md` website gotchas (once §f.1 is decided).
-25. Add a `CONTRIBUTING.md` note that doc code examples MUST compile (link to the temp-module method I used, or add a `make doccheck`).
-26. Sweep the daemon-authored commit messages for typos (`ore(ci)`) — cosmetic, history-only, low priority.
-27. Consider a `renovate.json` / Dependabot config now that CI exists (keeps `golangci-lint action` + Astro deps current).
-28. Add a CSP `report-to`/`report-uri` endpoint (or a strict `report-only` mode) to catch violations without breaking the page.
-29. Audit Starlight's bundled inline scripts for any that execute `eval`/`Function` (would need `'unsafe-eval'` — confirm none do).
-30. Add an integration test that builds the website and greps the output for the string `Write(path, data, fp)` (fails if stale API ever returns to the docs — prevents regression of this session's core fix).
-31. Pin `golangci-lint` version in `ci.yml` to a specific tag (currently `latest` — reproducibility risk if a new linter release adds a rule).
-32. Add `go test -bench=. -benchmem` to the CI workflow (benchmarks currently run only manually).
-33. Verify the `website.yml` `paths:` filter covers `CHANGELOG.md` (it triggers the changelog sync — currently only `website/**` is watched; a root CHANGELOG edit won't rebuild the site).
-34. Add a deploy-preview channel (per-PR Firebase preview URL) instead of only `live` deploys.
-35. Document the release/tagging process (how `v0.4.0` gets cut — there's no RELEASE.md).
-36. Add a `docs/status/` README explaining the status-report convention for new contributors.
-37. Confirm `atomicwrite.lars.software` DNS is live (AGENTS.md says "pending") — close out the DNS thread.
-38. Add structured `og:title`/`og:description` per-page (currently site-wide only in `LandingLayout`).
-39. Audit the `404.html` Starlight ships — confirm it links back to the landing page (not just docs).
-40. Add a `skip-to-content` link to the Starlight docs layout (landing page has one; docs may not).
-41. Verify `prefers-color-scheme` is respected on first paint (no FOUC) for the docs pages.
-42. Add `lang` attribute audit (confirm all pages are `lang="en"`).
-43. Add a stale-doc-detector: a script that diffs doc code examples against `atomicwrite.go` exports and flags mismatches (the structural fix for the original split brain).
-44. Run `pnpm audit` on the website and fix any high-severity findings.
-45. Add a `.nvmrc`/`engines.node` field to `website/package.json` (currently only AGENTS.md documents Node 24).
-46. Confirm `firebase.json` `cleanUrls: true` doesn't break the `/docs/* → /*` redirect (potential redirect chain).
-47. Add a changelog entry for the `website.yml` `paths` fix once §f.33 is done.
-48. Consider splitting `fix-csp.mjs` into a tested library function + thin CLI wrapper (testability).
-49. Add a `Makefile`-equivalent `just`/flake task for `doccheck` (compile all doc examples) — **no**, per AGENTS.md, use flake.nix, not justfile.
-50. Schedule a recurring (weekly) docs-health run to catch the next split brain early.
+22. Add a `pnpm run check` aggregate script (typecheck + build + csp + lint) for a single pre-merge gate. **→ TODO_LIST: build-gate hardening batch**
+~~23. Add `html-validate` to the website CI step (dep is already in `devDependencies` but not wired).~~ done at `5726b1d`
+24. Document the meta-vs-header CSP decision in `AGENTS.md` website gotchas (once §f.1 is decided). **→ TODO_LIST: CSP header-vs-meta architecture**
+25. Add a `CONTRIBUTING.md` note that doc code examples MUST compile (link to the temp-module method I used, or add a `make doccheck`). **→ TODO_LIST: docs/SEO hygiene batch**
+~~26. Sweep the daemon-authored commit messages for typos (`ore(ci)`) — cosmetic, history-only, low priority.~~ **Won't implement — immutable history - cosmetic daemon messages.**
+~~27. Consider a `renovate.json` / Dependabot config now that CI exists (keeps `golangci-lint action` + Astro deps current).~~ done at `25ae518`
+28. Add a CSP `report-to`/`report-uri` endpoint (or a strict `report-only` mode) to catch violations without breaking the page. **→ TODO_LIST: CSP header-vs-meta architecture**
+29. Audit Starlight's bundled inline scripts for any that execute `eval`/`Function` (would need `'unsafe-eval'` — confirm none do). **→ TODO_LIST: browser verification sweep**
+30. Add an integration test that builds the website and greps the output for the string `Write(path, data, fp)` (fails if stale API ever returns to the docs — prevents regression of this session's core fix). **→ TODO_LIST: build-gate hardening batch**
+~~31. Pin `golangci-lint` version in `ci.yml` to a specific tag (currently `latest` — reproducibility risk if a new linter release adds a rule).~~ done at `8172e7b`
+~~32. Add `go test -bench=. -benchmem` to the CI workflow (benchmarks currently run only manually).~~ **Won't implement — benchmarks informational - re-measured manually (README dated).**
+~~33. Verify the `website.yml` `paths:` filter covers `CHANGELOG.md` (it triggers the changelog sync — currently only `website/**` is watched; a root CHANGELOG edit won't rebuild the site).~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod
+34. Add a deploy-preview channel (per-PR Firebase preview URL) instead of only `live` deploys. **→ ROADMAP: PR preview channel (website polish)**
+~~35. Document the release/tagging process (how `v0.4.0` gets cut — there's no RELEASE.md).~~ **Superseded — AGENTS.md Release Checklist supersedes.**
+~~36. Add a `docs/status/` README explaining the status-report convention for new contributors.~~ done — docs/status/README.md index created in-audit
+37. Confirm `atomicwrite.lars.software` DNS is live (AGENTS.md says "pending") — close out the DNS thread. **→ ROADMAP: custom domains (theme 3)**
+38. Add structured `og:title`/`og:description` per-page (currently site-wide only in `LandingLayout`). **→ TODO_LIST: brand system batch**
+39. Audit the `404.html` Starlight ships — confirm it links back to the landing page (not just docs). **→ TODO_LIST: docs/SEO hygiene batch**
+~~40. Add a `skip-to-content` link to the Starlight docs layout (landing page has one; docs may not).~~ **NOT-DO — Starlight ships skip link - landing has one.**
+41. Verify `prefers-color-scheme` is respected on first paint (no FOUC) for the docs pages. **→ TODO_LIST: browser verification sweep**
+~~42. Add `lang` attribute audit (confirm all pages are `lang="en"`).~~ **NOT-DO — Starlight/Astro emit lang=en - builds green.**
+43. Add a stale-doc-detector: a script that diffs doc code examples against `atomicwrite.go` exports and flags mismatches (the structural fix for the original split brain). **→ TODO_LIST: build-gate hardening batch**
+~~44. Run `pnpm audit` on the website and fix any high-severity findings.~~ done at `3387ca9`
+45. Add a `.nvmrc`/`engines.node` field to `website/package.json` (currently only AGENTS.md documents Node 24). **→ TODO_LIST: docs/SEO hygiene batch**
+46. Confirm `firebase.json` `cleanUrls: true` doesn't break the `/docs/* → /*` redirect (potential redirect chain). **→ TODO_LIST: browser verification sweep**
+~~47. Add a changelog entry for the `website.yml` `paths` fix once §f.33 is done.~~ done — fixed in-audit with the paths-filter fix
+48. Consider splitting `fix-csp.mjs` into a tested library function + thin CLI wrapper (testability). **→ TODO_LIST: build-script regression tests**
+~~49. Add a `Makefile`-equivalent `just`/flake task for `doccheck` (compile all doc examples) — **no**, per AGENTS.md, use flake.nix, not justfile.~~ **Won't implement — pnpm run validate + Website CI already cover it.**
+~~50. Schedule a recurring (weekly) docs-health run to catch the next split brain early.~~ **Won't implement — cadence is an owner policy decision.**
 
 ---
 
@@ -237,14 +237,14 @@ I added a `website.yml` deploy job that pushes to Firebase Hosting `live` on eve
 
 ## Self-review scorecard (the prior report's 11 questions, one line each)
 
-1. **What did you forget?** ROADMAP.md (never opened); the flake Node-24 fix (detected, deferred); browser-console CSP check; idempotency test for fix-csp.
-2. **Stupid thing we do anyway?** Teach an un-tagged API on the public website while the latest release has the old API.
-3. **What could I have done better?** Verified the 404 TODO premise before building; known MDX comment syntax; compile-tested examples step-1; scoped the first stale-API grep to the whole repo; not written the double-`<` nonsense.
-4. **What could I still improve?** Items 1–11 in §f, especially the CSP architecture (§g.1) and the release-tag question (§g.2).
-5. **Did I lie to you?** Not about status this time — every claim traces to a command I ran. But FEATURES line numbers (`commitVerified:249` etc.) are unverified-inherited, and the meta-CSP `frame-ancestors 'none'` implies a protection that doesn't fire. Both flagged honestly in §d.
-6. **How to be less stupid?** Treat TODO items as hypotheses; read file-format docs before writing files; re-verify inherited citations.
-7. **Ghost systems / integration?** The meta-CSP `frame-ancestors` directive is a ghost protection — present in the policy, dead in effect. Otherwise the site is integrated and builds clean.
-8. **Scope creep?** Slightly: the CSP patcher and CI workflows were in-scope (TODO items), but adding a Firebase auto-deploy job (§g.3) may be beyond what was wanted. Flagged as a question.
-9. **Removed something useful?** No — `comparisons`/`ComparisonItem`/`fade-in-up` were confirmed unreferenced; `comparisonMatrix` retained.
-10. **Split brains?** Fixed the two big ones (website API, dual changelog). Found a smaller one I _caused_ and must resolve: meta-CSP `frame-ancestors` (no-op) vs the real `X-Frame-Options` header. And flagged the pre-existing website-flake Node 22 vs AGENTS Node 24 split.
-11. **Tests?** Go: 25 pass, race clean, lint 0 issues. Website: typecheck clean, build clean. New scripts: **zero tests** — a gap I created and flagged (§b, §f.8–9). The website still has no automated behavioral test, which is why the stale API shipped undetected in the first place; my doc-fix regression-test proposal (§f.30) would prevent recurrence.
+~~1. **What did you forget?** ROADMAP.md (never opened); the flake Node-24 fix (detected, deferred); browser-console CSP check; idempotency test for fix-csp.~~ done — ROADMAP+flake done - browser check routed
+~~2. **Stupid thing we do anyway?** Teach an un-tagged API on the public website while the latest release has the old API.~~ **Superseded — v0.4.0 released - docs teach the tagged API.**
+~~3. **What could I have done better?** Verified the 404 TODO premise before building; known MDX comment syntax; compile-tested examples step-1; scoped the first stale-API grep to the whole repo; not written the double-`<` nonsense.~~ done — process lesson
+~~4. **What could I still improve?** Items 1–11 in §f, especially the CSP architecture (§g.1) and the release-tag question (§g.2).~~ done — resolved - see section f verdicts above
+~~5. **Did I lie to you?** Not about status this time — every claim traces to a command I ran. But FEATURES line numbers (`commitVerified:249` etc.) are unverified-inherited, and the meta-CSP `frame-ancestors 'none'` implies a protection that doesn't fire. Both flagged honestly in §d.~~ done — accounting - CSP gap routed above
+~~6. **How to be less stupid?** Treat TODO items as hypotheses; read file-format docs before writing files; re-verify inherited citations.~~ done — process lesson
+7. **Ghost systems / integration?** The meta-CSP `frame-ancestors` directive is a ghost protection — present in the policy, dead in effect. Otherwise the site is integrated and builds clean. **→ TODO_LIST: CSP header-vs-meta architecture**
+~~8. **Scope creep?** Slightly: the CSP patcher and CI workflows were in-scope (TODO items), but adding a Firebase auto-deploy job (§g.3) may be beyond what was wanted. Flagged as a question.~~ **Superseded — auto-deploy kept and proven (deploys green).**
+~~9. **Removed something useful?** No — `comparisons`/`ComparisonItem`/`fade-in-up` were confirmed unreferenced; `comparisonMatrix` retained.~~ done — retrospective - no action
+~~10. **Split brains?** Fixed the two big ones (website API, dual changelog). Found a smaller one I _caused_ and must resolve: meta-CSP `frame-ancestors` (no-op) vs the real `X-Frame-Options` header. And flagged the pre-existing website-flake Node 22 vs AGENTS Node 24 split.~~ done — CSP remnant routed above
+11. **Tests?** Go: 25 pass, race clean, lint 0 issues. Website: typecheck clean, build clean. New scripts: **zero tests** — a gap I created and flagged (§b, §f.8–9). The website still has no automated behavioral test, which is why the stale API shipped undetected in the first place; my doc-fix regression-test proposal (§f.30) would prevent recurrence. **→ ROADMAP: Playwright smoke suite (theme 3)**

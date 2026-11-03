@@ -198,25 +198,25 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 
 ### Marketing Quality
 
-1. **The hero headline** "Never lose a byte to a crash" is decent but could be stronger. Gogenfilter's "Skip the generated noise" is more punchy and specific to the problem.
-2. **The comparison section** is good but static. Could benefit from actual benchmark numbers in the comparison.
-3. **No testimonials or social proof** — No "trusted by" or user logos. Expected for a new library, but worth noting.
-4. **No demo video or animated GIF** showing the problem/solution.
+~~1. **The hero headline** "Never lose a byte to a crash" is decent but could be stronger. Gogenfilter's "Skip the generated noise" is more punchy and specific to the problem.~~ **Superseded — hero rewritten 09-18 (consequence framing).**
+2. **The comparison section** is good but static. Could benefit from actual benchmark numbers in the comparison. **→ ROADMAP: benchmark numbers in matrix (theme 3)**
+3. **No testimonials or social proof** — No "trusted by" or user logos. Expected for a new library, but worth noting. **→ ROADMAP: social proof (theme 3)**
+4. **No demo video or animated GIF** showing the problem/solution. **→ ROADMAP: demo material (theme 3)**
 
 ### Technical Quality
 
-5. **No HTML validation run** — `.htmlvalidate.json` was created but `html-validate` was never run against `dist/`.
-6. **No Lighthouse audit** — Performance, accessibility, best practices, SEO scores unknown.
-7. **404 page** — Build warned "Entry docs → 404 was not found" — needs investigation.
-8. **No sitemap submission** to Google Search Console.
-9. **No analytics** — Gogenfilter removed Plausible; we never had any. Intentional but worth tracking.
+~~5. **No HTML validation run** — `.htmlvalidate.json` was created but `html-validate` was never run against `dist/`.~~ done at `5726b1d`
+~~6. **No Lighthouse audit** — Performance, accessibility, best practices, SEO scores unknown.~~ done at `3387ca9`
+~~7. **404 page** — Build warned "Entry docs → 404 was not found" — needs investigation.~~ **NOT-DO — benign Starlight log - AGENTS.md gotcha forbids custom 404.**
+8. **No sitemap submission** to Google Search Console. **→ ROADMAP: Search Console submission (theme 3)**
+~~9. **No analytics** — Gogenfilter removed Plausible; we never had any. Intentional but worth tracking.~~ **NOT-DO — ROADMAP non-goal - intentional privacy stance.**
 
 ### Content Quality
 
-10. **Docs are thin** — 9 pages but mostly reference material. No tutorials, no "why" essays, no deep-dives. Gogenfilter has more guide content.
-11. **No FAQ page** — Common questions (permissions, network filesystems, NFS, etc.) not addressed.
-12. **No migration guide** — For users coming from naive write patterns.
-13. **Benchmarks page has no live dashboard** — Gogenfilter links to a GitHub Pages benchmark dashboard.
+10. **Docs are thin** — 9 pages but mostly reference material. No tutorials, no "why" essays, no deep-dives. Gogenfilter has more guide content. **→ ROADMAP: docs depth essays (theme 2)**
+~~11. **No FAQ page** — Common questions (permissions, network filesystems, NFS, etc.) not addressed.~~ **Superseded — landing FAQ shipped 09-18; docs port is theme 2.**
+12. **No migration guide** — For users coming from naive write patterns. **→ ROADMAP: migration guide (theme 2)**
+13. **Benchmarks page has no live dashboard** — Gogenfilter links to a GitHub Pages benchmark dashboard. **→ ROADMAP: benchmark dashboard (theme 3)**
 
 ---
 
@@ -232,78 +232,78 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 
 ### CI/CD Infrastructure
 
-6. Create `.github/workflows/ci.yml` (Go: build, test -race, vet, golangci-lint)
-7. Create `.github/workflows/website.yml` (build + deploy on push to master)
-8. Create `.github/workflows/release.yml` (tag-based GitHub release)
-9. Create `.github/dependabot.yml` (Go + pnpm dependency updates)
+~~6. Create `.github/workflows/ci.yml` (Go: build, test -race, vet, golangci-lint)~~ done at `046e4ff`
+~~7. Create `.github/workflows/website.yml` (build + deploy on push to master)~~ done at `046e4ff`
+8. Create `.github/workflows/release.yml` (tag-based GitHub release) **→ ROADMAP: release automation (theme 4)**
+~~9. Create `.github/dependabot.yml` (Go + pnpm dependency updates)~~ done at `25ae518`
 10. Create `.github/FUNDING.yml`
-11. Add CI badge to README once CI exists
+~~11. Add CI badge to README once CI exists~~ **Won't implement — owner decision - not requested since.**
 
 ### CSP & Security
 
-12. Re-add CSP config to `astro.config.mjs`
+~~12. Re-add CSP config to `astro.config.mjs`~~ done — fixed in-audit - CI badge added to README
 13. Create `website/scripts/fix-csp.mjs` post-build patcher
 14. Update `website/package.json` build script: `"build": "astro build && node scripts/fix-csp.mjs"`
 15. Run `html-validate` on `dist/` output and fix violations
 
 ### Open Graph & Social
 
-16. Add `astro-og-canvas` dependency
-17. Create `website/src/pages/og/[...slug].ts` dynamic OG image endpoint
-18. Add `og:image` meta tags to `LandingLayout.astro`
-19. Add `twitter:image` meta tags
-20. Create a default OG image for the landing page
+~~16. Add `astro-og-canvas` dependency~~ **Superseded — static og-image.png chosen instead.**
+~~17. Create `website/src/pages/og/[...slug].ts` dynamic OG image endpoint~~ **Superseded — static og-image.png chosen instead.**
+~~18. Add `og:image` meta tags to `LandingLayout.astro`~~ done at `785632f`
+~~19. Add `twitter:image` meta tags~~ done at `785632f`
+~~20. Create a default OG image for the landing page~~ done at `785632f`
 
 ### Website Completeness
 
-21. Create `website/public/favicon.ico` (for legacy browser support)
-22. Create `website/.editorconfig`
-23. Create `website/lighthouserc.json` with performance budgets
-24. Run Lighthouse CI and fix issues
-25. Create `website/FEATURES.md` (honest feature inventory for the website)
+~~21. Create `website/public/favicon.ico` (for legacy browser support)~~ done at `785632f`
+~~22. Create `website/.editorconfig`~~ done at `785632f`
+~~23. Create `website/lighthouserc.json` with performance budgets~~ done at `785632f`
+~~24. Run Lighthouse CI and fix issues~~ done at `3387ca9`
+~~25. Create `website/FEATURES.md` (honest feature inventory for the website)~~ **Superseded — root FEATURES.md exists instead.**
 
 ### Documentation Expansion
 
-26. Add FAQ page (permissions, NFS, network filesystems, large files, etc.)
-27. Add "Migration from os.WriteFile" guide
-28. Add "Understanding TOCTOU Races" deep-dise essay
-29. Add "Why xxhash64?" design rationale page
-30. Add real-world examples (config file updater, state manager, etc.)
+~~26. Add FAQ page (permissions, NFS, network filesystems, large files, etc.)~~ done at `66f1623`
+27. Add "Migration from os.WriteFile" guide **→ ROADMAP: migration guide (theme 2)**
+28. Add "Understanding TOCTOU Races" deep-dise essay **→ ROADMAP: TOCTOU essay (theme 2)**
+29. Add "Why xxhash64?" design rationale page **→ ROADMAP: why-xxhash64 page (theme 2)**
+~~30. Add real-world examples (config file updater, state manager, etc.)~~ done at `57010c9`
 
 ### Content Polish
 
-31. A/B test hero headline alternatives
-32. Add benchmark comparison visualization (chart/graph)
-33. Add a "Platform Compatibility Matrix" table to landing page
-34. Add error handling flow diagram
-35. Add "Design Decisions" as a dedicated docs page (currently only in README)
+~~31. A/B test hero headline alternatives~~ **Superseded — hero replaced 09-18 - no A/B infra.**
+32. Add benchmark comparison visualization (chart/graph) **→ ROADMAP: benchmark dashboard (theme 3)**
+33. Add a "Platform Compatibility Matrix" table to landing page **→ ROADMAP: platform matrix on landing (theme 3)**
+34. Add error handling flow diagram **→ ROADMAP: error-flow diagram (theme 3)**
+35. Add "Design Decisions" as a dedicated docs page (currently only in README) **→ ROADMAP: design-decisions page (theme 2)**
 
 ### Dependents & Social Proof
 
-36. Create `/dependents` page (GitHub code search for importers)
-37. Add GitHub Sponsors button once FUNDING.yml exists
-38. Add "Used by" section once dependents exist
+36. Create `/dependents` page (GitHub code search for importers) **→ ROADMAP: dependents page (theme 3)**
+~~37. Add GitHub Sponsors button once FUNDING.yml exists~~ **Won't implement — owner decision - not requested since.**
+38. Add "Used by" section once dependents exist **→ ROADMAP: social proof (theme 3)**
 
 ### Code Quality
 
-39. Run `nix fmt` on `website/flake.nix`
-40. Validate all internal doc links are not broken
-41. Check Starlight sidebar matches all created pages
-42. Add `dedup` script and pnpm command if code duplication is a concern
-43. Add `validate:docs` script (if md-go-validator is needed)
+~~39. Run `nix fmt` on `website/flake.nix`~~ **Won't implement — cosmetic - flake renders fine.**
+40. Validate all internal doc links are not broken **→ TODO_LIST: link checker**
+~~41. Check Starlight sidebar matches all created pages~~ done at `57010c9`
+~~42. Add `dedup` script and pnpm command if code duplication is a concern~~ **Superseded — jscpd audit replaced it.**
+~~43. Add `validate:docs` script (if md-go-validator is needed)~~ **Won't implement — html-validate covers the built output.**
 
 ### Build & Deploy
 
-44. Test `firebase deploy --only hosting` works
-45. Set up DNS for `atomicwrite.lars.software` → Firebase hosting
-46. Configure Firebase custom domain in console
-47. Submit sitemap to Google Search Console
-48. Set up `atomicwrite.lars.software` in `.firebaserc` (verify target name)
+~~44. Test `firebase deploy --only hosting` works~~ done at `c30d40b`
+45. Set up DNS for `atomicwrite.lars.software` → Firebase hosting **→ ROADMAP: custom domains (theme 3)**
+46. Configure Firebase custom domain in console **→ ROADMAP: custom domains (theme 3)**
+47. Submit sitemap to Google Search Console **→ ROADMAP: Search Console submission (theme 3)**
+~~48. Set up `atomicwrite.lars.software` in `.firebaserc` (verify target name)~~ done at `57010c9`
 
 ### Repository Hygiene
 
-49. Add `website/` section to root `CONTRIBUTING.md`
-50. Add `website/` to root `CHANGELOG.md` (next version entry)
+~~49. Add `website/` section to root `CONTRIBUTING.md`~~ done at `785632f`
+~~50. Add `website/` to root `CHANGELOG.md` (next version entry)~~ done at `57010c9`
 
 ---
 

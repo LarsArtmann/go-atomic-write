@@ -14,19 +14,19 @@
 
 ### What did I forget?
 
-1. **The OG image.** I rewrote `siteConfig.description`, which feeds `og:description`, `twitter:description`, the JSON-LD block, and the meta description. I never opened `public/og-image.svg` / `og-image.png`. If that image contains the old mechanism-first sentence ("TOCTOU-safe writes via fingerprint verification..."), the social card now contradicts the page it links to. Unverified, likely inconsistent.
-2. **Every other surface carrying the same old sentence.** `README.md` and the 9 Starlight doc pages were not audited for the mechanism-first framing I just removed from the landing page. The site may now speak two voices.
-3. **Browser-level verification.** I verified the DOM, CSS, and served HTML. I never rendered a pixel. Layout regressions in the new install bar (320px width) and the FAQ grid are unverified.
-4. **A regression guard for the exact bug I fixed.** The single-source design makes drift structurally impossible, but nothing asserts `displayed === clipboard` after a future refactor. I fixed the class of bug and left it untested.
-5. **Meaningful commit messages.** The auto-commit daemon wrote two `chore: auto-commit N changed file(s) (heuristic)` commits for work that spanned 13 files. The history now says nothing.
+1. **The OG image.** I rewrote `siteConfig.description`, which feeds `og:description`, `twitter:description`, the JSON-LD block, and the meta description. I never opened `public/og-image.svg` / `og-image.png`. If that image contains the old mechanism-first sentence ("TOCTOU-safe writes via fingerprint verification..."), the social card now contradicts the page it links to. Unverified, likely inconsistent. **→ TODO_LIST: OG tagline/CTA voice**
+~~2. **Every other surface carrying the same old sentence.** `README.md` and the 9 Starlight doc pages were not audited for the mechanism-first framing I just removed from the landing page. The site may now speak two voices.~~ done at `4c9ffe5`
+3. **Browser-level verification.** I verified the DOM, CSS, and served HTML. I never rendered a pixel. Layout regressions in the new install bar (320px width) and the FAQ grid are unverified. **→ TODO_LIST: browser verification sweep**
+~~4. **A regression guard for the exact bug I fixed.** The single-source design makes drift structurally impossible, but nothing asserts `displayed === clipboard` after a future refactor. I fixed the class of bug and left it untested.~~ done at `e765d0e`
+~~5. **Meaningful commit messages.** The auto-commit daemon wrote two `chore: auto-commit N changed file(s) (heuristic)` commits for work that spanned 13 files. The history now says nothing.~~ done — retrospective - daemon gotcha in AGENTS.md
 
 ### What could I have done better?
 
-1. **Follow the messaging change to its edges.** A description change is a multi-surface change. I treated it as a one-line edit.
-2. **Centralize `importPath`.** It is derived twice (in `HeroSection.astro` and in `hero-code.ts`) from the same `siteConfig.github`. That is a mini split-brain, the same pattern as the bug I just fixed.
-3. **Verify visually.** A headless screenshot at 320px and 1440px would have cost one command and covered the highest residual risk.
-4. **Run Lighthouse.** `pnpm run lighthouse` exists with budgets configured. Chromium was not confirmed available and I chose not to find out.
-5. **Audit the whole page, not the sections I promised.** I rewrote feature titles but left the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity") in corporate register, directly against the clarity rule I was applying.
+1. **Follow the messaging change to its edges.** A description change is a multi-surface change. I treated it as a one-line edit. **→ TODO_LIST: landing voice pass**
+~~2. **Centralize `importPath`.** It is derived twice (in `HeroSection.astro` and in `hero-code.ts`) from the same `siteConfig.github`. That is a mini split-brain, the same pattern as the bug I just fixed.~~ done at `07546e4`
+3. **Verify visually.** A headless screenshot at 320px and 1440px would have cost one command and covered the highest residual risk. **→ TODO_LIST: browser verification sweep**
+~~4. **Run Lighthouse.** `pnpm run lighthouse` exists with budgets configured. Chromium was not confirmed available and I chose not to find out.~~ done at `3387ca9`
+~~5. **Audit the whole page, not the sections I promised.** I rewrote feature titles but left the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity") in corporate register, directly against the clarity rule I was applying.~~ done at `07546e4`
 
 ### What could I still improve?
 
@@ -98,96 +98,96 @@ Everything in section (f). The three highest-value items are: OG image + README/
 
 Honest list. Nothing was destroyed, but three things were genuinely wrong at session start or introduce risk:
 
-1. **THE SPLIT BRAIN (pre-existing, high severity).** The landing page shipped a Go sample that could not compile: `atomicwrite.Write(path, newData, fp)`, while `Write` takes `(path, data)` only. Worse, the copy button copied a _different_ string (`WriteVerified`). A visitor reading the page and a visitor copying the code received different APIs. Fixed and verified, but it had been live.
-2. **`1 Stars` (pre-existing, low severity).** The star button rendered "1 Stars" for a single stargazer. Fixed.
-3. **History quality (self-inflicted this session).** I let the auto-commit daemon produce `chore: auto-commit 11 changed file(s) (heuristic)` for a 13-file messaging change. I was not asked to commit, so I did not, but the result is that the reasoning behind these changes exists only in this report, not in git.
+~~1. **THE SPLIT BRAIN (pre-existing, high severity).** The landing page shipped a Go sample that could not compile: `atomicwrite.Write(path, newData, fp)`, while `Write` takes `(path, data)` only. Worse, the copy button copied a _different_ string (`WriteVerified`). A visitor reading the page and a visitor copying the code received different APIs. Fixed and verified, but it had been live.~~ done — fixed + verify-build guard
+~~2. **`1 Stars` (pre-existing, low severity).** The star button rendered "1 Stars" for a single stargazer. Fixed.~~ done — fixed
+~~3. **History quality (self-inflicted this session).** I let the auto-commit daemon produce `chore: auto-commit 11 changed file(s) (heuristic)` for a 13-file messaging change. I was not asked to commit, so I did not, but the result is that the reasoning behind these changes exists only in this report, not in git.~~ done — retrospective - gotcha documented
 
 ## e) WHAT WE SHOULD IMPROVE
 
 **Process**
 
-1. Treat a description/copy change as a multi-surface change and grep for the old string across the repo before declaring done.
-2. When a fix removes a whole class of bug, add the assertion that proves it stays removed.
-3. Commit per logical task when the daemon is racing, so history explains intent.
+~~1. Treat a description/copy change as a multi-surface change and grep for the old string across the repo before declaring done.~~ done — process aphorism
+~~2. When a fix removes a whole class of bug, add the assertion that proves it stays removed.~~ done at `e765d0e`
+~~3. Commit per logical task when the daemon is racing, so history explains intent.~~ done — process aphorism
 
 **Engineering**
-4. Stop deriving the same constant in two files (`importPath`).
-5. Stop repeating 300-character Tailwind class strings for identical buttons; extract a component.
-6. Prefer one source plus a derivation over two literals that must be kept in sync. This is the general lesson from today.
+~~4. Stop deriving the same constant in two files (`importPath`).~~ done at `07546e4`
+5. Stop repeating 300-character Tailwind class strings for identical buttons; extract a component. **→ TODO_LIST: CopyButton.astro extraction**
+~~6. Prefer one source plus a derivation over two literals that must be kept in sync. This is the general lesson from today.~~ done at `07546e4`
 
 **Quality gates**
-7. Add html-validate, typecheck, and a link check to CI.
-8. Add a Lighthouse budget gate.
-9. Add a post-deploy smoke check so a silent deploy failure cannot pass unnoticed (the site was frozen for 7 weeks for exactly this reason).
+7. Add html-validate, typecheck, and a link check to CI. **→ TODO_LIST: link checker**
+~~8. Add a Lighthouse budget gate.~~ done at `3387ca9`
+9. Add a post-deploy smoke check so a silent deploy failure cannot pass unnoticed (the site was frozen for 7 weeks for exactly this reason). **→ TODO_LIST: post-deploy live verification**
 
 **Content**
-10. Finish the clarity pass on the remaining landing-page sections and the docs.
+10. Finish the clarity pass on the remaining landing-page sections and the docs. **→ TODO_LIST: landing voice pass**
 
 ## f) UP TO 50 THINGS TO GET DONE NEXT
 
 **Consistency (highest value)**
 
-1. Audit `public/og-image.svg`; rewrite its copy if it carries the old mechanism sentence; regenerate `og-image.png` at 1200x630.
-2. Rewrite `README.md` to lead with the consequence, matching the new landing page.
-3. Audit all 9 Starlight docs pages for the old mechanism-first sentence.
-4. Rewrite the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity").
-5. Consider rewording the FeatureGrid title ("Safety you can rely on.").
-6. Review the hero badge ("Crash-safe file writes for Go") against the new hero voice.
-7. Check the Footer and Newsletter copy for the same register problem.
+1. Audit `public/og-image.svg`; rewrite its copy if it carries the old mechanism sentence; regenerate `og-image.png` at 1200x630. **→ TODO_LIST: OG tagline/CTA voice**
+~~2. Rewrite `README.md` to lead with the consequence, matching the new landing page.~~ done at `4c9ffe5`
+~~3. Audit all 9 Starlight docs pages for the old mechanism-first sentence.~~ done — grep clean across docs pages
+~~4. Rewrite the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity").~~ done at `07546e4`
+5. Consider rewording the FeatureGrid title ("Safety you can rely on."). **→ TODO_LIST: landing voice pass**
+6. Review the hero badge ("Crash-safe file writes for Go") against the new hero voice. **→ TODO_LIST: landing voice pass**
+7. Check the Footer and Newsletter copy for the same register problem. **→ TODO_LIST: landing voice pass**
 
 **Architecture / debt**
-8. Export one `modulePath` (or `importPath`) from `config.ts`; consume it in both `hero-code.ts` and `HeroSection.astro`.
-9. Remove the dead `id="hero-code"` attribute.
-10. Extract `CopyButton.astro` to hold the shared button classes.
-11. Add a test or build assertion that `heroCode === stripped(highlightedHeroCode())`.
-12. Add an assertion that the install command's module path matches the `module` line in `go.mod`.
-13. Investigate `website/src/styles/global.out.css`: tracked artifact or stale leftover?
-14. Investigate and silence the Starlight "collection i18n does not exist or is empty" warning.
-15. Verify `[data-copy]` re-binds after ClientRouter navigation; move binding to `astro:page-load` if not.
-16. Verify `animations.js` also re-runs after navigation (same class of issue).
+~~8. Export one `modulePath` (or `importPath`) from `config.ts`; consume it in both `hero-code.ts` and `HeroSection.astro`.~~ done at `07546e4`
+~~9. Remove the dead `id="hero-code"` attribute.~~ done at `07546e4`
+10. Extract `CopyButton.astro` to hold the shared button classes. **→ TODO_LIST: CopyButton.astro extraction**
+~~11. Add a test or build assertion that `heroCode === stripped(highlightedHeroCode())`.~~ done at `e765d0e`
+~~12. Add an assertion that the install command's module path matches the `module` line in `go.mod`.~~ done at `e765d0e`
+~~13. Investigate `website/src/styles/global.out.css`: tracked artifact or stale leftover?~~ done at `3387ca9`
+~~14. Investigate and silence the Starlight "collection i18n does not exist or is empty" warning.~~ done at `5726b1d`
+~~15. Verify `[data-copy]` re-binds after ClientRouter navigation; move binding to `astro:page-load` if not.~~ done at `4c9ffe5`
+16. Verify `animations.js` also re-runs after navigation (same class of issue). **→ TODO_LIST: animations.js after ClientRouter nav**
 
 **Accessibility**
-17. Run Lighthouse with chromium and record performance / a11y / SEO scores.
-18. Run an axe or contrast check on `text-text-muted` over `bg-bg-card` in the FAQ.
-19. Verify focus visibility on `<summary>` in both themes.
-20. Verify tab order: install Copy, docs link, star link, then code Copy.
-21. Add `aria-live="polite"` for copy success so screen readers hear it.
-22. Verify the FAQ reads sensibly with a screen reader (summary naming).
+~~17. Run Lighthouse with chromium and record performance / a11y / SEO scores.~~ done at `3387ca9`
+18. Run an axe or contrast check on `text-text-muted` over `bg-bg-card` in the FAQ. **→ TODO_LIST: browser verification sweep**
+19. Verify focus visibility on `<summary>` in both themes. **→ TODO_LIST: browser verification sweep**
+20. Verify tab order: install Copy, docs link, star link, then code Copy. **→ TODO_LIST: browser verification sweep**
+~~21. Add `aria-live="polite"` for copy success so screen readers hear it.~~ done at `4c9ffe5`
+22. Verify the FAQ reads sensibly with a screen reader (summary naming). **→ TODO_LIST: browser verification sweep**
 
 **Testing**
-23. Add `pnpm run validate` (html-validate) as a script.
-24. Add html-validate to the website CI workflow.
-25. Confirm `pnpm run typecheck` is a CI gate; add if missing.
-26. Add an internal link checker for docs and README.
-27. Add a smoke test that parses `dist/index.html` for the install command and FAQ count.
-28. Add a test asserting every `[data-copy]` element has non-empty `data-code`.
-29. Add a CSP assertion that no inline script is unhashed after `fix-csp.mjs`.
+~~23. Add `pnpm run validate` (html-validate) as a script.~~ done at `5726b1d`
+~~24. Add html-validate to the website CI workflow.~~ done at `5726b1d`
+~~25. Confirm `pnpm run typecheck` is a CI gate; add if missing.~~ done at `57010c9`
+26. Add an internal link checker for docs and README. **→ TODO_LIST: link checker**
+~~27. Add a smoke test that parses `dist/index.html` for the install command and FAQ count.~~ done at `e765d0e`
+~~28. Add a test asserting every `[data-copy]` element has non-empty `data-code`.~~ done at `e765d0e`
+29. Add a CSP assertion that no inline script is unhashed after `fix-csp.mjs`. **→ TODO_LIST: build-gate hardening batch**
 
 **Delivery / ops**
-30. Deploy to Firebase (`--only hosting:atomicwrite`) and verify the live URL.
-31. Verify DNS for `atomicwrite.lars.software` and `go-atomic-write.lars.software`.
-32. Confirm `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` is still valid end to end.
-33. Add a post-deploy live-site fetch assertion to the workflow.
-34. Decide whether these website changes get their own version entry or ride the next library release.
-35. Move `[Unreleased]` into a dated section when the content is frozen.
+~~30. Deploy to Firebase (`--only hosting:atomicwrite`) and verify the live URL.~~ done at `c30d40b`
+31. Verify DNS for `atomicwrite.lars.software` and `go-atomic-write.lars.software`. **→ ROADMAP: custom domains (theme 3)**
+~~32. Confirm `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` is still valid end to end.~~ done at `c30d40b`
+33. Add a post-deploy live-site fetch assertion to the workflow. **→ TODO_LIST: post-deploy live verification**
+~~34. Decide whether these website changes get their own version entry or ride the next library release.~~ done at `2234e1d`
+~~35. Move `[Unreleased]` into a dated section when the content is frozen.~~ done — [0.6.0] section reconstructed in-audit
 
 **Content depth**
-36. Link the FAQ cost answer to `guides/benchmarks`.
-37. Link `ErrConcurrentModification` in the FAQ to `guides/error-handling`.
-38. Surface the wider API on the landing page (`WriteIfChanged`, `WriteFunc`, `WriteWithPerm` are undocumented there).
-39. Reconsider the hero metrics row: lead with user benefit, not GB/s.
-40. Add a config-reloader example to Use Cases.
-41. Consider a "who uses this" or testimonial slot.
-42. Explain the "partial" atomic-rename cell for DIY in the comparison matrix.
-43. Add the `go get` command to each docs entry point.
-44. Add a short "when not to use this" page in docs, mirroring FAQ item 2.
+36. Link the FAQ cost answer to `guides/benchmarks`. **→ TODO_LIST: FAQ guide links**
+37. Link `ErrConcurrentModification` in the FAQ to `guides/error-handling`. **→ TODO_LIST: FAQ guide links**
+38. Surface the wider API on the landing page (`WriteIfChanged`, `WriteFunc`, `WriteWithPerm` are undocumented there). **→ TODO_LIST: surface more APIs on landing**
+39. Reconsider the hero metrics row: lead with user benefit, not GB/s. **→ TODO_LIST: hero metrics benefit framing**
+40. Add a config-reloader example to Use Cases. **→ TODO_LIST: config-reloader use case**
+41. Consider a "who uses this" or testimonial slot. **→ ROADMAP: social proof (theme 3)**
+42. Explain the "partial" atomic-rename cell for DIY in the comparison matrix. **→ TODO_LIST: docs/SEO hygiene batch**
+43. Add the `go get` command to each docs entry point. **→ TODO_LIST: docs/SEO hygiene batch**
+44. Add a short "when not to use this" page in docs, mirroring FAQ item 2. **→ ROADMAP: when-not-to-use docs page (theme 2)**
 
 **Hygiene**
-45. Re-run `pnpm install --frozen-lockfile` if any `package.json` change lands (none did this session).
-46. Verify `typescript` stays pinned at `^6` against Dependabot.
-47. Check sitemap `lastmod` freshness.
-48. Confirm `dist/` remains gitignored (verified this session, re-check after deploys).
-49. Add the FAQ content to the Starlight docs so search indexes it.
+~~45. Re-run `pnpm install --frozen-lockfile` if any `package.json` change lands (none did this session).~~ done at `3387ca9`
+46. Verify `typescript` stays pinned at `^6` against Dependabot. **→ TODO_LIST: sitemap lastmod**
+~~47. Check sitemap `lastmod` freshness.~~ done — verified in-session + gitignored
+48. Confirm `dist/` remains gitignored (verified this session, re-check after deploys). **→ ROADMAP: FAQ port to docs (theme 2)**
+~~49. Add the FAQ content to the Starlight docs so search indexes it.~~ done at `10-37 successor report`
 50. Schedule a follow-up status report after the next deploy.
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF

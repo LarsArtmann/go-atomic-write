@@ -37,17 +37,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Removed (website)
 
-- **`website/src/styles/global.out.css`** — a 44 KB generated Tailwind output with no references anywhere in the build; a leftover from an older CLI workflow.
+- **`website/src/styles/global.out.css`** — a 44 KB generated Tailwind output with no references anywhere in the build; a leftover from an older CLI workflow. Fleet sweeps kept regenerating it (twice on 2026-11-03); it is now deleted again AND `src/styles/*.out.css` is gitignored so it can never be committed again.
+- **Root `package.json` stub** — a stray `npm init -y` default stub (no deps, no lockfile, no scripts) was auto-committed 2026-09-22 (commit 5a6302f) and made the `npm directory: /` Dependabot job fail on every run since. The stub is deleted and that Dependabot entry removed; only the healthy `/website` npm ecosystem remains.
+
+### Security (website)
+
+- **npm dependency sweep** — `pnpm-lock.yaml` fully regenerated with pnpm 11.20.0: open advisories went from 62 (1 critical, 28 high) to 1 moderate (`minimatch@3.1.5` via the dev-only chrome-launcher chain; forcing it to 11 breaks glob@7's CJS API at runtime — tracked BLOCKED in `TODO_LIST.md`). Enabled by `overrides` in `pnpm-workspace.yaml` (pnpm 11 silently ignores `overrides` in `package.json` — same class as the `allowBuilds` incident, so the previous brace-expansion override had been inert): `fast-uri` ^3.1.9, `brace-expansion` ^5.0.12 (previous pin 5.0.6 sat six advisories behind), `glob@>=13 <14` ^14.0.2, `minimatch@>=10 <11` ^11.0.1, `basic-ftp` ^6.2.1 (get-uri declares ^5 but 6.2.5 verified CJS-loadable, 2026-11-03).
 
 ### Fixed (CI)
 
-- **`astro check` requires TypeScript 6.x** — `website` pinned `typescript` `^7.0.2` → `^6.0.3` (and regenerated `pnpm-lock.yaml`). TS7's native compiler dropped the programmatic API that `astro check` depends on. Shipped in the v0.5.2 tag but missed from its changelog section.
+- **`astro check` requires TypeScript 6.x** — `website` pinned `typescript` `^7.0.2` → `^6.0.3` (and regenerated `pnpm-lock.yaml`). TS7's native compiler dropped the programmatic API that `astro check` depends on. Shipped in the v0.5.2 tag but missed from its changelog section. **Re-fixed 2026-11-03 with a self-healing guard**: the fleet npm sweep re-bumped the manifest to `^7.0.2` twice more; a `typescript@>=7 → ^6.0.3` override in `pnpm-workspace.yaml` now resolves any future major bump back to 6.x automatically.
 - **golangci-lint GitHub Action upgraded v6 → v7** (SHA-pinned, `version: v2.13.2` explicit) — action v6 cannot install golangci-lint v2, and `version: latest` resolves to the ancient v1.x line. Shipped in the v0.5.2 tag but missed from its changelog section.
 - **Website deploys unblocked** — the `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` repository secret was missing, so every CI deploy failed at the final step and the live site was frozen at the 0.4.0 content since 2026-07-26. A key for the shared `github-website-deploy@lars-software` service account is now registered, and the site is live again with current content.
 
 ### Added (CI)
 
 - `workflow_dispatch` trigger on the Website workflow so deploys can be run manually without pushing a `website/**` change.
+- **Cross-compile job** — builds `windows/amd64`, `darwin/amd64`, `darwin/arm64` on every push/PR. The v0.5.1 Windows compile break class is now caught by CI before a tag can ship it.
+- **`govulncheck` job** — `golang/govulncheck-action` v1.1.0 (SHA-pinned) scanning `./...`.
+- **Drift-guard job** — `go mod tidy -diff`, a version-trio check (`go.mod` vs `.golangci.yml` `run.go` vs `AGENTS.md`; the error names the drifted file), and `pnpm install --frozen-lockfile` in `website/`. Auto-commit-daemon manifest drift (CI breaks 09-09/09-13/09-15/09-17 and another four-package drift on 11-03) now fails fast with a named message.
+- **`GOTOOLCHAIN: local`** at the workflow level — a rogue toolchain download can no longer silently pick a different Go than the one setup-go installed.
+- **`pnpm run lighthouse:deployed`** — Lighthouse CI against the live site (`lighthouserc.deployed.json`, same budgets, filesystem upload) as a repeatable post-deploy check.
+- **README benchmarks re-measured on Go 1.27.0** as min–max ranges over 3 runs, with the load-sensitivity of the memory-bound xxhash64 documented (previous: single Go 1.26.3 numbers); website throughput claims updated ~27 → ~23 GB/s to match.
 
 ## [0.5.2] - 2026-09-17
 

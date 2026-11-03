@@ -214,20 +214,20 @@ if fp.Matches(currentData) {
 
 xxhash64 vs `crypto/sha256` — 100K iterations per benchmark, single core.
 
-**Hardware:** AMD Ryzen AI MAX+ 395, Go 1.27.0, linux/amd64 (re-measured 2026-11-03)
+**Hardware:** AMD Ryzen AI MAX+ 395, Go 1.27.0, linux/amd64 — min–max over 3 runs (2026-11-03) on a shared machine under heavy concurrent load. xxhash64 is memory-bandwidth-bound and takes the contention hit; SHA-256 (SHA-NI, compute-bound) is load-stable. On an idle machine xxhash64 reaches ~23–27 GB/s.
 
-| Hash     | Size   |   ns/op |  Throughput | Allocations |
-| -------- | ------ | ------: | ----------: | :---------- |
-| xxhash64 | 1 KB   |      46 | 22,318 MB/s | 0           |
-| SHA-256  | 1 KB   |     547 |  1,871 MB/s | 1 × 32 B    |
-| xxhash64 | 10 KB  |     433 | 23,647 MB/s | 0           |
-| SHA-256  | 10 KB  |   4,909 |  2,086 MB/s | 1 × 32 B    |
-| xxhash64 | 100 KB |   4,559 | 22,460 MB/s | 0           |
-| SHA-256  | 100 KB |  48,587 |  2,108 MB/s | 1 × 32 B    |
-| xxhash64 | 1 MB   |  45,278 | 23,159 MB/s | 0           |
-| SHA-256  | 1 MB   | 518,716 |  2,021 MB/s | 1 × 32 B    |
+| Hash     | Size   | ns/op (min–max) | Throughput (min–max) | Allocations |
+| -------- | ------ | --------------: | -------------------- | :---------- |
+| xxhash64 | 1 KB   |          58–108 | 9,498–17,797 MB/s    | 0           |
+| SHA-256  | 1 KB   |         559–582 | 1,758–1,833 MB/s     | 1 × 32 B    |
+| xxhash64 | 10 KB  |         558–846 | 12,100–18,358 MB/s   | 0           |
+| SHA-256  | 10 KB  |     4,834–4,923 | 2,080–2,119 MB/s     | 1 × 32 B    |
+| xxhash64 | 100 KB |     5,389–5,961 | 17,177–19,000 MB/s   | 0           |
+| SHA-256  | 100 KB |   52,774–53,559 | 1,912–1,940 MB/s     | 1 × 32 B    |
+| xxhash64 | 1 MB   |   46,101–50,278 | 20,855–22,745 MB/s   | 0           |
+| SHA-256  | 1 MB   | 524,842–545,518 | 1,922–1,998 MB/s     | 1 × 32 B    |
 
-**xxhash64 is ~11× faster** than SHA-256, zero allocations, and hits ~23 GB/s — effectively RAM bandwidth. No hardware accelerator exists or is needed; the hash is memory-bound, not compute-bound. SHA-256 results already include SHA-NI hardware acceleration.
+**xxhash64 is ~11× faster than SHA-256 on an idle machine** (7–12× under the load above), zero allocations, and reaches ~23–27 GB/s when idle — effectively RAM bandwidth. No hardware accelerator exists or is needed; the hash is memory-bound, not compute-bound. SHA-256 results already include SHA-NI hardware acceleration.
 
 Run yourself:
 

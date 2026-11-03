@@ -36,6 +36,7 @@
     "typecheck": "astro check",
     "validate": "html-validate dist/index.html",
     "lighthouse": "lhci autorun",
+    "lighthouse:deployed": "lhci autorun --config=lighthouserc.deployed.json",
     "clean": "rm -rf dist .astro node_modules/.cache",
     "astro": "astro"
   },

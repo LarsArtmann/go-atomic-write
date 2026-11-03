@@ -13,43 +13,33 @@
 | 🔵 `BLOCKED`     | Cannot proceed, external dependency or decision needed.     |
 | 🟢 `DONE`        | Completed. Remove from this list and log in `CHANGELOG.md`. |
 
-> All items from the 2026-07-26 docs-health run were cleared then (see
-> `CHANGELOG.md` `[0.4.0]`). The list below was harvested on 2026-09-17 from
-> `docs/status/2026-09-17_14-22_v0.5.2-release-session.md` section (f);
-> items already resolved in the 2026-09-17 session (Firebase secret, live-site
-> verification, AGENTS.md gotcha refresh, CHANGELOG `[Unreleased]` backfill,
-> LSP restart) are NOT listed — see `CHANGELOG.md` `[Unreleased]`.
+> All 15 items from the 2026-09-17 harvest (report §f) were cleared on
+> 2026-11-03 — CI build matrix, govulncheck, drift guard, GOTOOLCHAIN pin,
+> version-trio gate, Dependabot npm root-ecosystem fix, npm vulnerability sweep
+> (62 → 1 advisory), README benchmark refresh (ranges), release checklist,
+> Node-24 action verification, Lighthouse against the deployed site, and the
+> `go 1.27.1` investigation (fleet `go-version-auto-configure`, ADR-0001).
+> See `CHANGELOG.md` `[Unreleased]`.
 
 ## High Impact
 
-| Task                                                                                                                  | Status  | Impact | Effort | Evidence                                                                         |
-| --------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | -------------------------------------------------------------------------------- |
-| Add `GOOS=windows` + `GOOS=darwin` build matrix to CI (v0.5.1 was exactly such a break; Linux-only CI can't catch it) | 🔴 TODO | High   | S      | `.github/workflows/ci.yml`; report §f #3                                         |
-| npm vulnerability sweep: clear the 10 high Dependabot alerts (astro ecosystem bumps)                                  | 🔴 TODO | High   | M      | https://github.com/LarsArtmann/go-atomic-write/security/dependabot; report §f #6 |
+| Task                                                                                                           | Status     | Impact | Effort | Evidence                                                                 |
+| -------------------------------------------------------------------------------------------------------------- | ---------- | ------ | ------ | ------------------------------------------------------------------------ |
+| Cut release `v0.6.0` from `[Unreleased]` (temp-file leak fix, `go 1.27`, TS6 self-heal) — the fleet bump below depends on it | 🔴 TODO | High   | S      | `CHANGELOG.md` `[Unreleased]`; AGENTS.md Release Checklist               |
 
 ## Medium Impact
 
-| Task                                                                                                                                                | Status  | Impact | Effort | Evidence                                         |
-| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ------------------------------------------------ |
-| Investigate why the Dependabot `npm_and_yarn` run fails                                                                                             | 🔴 TODO | Medium | S      | Dependabot run #1579905290; report §f #7         |
-| Add CI guard job: `pnpm install --frozen-lockfile` + `go mod tidy -diff` (auto-commit daemon drift tripwire — 4 CI breaks: 09-09/09-13/09-15/09-17) | 🔴 TODO | Medium | S      | `AGENTS.md` daemon gotcha; report §f #9          |
-| Add `govulncheck` job for the Go module in CI                                                                                                       | 🔴 TODO | Medium | S      | `.github/workflows/ci.yml`; report §f #10        |
-| Find what wrote `go 1.27.1` into `go.mod` at 2026-09-17 ~09:29 (auto-commit 77b79cc) and prevent recurrence                                         | 🔴 TODO | Medium | S      | commit `77b79cc`; report §f #11                  |
-| Consumer propagation: enumerate LarsArtmann repos importing go-atomic-write; bump them to v0.5.2                                                    | 🔴 TODO | Medium | M      | pkg.go.dev shows "Imported by: 0"; report §f #12 |
+| Task                                                                                                         | Status   | Impact | Effort | Evidence                                                                                     |
+| ------------------------------------------------------------------------------------------------------------ | -------- | ------ | ------ | -------------------------------------------------------------------------------------------- |
+| Fleet bump: 22 LarsArtmann repos import `go-atomic-write` (enumerated 2026-11-03 via `gh search code`, Go imports only: crm, BuildFlow, CV, .hermes, mr-sync, go-auto-upgrade, go-version-auto-configure, golangci-lint-auto-configure, samber-do-auditlog, go-workflow-auditlog, project-meta, library-policy, index, clean-wizard, ArtCode, securitymd, linter-autoconfigure-sdk, DiscordSync, dependabot-auto-configure, media-atlas, samber-linter, go-checker-helpers) — bump to the new release via the go-ecosystem-upgrade flow | 🔴 TODO | Medium | L      | `gh search code '"github.com/larsartmann/go-atomic-write"' --language go --owner LarsArtmann` |
+| Find and configure the fleet npm sweep that force-bumps devDeps to latest majors — it re-bumped `typescript` to 7.x three times on 11-03 (breaks `astro check`) and regenerated `global.out.css` twice; the workspace-yaml override neutralizes the TS damage, but the sweep should learn the constraint or exclude this repo | 🔴 TODO | Medium | M      | commits 3cf0176 + package.json mtimes 21:01/21:38/21:59 on 2026-11-03; `website/pnpm-workspace.yaml` `overrides` |
 
 ## Low Impact
 
-| Task                                                                                                            | Status  | Impact | Effort | Evidence                                                           |
-| --------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ------------------------------------------------------------------ |
-| Migrate `exhaustruct` → `exhaustruct_v5` in `.golangci.yml` (deprecated since golangci-lint v2.13.0)            | 🔴 TODO | Low    | S      | `.golangci.yml:42,151`; lint warning; report §f #13                |
-| Consistency gate for the version trio (`go.mod` / `.golangci.yml` run.go / `AGENTS.md`)                         | 🔴 TODO | Low    | S      | `AGENTS.md:122` drift gotcha; report §f #14                        |
-| Update README benchmark header "Go 1.26.3" → current toolchain (1.26.7)                                         | 🔴 TODO | Low    | S      | `README.md:217`; report §f #15                                     |
-| Remove `minimumReleaseAgeExclude: astro@7.3.3` from `pnpm-workspace.yaml` once its release-age threshold passes | 🔴 TODO | Low    | S      | `website/pnpm-workspace.yaml`; report §f #16                       |
-| Pin `GOTOOLCHAIN` in CI workflows (setup-go manifest lag risk)                                                  | 🔴 TODO | Low    | S      | `.github/workflows/ci.yml`; report §f #18                          |
-| Re-check Dependabot config caps (5 PRs/ecosystem) after the npm vuln sweep                                      | 🔴 TODO | Low    | S      | `.github/dependabot.yml`; report §f #20                            |
-| Add release-checklist section to AGENTS.md (CI-green-first ordering, cross-compile gate)                        | 🔴 TODO | Low    | S      | report §d self-critique; report §f #21                             |
-| Run Lighthouse CI against the deployed site post-deploy                                                         | 🔴 TODO | Low    | S      | `website/lighthouserc.json`; report §f #22                         |
-| Track + bump Node-20-deprecated action SHAs when compatible versions ship                                       | 🔴 TODO | Low    | S      | Website workflow Node.js 20 deprecation annotations; report §f #24 |
+| Task                                                                                                   | Status     | Impact | Effort | Evidence                                                                                     |
+| ------------------------------------------------------------------------------------------------------ | ---------- | ------ | ------ | -------------------------------------------------------------------------------------------- |
+| `minimatch@3.1.5` moderate advisory (glob@7 ← rimraf@3 ← chrome-launcher ← @lhci/cli): overriding to 11 breaks glob@7's CJS API at runtime — wait for rimraf/chrome-launcher upstream majors, then re-audit | 🔵 BLOCKED | Low    | S      | `website/pnpm-workspace.yaml` `overrides`; audit 2026-11-03 (1 advisory left)                |
+| The deployed site serves the previous content until the next `Website` workflow deploy — verify `~23 GB/s` claims + changelog go live after push | 🔴 TODO    | Low    | S      | `https://atomicwrite.web.app` (fetched 2026-11-03); `pnpm run lighthouse:deployed` re-check  |
 
 ---
 

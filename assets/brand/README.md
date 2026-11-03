@@ -19,11 +19,11 @@ generator and regenerate.
 
 One geometry, three compositions — pick by slot shape, not by taste:
 
-| Composition         | Size    | Use for                                                          |
-| ------------------- | ------- | ---------------------------------------------------------------- |
-| `mark.svg`          | 64 × 64 | Standalone emblem: social avatars, OG art source, favicon source |
-| `lockup-horizontal` | 300 × 64 | Wide slots: README hero, banners, social headers                |
-| `lockup-stacked`    | 340 × 117 | Roughly square slots: slides, gallery cards                   |
+| Composition         | Size      | Use for                                                          |
+| ------------------- | --------- | ---------------------------------------------------------------- |
+| `mark.svg`          | 64 × 64   | Standalone emblem: social avatars, OG art source, favicon source |
+| `lockup-horizontal` | 300 × 64  | Wide slots: README hero, banners, social headers                 |
+| `lockup-stacked`    | 340 × 117 | Roughly square slots: slides, gallery cards                      |
 
 The two lockups are the same atoms in the same order: the horizontal one runs
 left-to-right, the stacked one top-to-bottom. Both share mark size, gap and
@@ -31,18 +31,18 @@ wordmark, so an edit to one is an edit to both.
 
 ## Files
 
-| File                                      | What it is                                   | Consumed by                                      |
-| ----------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
-| `mark.svg`                                | 64 × 64 emblem (gradient squircle + glyph)   | favicon work, avatar/OG source                   |
-| `lockup-horizontal-light.svg`             | 300 × 64, dark ink, for light backgrounds    | `README.md` (fallback)                           |
-| `lockup-horizontal-dark.svg`              | 300 × 64, light ink, for dark backgrounds    | `README.md` (`prefers-color-scheme: dark`)       |
-| `lockup-stacked-light.svg`                | 340 × 117, dark ink                          | — (kept parallel to the dark variant)            |
-| `lockup-stacked-dark.svg`                 | 340 × 117, light ink                         | — (kept parallel to the light variant)           |
-| `../../website/src/components/Logo.astro` | Compact emblem as an Astro component         | Site header (28 px), site footer (20 px)         |
-| `../../website/public/favicon.svg`        | Favicon flavor of the mark                   | Browsers, Starlight docs header, PWA manifest    |
-| `../../website/public/favicon.ico`        | 16/32/48 raster fallback                     | Legacy favicon `<link rel="alternate icon">`     |
-| `../../website/public/og-image.svg`       | 1200 × 630 social card embedding the emblem  | Rasterized to `og-image.png`                     |
-| `../../website/public/og-image.png`       | 1200 × 630 PNG social card                   | Open Graph / Twitter meta tags                   |
+| File                                      | What it is                                  | Consumed by                                   |
+| ----------------------------------------- | ------------------------------------------- | --------------------------------------------- |
+| `mark.svg`                                | 64 × 64 emblem (gradient squircle + glyph)  | favicon work, avatar/OG source                |
+| `lockup-horizontal-light.svg`             | 300 × 64, dark ink, for light backgrounds   | `README.md` (fallback)                        |
+| `lockup-horizontal-dark.svg`              | 300 × 64, light ink, for dark backgrounds   | `README.md` (`prefers-color-scheme: dark`)    |
+| `lockup-stacked-light.svg`                | 340 × 117, dark ink                         | — (kept parallel to the dark variant)         |
+| `lockup-stacked-dark.svg`                 | 340 × 117, light ink                        | — (kept parallel to the light variant)        |
+| `../../website/src/components/Logo.astro` | Compact emblem as an Astro component        | Site header (28 px), site footer (20 px)      |
+| `../../website/public/favicon.svg`        | Favicon flavor of the mark                  | Browsers, Starlight docs header, PWA manifest |
+| `../../website/public/favicon.ico`        | 16/32/48 raster fallback                    | Legacy favicon `<link rel="alternate icon">`  |
+| `../../website/public/og-image.svg`       | 1200 × 630 social card embedding the emblem | Rasterized to `og-image.png`                  |
+| `../../website/public/og-image.png`       | 1200 × 630 PNG social card                  | Open Graph / Twitter meta tags                |
 
 ## Regenerate
 
@@ -68,14 +68,14 @@ magick -background none website/public/og-image.svg \
 
 ## Palette
 
-| Token            | Hex                 | Used for                                     |
-| ---------------- | ------------------- | -------------------------------------------- |
+| Token            | Hex                   | Used for                                                           |
+| ---------------- | --------------------- | ------------------------------------------------------------------ |
 | Accent gradient  | `#10b981` → `#059669` | Squircle (135°), matches the site's emerald accent and the OG card |
-| Glyph ink        | `#0c0a09`           | Swap arrows — the site's `--color-on-accent` |
-| Ink (light bg)   | `#0c0a09`           | `atomic-write` wordmark in every light variant |
-| Ink (dark bg)    | `#f5f5f4`           | `atomic-write` wordmark in every dark variant |
-| Muted (light bg) | `#78716c`           | `go-` prefix, light variants                 |
-| Muted (dark bg)  | `#a8a29e`           | `go-` prefix, dark variants                  |
+| Glyph ink        | `#0c0a09`             | Swap arrows — the site's `--color-on-accent`                       |
+| Ink (light bg)   | `#0c0a09`             | `atomic-write` wordmark in every light variant                     |
+| Ink (dark bg)    | `#f5f5f4`             | `atomic-write` wordmark in every dark variant                      |
+| Muted (light bg) | `#78716c`             | `go-` prefix, light variants                                       |
+| Muted (dark bg)  | `#a8a29e`             | `go-` prefix, dark variants                                        |
 
 Three deliberate decisions:
 

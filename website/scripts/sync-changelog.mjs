@@ -2,10 +2,9 @@
 // Single source of truth: edit CHANGELOG.md, then `pnpm run build` (prebuild regenerates this).
 // Do NOT hand-edit the generated file.
 import { readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
-const here = dirname(fileURLToPath(import.meta.url));
+const here = import.meta.dirname;
 const sourcePath = resolve(here, "../../CHANGELOG.md");
 const targetPath = resolve(here, "../src/content/docs/changelog.mdx");
 
@@ -14,10 +13,10 @@ const raw = readFileSync(sourcePath, "utf8");
 // The changelog is plain markdown, but the file is .mdx, where a bare '<' starts a
 // JSX tag and breaks the build. Escape any '<' as an HTML char ref. ('>' is harmless
 // in markdown text.) Guards against future entries that include angle brackets.
-const safe = raw.replace(/</g, "&lt;");
+const safe = raw.replaceAll("<", "&lt;");
 
 // Strip the leading "# Changelog" H1 — Starlight's frontmatter title is the page's H1.
-const body = safe.replace(/^#\s+Changelog\s*\n+/, "");
+const body = safe.replace(/^#\s+Changelog\s*\n+/u, "");
 
 const output = `---
 title: Changelog

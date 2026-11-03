@@ -1,26 +1,40 @@
 {
-  "plugins": [
-    "node",
-    "oxc",
-    "typescript",
-    "unicorn"
-  ],
+  "plugins": ["node", "oxc", "typescript", "unicorn"],
   "categories": {
     "correctness": "error",
     "nursery": "off",
-    "pedantic": "warn",
+    "pedantic": "off",
     "perf": "warn",
-    "restriction": "warn",
+    "restriction": "off",
     "style": "warn",
     "suspicious": "error"
   },
   "rules": {
     "oxc/no-async-await": "off",
     "oxc/no-optional-chaining": "off",
-    "oxc/no-rest-spread-properties": "off"
+    "oxc/no-rest-spread-properties": "off",
+    "node/no-sync": "off",
+    "eslint/one-var": "off",
+    "eslint/sort-keys": "off",
+    "eslint/no-magic-numbers": "off",
+    "unicorn/filename-case": "off",
+    "eslint/func-style": "off",
+    "eslint/func-names": "off",
+    "eslint/id-length": "off",
+    "eslint/no-ternary": "off",
+    "eslint/capitalized-comments": "off",
+    "eslint/vars-on-top": "off",
+    "eslint/no-continue": "off",
+    "eslint/init-declarations": "off",
+    "unicorn/no-null": "off",
+    "unicorn/prefer-ternary": "off",
+    "unicorn/prefer-global-this": "off",
+    "eslint/require-unicode-regexp": "warn",
+    "eslint/prefer-named-capture-group": "warn",
+    "unicorn/prefer-string-replace-all": "warn",
+    "unicorn/prefer-query-selector": "warn",
+    "unicorn/prefer-dom-node-dataset": "warn",
+    "unicorn/prefer-import-meta-properties": "warn"
   },
-  "env": {
-    "builtin": true,
-    "node": true
-  }
+  "env": { "builtin": true, "node": true }
 }

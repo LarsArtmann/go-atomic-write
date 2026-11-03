@@ -5,7 +5,7 @@
 Single-package Go library providing TOCTOU-safe file writes via xxhash64 fingerprint verification, cross-platform file locking (`flock`/`LockFileEx`), atomic rename, and fsync for crash durability.
 
 - **Module:** `github.com/larsartmann/go-atomic-write`
-- **Go version:** 1.26.7
+- **Go version:** 1.27
 - **Main branch:** `master` (configured in `git-town.toml`)
 
 ## Commands
@@ -160,3 +160,4 @@ Both are intentional, minimal, and not candidates for replacement.
 - **`pnpm run validate`** runs `html-validate dist/index.html` (config in `website/.htmlvalidate.json`); the Website CI workflow runs it after `pnpm run build`.
 - **The `i18n` Starlight collection is intentionally empty** — `website/src/content/i18n/en.json` contains `{}` and is registered in `src/content.config.ts` only to silence Starlight's `The collection "i18n" does not exist or is empty` build warning. Starlight falls back to its built-in UI strings, so there is nothing to translate. Deleting the file brings the warning back.
 - **`website/src/styles/global.out.css` was a stale generated artifact** — removed in 0.5.x; it had no references. Do not recreate a `*.out.css` in `src/styles/`; Tailwind v4 runs through the Vite plugin, not a CLI `-o` output.
+- **No linter sub-module (decided 2026-11-03)** — evaluated against `go-branded-id/linter` (brandid-lint) and rejected. The only candidate fleet-wide rule ("use this library instead of hand-rolled `os.CreateTemp`+rename") has no syntactic signal and an unstateable false-positive budget; API-misuse rules are already covered by the compiler or `errorlint`/`errcheck`. Consumer-side bans (e.g. CRM's `internal/` CreateTemp+rename ban, CRM TODO #32) belong in the consumer's golangci config or an arch-test in the consumer repo. brandid-lint earned its sub-module by porting a proven rule with a real corpus — nothing equivalent exists here. Revisit only if ≥2 consumers accumulate a real misuse corpus with a nameable two-signal detection.

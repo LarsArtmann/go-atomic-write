@@ -45,7 +45,7 @@
 | POSIX atomic rename + dir fsync | 🟢 `FULLY_FUNCTIONAL`     | Single `rename(2)` in `rename_unix.go`; no two-rename window.                                                                                               |
 | Windows rename with retry       | 🟡 `PARTIALLY_FUNCTIONAL` | `rename_windows.go` retries `ERROR_ACCESS_DENIED`/`ERROR_SHARING_VIOLATION`; **untested on real Windows hardware** (build-tag compiles only).               |
 | File permission preservation    | 🟢 `FULLY_FUNCTIONAL`     | Mode copied from existing file, defaults `0o644` (`prepareTempPath:181`); covered by `TestWritePreservesPermissions`, `TestWriteFunc_PreservesPermissions`. |
-| Temp-file cleanup on failure    | 🟢 `FULLY_FUNCTIONAL`     | `cleanupTmp:334`; covered by `TestTempFileCleanedUpOnError`, `TestWriteFunc_CallbackError`.                                                                 |
+| Temp-file cleanup on failure    | 🟢 `FULLY_FUNCTIONAL`     | Write, sync, verification, lock, and rename failures all remove the staged file (`cleanupTmp`, `commitRename`); covered by `TestTempFileCleanedUpOnError`, `TestWriteFunc_CallbackError`, `TestRenameFailureCleansUpTempFile`. |
 | Stale temp-file self-cleanup    | ⚪ `PLANNED`              | Crashed writes leave `.tmp` files (unique names prevent interference). No sweeper exists. Known caveat in CHANGELOG v0.2.0.                                 |
 
 ## Website & documentation

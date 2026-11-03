@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - **`go` directive is now `go 1.27`** (fleet minor policy, ADR-0001 in go-version-auto-configure) — raised from the patch-form `go 1.26.7` that v0.5.2 published. Environments must provide a Go 1.27 toolchain; the directive is major.minor only, so any 1.27.x toolchain satisfies it and `GOTOOLCHAIN=auto` picks one up automatically.
 
+### Fixed (Go module)
+
+- **Temp file leaked when the final rename failed** — every public writer returned the rename error without removing the staged `.<random>.tmp` file (reachable when the target path is a directory, or on rename `ENOSPC`/`EIO`). All rename sites now route through `commitRename`, which removes the staging file when the rename fails, so a failed write never leaves `.tmp` residue next to the target.
+
 ### Changed (website)
 
 - **Landing page leads with the consequence instead of the mechanism** — the hero subheadline now names the failure mode ("if two processes write the same file, one silently loses data") rather than listing four mechanisms, and the primary hero action is the copyable `go get` command. Feature titles state outcomes ("No silent overwrites", "Survives power loss") instead of implementation names.

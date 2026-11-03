@@ -2,6 +2,7 @@ package atomicwrite
 
 import (
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -359,6 +360,61 @@ func TestAtomicRenameReportsErrorOnFailure(t *testing.T) {
 	renameErr := atomicRename(ghostPath, tmpPath)
 	if renameErr == nil {
 		t.Fatal("expected error for rename into nonexistent directory, got nil")
+	}
+}
+
+func TestRenameFailureCleansUpTempFile(t *testing.T) {
+	t.Parallel()
+
+	writers := map[string]func(path string) error{
+		"Write": func(path string) error {
+			return Write(path, []byte("updated"))
+		},
+		"WriteWithPerm": func(path string) error {
+			return WriteWithPerm(path, []byte("updated"), 0o600)
+		},
+		"WriteFunc": func(path string) error {
+			return WriteFunc(path, func(writer io.Writer) error {
+				_, writeErr := writer.Write([]byte("updated"))
+
+				return writeErr
+			})
+		},
+	}
+
+	for name, write := range writers {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			dir := t.TempDir()
+			target := filepath.Join(dir, "target")
+
+			// A non-empty directory at the target path makes the final
+			// rename fail on every supported platform.
+			mkdirErr := os.Mkdir(target, 0o700)
+			if mkdirErr != nil {
+				t.Fatalf("mkdir target: %v", mkdirErr)
+			}
+
+			innerErr := os.WriteFile(filepath.Join(target, "keep"), []byte("x"), 0o600)
+			if innerErr != nil {
+				t.Fatalf("write inner file: %v", innerErr)
+			}
+
+			writeErr := write(target)
+			if writeErr == nil {
+				t.Fatal("expected error when renaming onto a directory, got nil")
+			}
+
+			tmpMatches, globErr := filepath.Glob(filepath.Join(dir, "*.tmp"))
+			if globErr != nil {
+				t.Fatalf("glob: %v", globErr)
+			}
+
+			if len(tmpMatches) > 0 {
+				t.Errorf("rename failure should remove the staged temp file, found: %v", tmpMatches)
+			}
+		})
 	}
 }
 

@@ -74,7 +74,7 @@ func Write(path string, data []byte) error {
 		return stageErr
 	}
 
-	return atomicRename(path, tmpPath)
+	return commitRename(path, tmpPath)
 }
 
 // WriteWithPerm writes data to path with an explicit file permission and
@@ -99,7 +99,7 @@ func WriteWithPerm(path string, data []byte, perm fs.FileMode) error {
 		return stageErr
 	}
 
-	return atomicRename(path, tmpPath)
+	return commitRename(path, tmpPath)
 }
 
 // WriteVerified writes data to path with TOCTOU protection and crash durability.
@@ -182,7 +182,7 @@ func WriteFunc(path string, fn func(w io.Writer) error) error {
 		return stageErr
 	}
 
-	return atomicRename(path, tmpPath)
+	return commitRename(path, tmpPath)
 }
 
 // WriteFuncVerified writes to path via a streaming callback with TOCTOU
@@ -252,7 +252,7 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 			return fmt.Errorf("stating %s for verification (tmp file %s): %w", path, tmpPath, err)
 		}
 
-		return atomicRename(path, tmpPath)
+		return commitRename(path, tmpPath)
 	}
 
 	fileLock := flock.New(path)
@@ -279,7 +279,22 @@ func commitVerified(path, tmpPath string, fingerprint Fingerprint) error {
 			ErrConcurrentModification, path, tmpPath)
 	}
 
-	return atomicRename(path, tmpPath)
+	return commitRename(path, tmpPath)
+}
+
+// commitRename renames the staged temp file onto the target path. When the
+// rename fails, the staged file is removed so a failed commit leaves no .tmp
+// residue next to the target. The rename error is returned unchanged because
+// the platform implementations already wrap it with both paths.
+func commitRename(path, tmpPath string) error {
+	renameErr := atomicRename(path, tmpPath)
+	if renameErr != nil {
+		cleanupTmp(tmpPath)
+
+		return renameErr
+	}
+
+	return nil
 }
 
 func writeFuncAndSync(tmpPath string, fn func(io.Writer) error, perm fs.FileMode) error {

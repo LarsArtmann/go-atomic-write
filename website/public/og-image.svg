@@ -1,3 +1,7 @@
+<!--
+  GENERATED FILE - do not edit by hand.
+  Source: scripts/generate-brand-assets.mjs (run: node scripts/generate-brand-assets.mjs)
+-->
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
@@ -21,9 +25,12 @@
   <rect x="0" y="0" width="1200" height="315" fill="url(#glow)"/>
 
   <!-- Logo mark -->
-  <g transform="translate(100, 90)">
-    <rect width="72" height="72" rx="16" fill="url(#emerald)"/>
-    <path d="M36 14L16 58h9l3.5-6.5h21L53 58h9L36 14zm0 16l6.5 12.5h-13L36 30z" fill="#0c0a09"/>
+  <g transform="translate(100, 90) scale(1.125)">
+    <rect width="64" height="64" rx="14" fill="url(#emerald)"/>
+    <path d="M17 24H39" stroke="#0c0a09" stroke-width="6.5" stroke-linecap="round" fill="none" />
+  <polygon points="37 16.5 48.5 24 37 31.5" fill="#0c0a09" />
+  <path d="M47 40H25" stroke="#0c0a09" stroke-width="6.5" stroke-linecap="round" fill="none" />
+  <polygon points="27 32.5 15.5 40 27 47.5" fill="#0c0a09" />
   </g>
 
   <!-- Title -->

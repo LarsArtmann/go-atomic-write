@@ -1,0 +1,18 @@
+<!--
+  GENERATED FILE - do not edit by hand.
+  Source: scripts/generate-brand-assets.mjs (run: node scripts/generate-brand-assets.mjs)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="gawMarkTitle">
+<title id="gawMarkTitle">go-atomic-write: the atomic swap</title>
+<defs>
+  <linearGradient id="gawMarkEm" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#10b981" />
+    <stop offset="1" stop-color="#059669" />
+  </linearGradient>
+</defs>
+<rect width="64" height="64" rx="14" fill="url(#gawMarkEm)" />
+  <path d="M17 24H39" stroke="#0c0a09" stroke-width="6.5" stroke-linecap="round" fill="none" />
+  <polygon points="37 16.5 48.5 24 37 31.5" fill="#0c0a09" />
+  <path d="M47 40H25" stroke="#0c0a09" stroke-width="6.5" stroke-linecap="round" fill="none" />
+  <polygon points="27 32.5 15.5 40 27 47.5" fill="#0c0a09" />
+</svg>

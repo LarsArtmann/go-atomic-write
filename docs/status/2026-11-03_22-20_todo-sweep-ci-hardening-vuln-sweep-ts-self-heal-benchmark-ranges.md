@@ -10,37 +10,37 @@
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-| - | ---- | -------- |
-| 1 | CI cross-compile matrix: windows/amd64, darwin/amd64, darwin/arm64 | `.github/workflows/ci.yml` `cross-compile` job; local `GOOS=` builds rc 0 |
-| 2 | CI `govulncheck` job | `golang/govulncheck-action@032d4551…` v1.1.0 (SHA fetched live via `gh api`) |
-| 3 | CI drift-guard job: `go mod tidy -diff` + version-trio + `pnpm install --frozen-lockfile` | all three steps verified green locally; trio grep prints `1.27 / 1.27 / 1.27` |
-| 4 | `GOTOOLCHAIN: local` pinned at workflow level | `ci.yml` `env:` block |
-| 5 | Dependabot root `npm directory: /` failure root-caused and fixed | stray `npm init -y` stub (commit 5a6302f, 2026-09-22) had no deps/lockfile; stub trashed + entry removed; only healthy `/website` npm ecosystem remains |
-| 6 | npm vulnerability sweep: **62 advisories (1 critical, 28 high) → 1 moderate** | `pnpm audit --json` before/after; overrides `fast-uri ^3.1.9`, `brace-expansion ^5.0.12`, `glob@>=13 <14 ^14.0.2`, `minimatch@>=10 <11 ^11.0.1`, `basic-ftp ^6.2.1` all resolved in `pnpm-lock.yaml` (greps cited above) |
-| 7 | pnpm 11 overrides-location fix: all overrides moved to `pnpm-workspace.yaml` | proven inert in `package.json` (install no-op'd); verified applying from workspace yaml |
-| 8 | TypeScript self-healing guard: `"typescript@>=7": ^6.0.3` override | empirical proof: manifest at `^7.0.2` resolves 6.0.3; `astro check` green |
-| 9 | `global.out.css` removed (fleet sweeps had recreated it twice today) + `src/styles/*.out.css` gitignored | zero references (grep); `website/.gitignore` |
-| 10 | `astro@7.3.3` stale `minimumReleaseAgeExclude` removed | astro manifest is `^7.4.5`; nobody installs 7.3.3 |
-| 11 | All 7 pinned actions verified on **node24** (Node-20 deprecation item closed — nothing to bump) | `gh api …/action.yml` `runs.using` for checkout/setup-go/setup-node/upload-artifact/download-artifact/golangci-lint-action/action-hosting-deploy |
-| 12 | README benchmarks re-measured on Go 1.27.0 as **min–max ranges over 3 runs** with load-sensitivity documented | isolated-`GOCACHE` `-count=3` run; website claims aligned `~27` → `~23 GB/s` (features.ts, sections.ts, HeroSection.astro) |
-| 13 | `exhaustruct → exhaustruct_v5` item: already done by fleet auto-configure — verified, not re-done | `.golangci.yml:40,149` |
-| 14 | Dependabot caps re-checked post-sweep: 3 ecosystems × limit 5 — healthy | `.github/dependabot.yml` |
-| 15 | Version-trio consistency gate shipped (the "bump all three together" gotcha is now mechanically enforced) | CI drift-guard step; locally verified |
-| 16 | Release checklist section added to AGENTS.md (CI-green-first, cross-compile gate, trio, tag rules) | AGENTS.md `## Release Checklist` |
-| 17 | `go 1.27.1` investigation closed: fleet `go-version-auto-configure` (ADR-0001), intentional; documented | CHANGELOG `[Unreleased]`, commit history 77b79cc → 973a5fe → 5a6302f |
-| 18 | Lighthouse against the **deployed site**: PASS, repeatable | `pnpm run lighthouse:deployed` + `lighthouserc.deployed.json`; 4 URLs × 3 runs, a11y/SEO error budgets intact |
-| 19 | Consumer enumeration: **22 repos** import `github.com/larsartmann/go-atomic-write` (Go imports only) | `gh search code` (list in TODO_LIST.md Medium row) |
-| 20 | TODO_LIST.md rewritten: all 15 harvested items resolved & removed, 4 verified follow-ups in | `TODO_LIST.md` |
-| 21 | CHANGELOG [Unreleased] expanded: Security (website), Removed (website), Fixed (CI) re-fix note, Added (CI) ×5 | `CHANGELOG.md` |
-| 22 | AGENTS.md: depguard/exhaustruct gotchas corrected, Go trio wording updated, fleet-sweep + pnpm-config gotchas added | AGENTS.md Gotchas |
-| 23 | Go gates at HEAD: build ✓ vet ✓ race ✓ lint `0 issues` ✓ tidy ✓ | final sweep output |
+| #  | Item                                                                                                                | Evidence                                                                                                                                                                                                                 |
+| -- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1  | CI cross-compile matrix: windows/amd64, darwin/amd64, darwin/arm64                                                  | `.github/workflows/ci.yml` `cross-compile` job; local `GOOS=` builds rc 0                                                                                                                                                |
+| 2  | CI `govulncheck` job                                                                                                | `golang/govulncheck-action@032d4551…` v1.1.0 (SHA fetched live via `gh api`)                                                                                                                                             |
+| 3  | CI drift-guard job: `go mod tidy -diff` + version-trio + `pnpm install --frozen-lockfile`                           | all three steps verified green locally; trio grep prints `1.27 / 1.27 / 1.27`                                                                                                                                            |
+| 4  | `GOTOOLCHAIN: local` pinned at workflow level                                                                       | `ci.yml` `env:` block                                                                                                                                                                                                    |
+| 5  | Dependabot root `npm directory: /` failure root-caused and fixed                                                    | stray `npm init -y` stub (commit 5a6302f, 2026-09-22) had no deps/lockfile; stub trashed + entry removed; only healthy `/website` npm ecosystem remains                                                                  |
+| 6  | npm vulnerability sweep: **62 advisories (1 critical, 28 high) → 1 moderate**                                       | `pnpm audit --json` before/after; overrides `fast-uri ^3.1.9`, `brace-expansion ^5.0.12`, `glob@>=13 <14 ^14.0.2`, `minimatch@>=10 <11 ^11.0.1`, `basic-ftp ^6.2.1` all resolved in `pnpm-lock.yaml` (greps cited above) |
+| 7  | pnpm 11 overrides-location fix: all overrides moved to `pnpm-workspace.yaml`                                        | proven inert in `package.json` (install no-op'd); verified applying from workspace yaml                                                                                                                                  |
+| 8  | TypeScript self-healing guard: `"typescript@>=7": ^6.0.3` override                                                  | empirical proof: manifest at `^7.0.2` resolves 6.0.3; `astro check` green                                                                                                                                                |
+| 9  | `global.out.css` removed (fleet sweeps had recreated it twice today) + `src/styles/*.out.css` gitignored            | zero references (grep); `website/.gitignore`                                                                                                                                                                             |
+| 10 | `astro@7.3.3` stale `minimumReleaseAgeExclude` removed                                                              | astro manifest is `^7.4.5`; nobody installs 7.3.3                                                                                                                                                                        |
+| 11 | All 7 pinned actions verified on **node24** (Node-20 deprecation item closed — nothing to bump)                     | `gh api …/action.yml` `runs.using` for checkout/setup-go/setup-node/upload-artifact/download-artifact/golangci-lint-action/action-hosting-deploy                                                                         |
+| 12 | README benchmarks re-measured on Go 1.27.0 as **min–max ranges over 3 runs** with load-sensitivity documented       | isolated-`GOCACHE` `-count=3` run; website claims aligned `~27` → `~23 GB/s` (features.ts, sections.ts, HeroSection.astro)                                                                                               |
+| 13 | `exhaustruct → exhaustruct_v5` item: already done by fleet auto-configure — verified, not re-done                   | `.golangci.yml:40,149`                                                                                                                                                                                                   |
+| 14 | Dependabot caps re-checked post-sweep: 3 ecosystems × limit 5 — healthy                                             | `.github/dependabot.yml`                                                                                                                                                                                                 |
+| 15 | Version-trio consistency gate shipped (the "bump all three together" gotcha is now mechanically enforced)           | CI drift-guard step; locally verified                                                                                                                                                                                    |
+| 16 | Release checklist section added to AGENTS.md (CI-green-first, cross-compile gate, trio, tag rules)                  | AGENTS.md `## Release Checklist`                                                                                                                                                                                         |
+| 17 | `go 1.27.1` investigation closed: fleet `go-version-auto-configure` (ADR-0001), intentional; documented             | CHANGELOG `[Unreleased]`, commit history 77b79cc → 973a5fe → 5a6302f                                                                                                                                                     |
+| 18 | Lighthouse against the **deployed site**: PASS, repeatable                                                          | `pnpm run lighthouse:deployed` + `lighthouserc.deployed.json`; 4 URLs × 3 runs, a11y/SEO error budgets intact                                                                                                            |
+| 19 | Consumer enumeration: **22 repos** import `github.com/larsartmann/go-atomic-write` (Go imports only)                | `gh search code` (list in TODO_LIST.md Medium row)                                                                                                                                                                       |
+| 20 | TODO_LIST.md rewritten: all 15 harvested items resolved & removed, 4 verified follow-ups in                         | `TODO_LIST.md`                                                                                                                                                                                                           |
+| 21 | CHANGELOG [Unreleased] expanded: Security (website), Removed (website), Fixed (CI) re-fix note, Added (CI) ×5       | `CHANGELOG.md`                                                                                                                                                                                                           |
+| 22 | AGENTS.md: depguard/exhaustruct gotchas corrected, Go trio wording updated, fleet-sweep + pnpm-config gotchas added | AGENTS.md Gotchas                                                                                                                                                                                                        |
+| 23 | Go gates at HEAD: build ✓ vet ✓ race ✓ lint `0 issues` ✓ tidy ✓                                                     | final sweep output                                                                                                                                                                                                       |
 
 ## b) PARTIALLY DONE
 
 1. **Consumer propagation** — enumerated (22 repos, evidence-backed) but NOT bumped; blocked on a release existing to bump to.
 2. **Release v0.6.0** — `[Unreleased]` is complete and the new checklist exists; the tag itself is not cut (publishing to the module proxy = user decision).
-3. **Fleet-sweep prevention** — damage neutralized (TS override self-heals, `.out.css` gitignored, drift-guard trips), but the sweep actor is unidentified and unpatched; it *will* keep bumping.
+3. **Fleet-sweep prevention** — damage neutralized (TS override self-heals, `.out.css` gitignored, drift-guard trips), but the sweep actor is unidentified and unpatched; it _will_ keep bumping.
 4. **Deployed site** — local tree has the new claims/content; the live site still serves the previous deploy until the next `Website` workflow run.
 5. **docs-health ANNOTATE** — the 2026-09-17 status report that spawned these 15 TODOs is now fully resolved but carries NO `done at` inline markers; same for the 20:42 report once v0.6.0 ships.
 
@@ -71,7 +71,7 @@
 
 1. **Measurement hygiene**: check `/proc/loadavg` + cache state before benchmarks; isolate `GOCACHE` when the shared cache is contended; NEVER discard stderr on measurement runs; validate run-file line counts before computing any statistic.
 2. **Read the project's config-location gotchas BEFORE choosing where config goes** — pnpm 11 config lives in `pnpm-workspace.yaml`, full stop.
-3. **Prefer self-healing guards over re-pin fights**: when automation keeps reverting a value, neutralize the *class* of revert (version-range override, gitignore pattern), not the instance.
+3. **Prefer self-healing guards over re-pin fights**: when automation keeps reverting a value, neutralize the _class_ of revert (version-range override, gitignore pattern), not the instance.
 4. **When an edit fails on stale-read, re-read the whole region and re-apply ALL pending edits**, not just the one in the current thought.
 5. **Validate workflow YAML before declaring CI work done** (actionlint locally, ideally as a job).
 6. **Re-verify inherited claims before merging them into AGENTS.md** — the other agent's rimraf/buildflow gotchas were merged on trust; per brutal-self-review Q12, a review's verdict is a claim, not a fact.
@@ -140,4 +140,4 @@
 
 ---
 
-*Report per status-report skill (a–g format, `.md` default per DECIDED 2026-10-27 D.g4). Section (f) is a brainstorm, not a commitment list — HARVEST routing into TODO_LIST/ROADMAP applies; items 1–13 and 45 already have TODO_LIST/AGENTS entries where appropriate. Not committed by hand (harness rule): the auto-commit daemon will pick this file up.*
+_Report per status-report skill (a–g format, `.md` default per DECIDED 2026-10-27 D.g4). Section (f) is a brainstorm, not a commitment list — HARVEST routing into TODO_LIST/ROADMAP applies; items 1–13 and 45 already have TODO_LIST/AGENTS entries where appropriate. Not committed by hand (harness rule): the auto-commit daemon will pick this file up._

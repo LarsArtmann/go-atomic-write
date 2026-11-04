@@ -19,18 +19,15 @@ func TestTempPathsNeverCollide(t *testing.T) {
 	path := "/mnt/data/config.json"
 
 	var mutex sync.Mutex
-	paths := make([]string, writers)
-	seen := make(map[string]bool, writers)
-	collisions := 0
 
 	var waitGroup sync.WaitGroup
 
-	for writer := range writers {
-		waitGroup.Add(1)
+	paths := make([]string, 0, writers)
+	seen := make(map[string]bool, writers)
+	collisions := 0
 
-		go func() {
-			defer waitGroup.Done()
-
+	for range writers {
+		waitGroup.Go(func() {
 			tmpPath, err := tempPathFor(path)
 			if err != nil {
 				t.Errorf("tempPathFor: %v", err)
@@ -44,10 +41,13 @@ func TestTempPathsNeverCollide(t *testing.T) {
 			if seen[tmpPath] {
 				collisions++
 			}
+
 			seen[tmpPath] = true
-			paths[writer] = tmpPath
-		}()
+
+			paths = append(paths, tmpPath)
+		})
 	}
+
 	waitGroup.Wait()
 
 	if collisions != 0 {
@@ -70,7 +70,6 @@ func TestPrepareTempPathPreservesMode(t *testing.T) {
 	dir := t.TempDir()
 	existing := dir + "/existing"
 
-	//nolint:gosec // fixture in t.TempDir, fixed content
 	writeErr := os.WriteFile(existing, []byte("x"), 0o600)
 	if writeErr != nil {
 		t.Fatalf("seed file: %v", writeErr)
@@ -86,6 +85,7 @@ func TestPrepareTempPathPreservesMode(t *testing.T) {
 	}
 
 	fresh := dir + "/fresh"
+
 	_, perm, err = prepareTempPath(fresh)
 	if err != nil {
 		t.Fatalf("prepareTempPath: %v", err)

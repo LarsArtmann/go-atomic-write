@@ -62,6 +62,9 @@ jobs:
           pnpm run check:hero
           pnpm run audit:contrast
 
+      - name: Build-script regression tests
+        run: pnpm run test:scripts
+
       - name: Validate HTML
         run: pnpm run validate
 

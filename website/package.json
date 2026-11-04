@@ -43,7 +43,8 @@
     "brand:check": "node ../scripts/generate-brand-assets.mjs --check",
     "audit:contrast": "node scripts/contrast-audit.mjs",
     "check:hero": "node scripts/check-hero-source.mjs",
-    "check": "pnpm run build && pnpm run check:hero && pnpm run audit:contrast && pnpm run validate && pnpm run typecheck"
+    "test:scripts": "node --test scripts/test/*.test.mjs",
+    "check": "pnpm run build && pnpm run check:hero && pnpm run audit:contrast && pnpm run validate && pnpm run test:scripts && pnpm run typecheck"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

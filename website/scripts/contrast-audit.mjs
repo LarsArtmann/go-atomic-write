@@ -49,8 +49,8 @@ const ratio = (c1, c2) => {
 
 const parseBlock = (name, block) => {
 	const tokens = {};
-	for (const m of block.matchAll(/--color-([\w-]+):\s*(?<val>[^;]+);/gu)) {
-		tokens[m[1]] = parseColor(m.groups.val);
+	for (const m of block.matchAll(/--color-(?<name>[\w-]+):\s*(?<val>[^;]+);/gu)) {
+		tokens[m.groups.name] = parseColor(m.groups.val);
 	}
 	return { name, tokens };
 };

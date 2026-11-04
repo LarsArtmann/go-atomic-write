@@ -51,6 +51,8 @@ const SWAP_ARROWS = [
 const ACCENT = brandTokens.accent;
 const ACCENT_DEEP = brandTokens.accentDeep;
 const GLYPH_INK = brandTokens.inkOnAccent;
+const OG_BACKGROUND = brandTokens.ogBackground;
+const ACCENT_LIGHT = brandTokens.accentLight;
 const INK_ON_LIGHT = brandTokens.inkOnLight;
 const INK_ON_DARK = brandTokens.inkOnDark;
 const MUTED_ON_LIGHT = brandTokens.mutedOnLight;
@@ -225,7 +227,7 @@ const ogImageSvg = `\
   </defs>
 
   <!-- Background -->
-  <rect width="1200" height="630" fill="#0a0908"/>
+  <rect width="1200" height="630" fill="${OG_BACKGROUND}"/>
   <rect width="1200" height="630" fill="url(#dots)"/>
 
   <!-- Top glow -->
@@ -247,15 +249,15 @@ const ogImageSvg = `\
   <g transform="translate(100, 400)" font-family="'Noto Sans','DejaVu Sans',sans-serif" font-size="24" font-weight="500">
     <g>
       <rect width="200" height="48" rx="24" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-      <text x="100" y="32" text-anchor="middle" fill="#6ee7b7">No lost updates</text>
+      <text x="100" y="32" text-anchor="middle" fill="${ACCENT_LIGHT}">No lost updates</text>
     </g>
     <g transform="translate(220, 0)">
       <rect width="200" height="48" rx="24" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-      <text x="100" y="32" text-anchor="middle" fill="#6ee7b7">Crash-durable</text>
+      <text x="100" y="32" text-anchor="middle" fill="${ACCENT_LIGHT}">Crash-durable</text>
     </g>
     <g transform="translate(440, 0)">
       <rect width="240" height="48" rx="24" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-      <text x="120" y="32" text-anchor="middle" fill="#6ee7b7">Concurrent-write safe</text>
+      <text x="120" y="32" text-anchor="middle" fill="${ACCENT_LIGHT}">Concurrent-write safe</text>
     </g>
   </g>
 
@@ -313,6 +315,31 @@ const ARTIFACTS = [
 	{ path: "website/src/assets/brand.svg", content: () => faviconSvg() },
 	{ path: "website/public/og-image.svg", content: () => GENERATED_NOTICE + ogImageSvg },
 ];
+
+// Glyph-ink pixel-QA: every stroke/fill hex in every generated artifact must
+// be a brand token value. An off-token ink means a hand-edit or a stale
+// literal survived generation - the visual equivalent of a magic number.
+const svgArtifacts = ARTIFACTS.filter((artifact) => artifact.path.endsWith(".svg"));
+
+function glyphInkProblems() {
+	const allowed = new Set(
+		Object.values(brandTokens)
+			.filter((value) => typeof value === "string" && value.startsWith("#"))
+			.map((value) => value.toLowerCase()),
+	);
+	const problems = [];
+	for (const artifact of svgArtifacts) {
+		const content = readFileSync(path.join(repoRoot, artifact.path), "utf8");
+		const inks = content.match(/(?:stroke|fill)="#([0-9a-fA-F]{6})"/gu) ?? [];
+		for (const ink of inks) {
+			const hex = ink.match(/#([0-9a-fA-F]{6})/u)[1].toLowerCase();
+			if (!allowed.has(hex)) {
+				problems.push(`${artifact.path}: off-token ink #${hex}`);
+			}
+		}
+	}
+	return problems;
+}
 
 const checkMode = process.argv.includes("--check");
 const pngMode = process.argv.includes("--png");
@@ -457,7 +484,7 @@ if (pngMode) {
 
 	magick([
 		"-background",
-		"#0a0908",
+		OG_BACKGROUND,
 		site("public/og-image.svg"),
 		"-resize",
 		"x640",
@@ -489,7 +516,7 @@ if (pngMode) {
 				"#1c1917",
 				"-background",
 				"#f5f5f4",
-				...sheetCell({ source: "mark.svg", bg: "#0a0908", label: "mark 64x64" }),
+				...sheetCell({ source: "mark.svg", bg: OG_BACKGROUND, label: "mark 64x64" }),
 				...sheetCell({
 					source: "lockup-horizontal-light.svg",
 					bg: "#ffffff",
@@ -497,7 +524,7 @@ if (pngMode) {
 				}),
 				...sheetCell({
 					source: "lockup-horizontal-dark.svg",
-					bg: "#0a0908",
+					bg: OG_BACKGROUND,
 					label: "horizontal dark 300x64",
 				}),
 				...sheetCell({
@@ -507,7 +534,7 @@ if (pngMode) {
 				}),
 				...sheetCell({
 					source: "lockup-stacked-dark.svg",
-					bg: "#0a0908",
+					bg: OG_BACKGROUND,
 					label: "stacked dark 340x117",
 				}),
 				"-tile",
@@ -547,8 +574,17 @@ if (pngMode) {
 		);
 		process.exit(1);
 	}
+	const inkProblems = glyphInkProblems();
+	if (inkProblems.length > 0) {
+		console.error("brand:check failed - off-token glyph ink in generated artifacts:");
+		for (const problem of inkProblems) {
+			console.error(`  - ${problem}`);
+		}
+		console.error("Every stroke/fill must be a brand-tokens.json value; fix the generator, not the artifact.");
+		process.exit(1);
+	}
 	console.log(
-		`brand:check: OK (${ARTIFACTS.length} artifacts match the generator, ${SITE_TOKEN_MIRRORS.length} site-token mirrors in sync)`,
+		`brand:check: OK (${ARTIFACTS.length} artifacts match the generator, ${SITE_TOKEN_MIRRORS.length} site-token mirrors in sync, ${svgArtifacts.length} SVG ink sets on-token)`,
 	);
 } else {
 	const tokenDrift = siteTokenDrift();

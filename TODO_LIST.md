@@ -41,6 +41,7 @@
 | Deterministic collision test for `tempPathFor` (seed/inject `randomSuffix`); the current 200-writer test is statistical                                                                                                                                                         | 🔴 TODO    | Low    | S      | `atomicwrite_test.go`; routed from `docs/status/2026-11-04_05-36…` f.28          |
 | File the CV Go-test chronic red (10/10 jobs failing on every master commit) after confirming the concurrent storm session does not own it                                                                                                                                       | 🔴 TODO    | Low    | S      | `docs/status/2026-11-04_05-36…` f.24                                             |
 | `pnpm run lighthouse:deployed` against the live site after the next deploy settles (config exists since v0.6.0, never observed)                                                                                                                                                 | 🔴 TODO    | Low    | S      | `lighthouserc.deployed.json`; `docs/status/2026-11-04_05-36…` f.30               |
+| Wire the docs-gates battery into CI (it is manual-only today — every gate has been green only when a session remembers to run it; the 2026-11-04 audit-all drift went unnoticed until the next session's sweep) | 🔴 TODO    | Low    | M      | `nix run github:Artmann-Technologies/docs-gates -- run .`; routed from `docs/status/2026-11-04_19-35…` f.33                                       |
 
 ---
 

@@ -85,6 +85,10 @@ while IFS= read -r mod; do
 		echo "[go get]"
 		go get "github.com/larsartmann/go-atomic-write@$version" 2>&1 | grep -E 'go-atomic-write|upgraded|added' | head -5
 		go mod tidy 2>&1 | tail -1
+		if [ -d vendor ]; then
+			echo "[vendor sync]"
+			go mod vendor && echo "vendor synced"
+		fi
 		echo "[verify go.mod]"
 		grep 'larsartmann/go-atomic-write' go.mod
 		if git diff --name-only -- go.mod 2>/dev/null | grep -q . && git diff -- go.mod | grep -E '^\+' | grep -vE 'go-atomic-write|gofrs/flock|golang.org/x/sys' | grep -qE '^\+\s+(github|golang)'; then
@@ -114,10 +118,6 @@ while IFS= read -r mod; do
 
 		echo "[go mod verify]"
 		go mod verify | tail -1
-		if [ -d vendor ]; then
-			echo "[vendor sync]"
-			go mod vendor && echo "vendor synced"
-		fi
 	)
 	rc=$?
 	[ $rc -ne 0 ] && overall=1

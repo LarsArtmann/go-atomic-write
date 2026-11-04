@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- Nothing yet.
+- **`fleet-bump.sh` vendor sync ordering** — the vendor directory was resynced at the end of each consumer bump, after the after-build/after-test hooks ran; consumers that build with `-mod=vendor` saw a stale vendor tree mid-bump. The sync now runs directly after `go mod tidy`, before any build or test step.
+- **Website CI lockfile drift recovery** — daemon-committed manifest changes without their `pnpm-lock.yaml` counterpart broke `pnpm install --frozen-lockfile` repeatedly; the drift-guard job now fails fast on a missing lockfile update, and lockfiles are regenerated in the same change as any manifest edit.
 
 ## [0.6.2] - 2026-11-04
 

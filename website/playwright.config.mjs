@@ -11,6 +11,9 @@ export default defineConfig({
 	use: {
 		...devices["Desktop Chrome"],
 		baseURL: "http://localhost:4321",
+		launchOptions: process.env.CHROME_PATH
+			? { executablePath: process.env.CHROME_PATH }
+			: {},
 	},
 	webServer: {
 		command: "pnpm run preview",

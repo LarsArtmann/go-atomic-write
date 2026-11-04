@@ -1,0 +1,47 @@
+---
+title: FAQ
+description: The objections, answered — including when this library is the wrong tool.
+---
+
+## Why not just write a temp file and rename it?
+
+That handles crashes and missing files, but not races. If another process
+changes the file between your read and your write, one of the two updates is
+silently lost. go-atomic-write locks the file, re-reads it, and verifies the
+fingerprint first. On a mismatch you get `ErrConcurrentModification` instead
+of a lost update. See [Error Handling](/guides/error-handling/).
+
+## When should I not use this?
+
+If one process owns the file, never crashes mid-write, and you do not need
+durability across reboots, plain `os.WriteFile` is simpler. Network
+filesystems, append-only logs, and multi-gigabyte streams have their own
+caveats — the full list is in [When Not To Use](/guides/when-not-to-use/).
+
+## What does a write cost?
+
+One xxhash64 pass (~23 GB/s, zero allocations), one advisory lock, and one
+full re-read of the file while the lock is held. Negligible for config, state,
+and checkpoint files; measurable for multi-gigabyte files. Full numbers in
+[Benchmarks](/guides/benchmarks/).
+
+## What happens when two writers race?
+
+Exactly one wins. The loser gets `ErrConcurrentModification` and the original
+file is left untouched, because the temp file is discarded before any rename.
+Writers holding fresh data can retry; writers that do not should surface the
+error.
+
+## Does it work on Windows?
+
+Yes. `LockFileEx` replaces `flock`, a failed `os.Rename` is retried five times
+with exponential backoff on `ERROR_ACCESS_DENIED` and `ERROR_SHARING_VIOLATION`
+(antivirus, open handles), and directory fsync is a no-op because Windows has
+no equivalent. See [Platform Support](/guides/platform-support/).
+
+## Do I have to change how I read files?
+
+No. Reads stay as they are. You only change the write: compute a fingerprint
+when you read, then call `WriteVerified`. `WriteIfChanged` skips the write
+entirely when the bytes already match, which keeps file watchers and mtimes
+quiet on no-op runs.

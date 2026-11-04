@@ -1,0 +1,55 @@
+---
+title: When Not To Use
+description: The cases where go-atomic-write is the wrong tool, and what to use instead.
+---
+
+go-atomic-write earns its keep under two conditions: the file is **shared
+between processes** (so concurrent writes are possible), or it **must survive
+a crash** (so torn writes matter). Outside those, simpler tools win. The wrong
+cases, concretely:
+
+## One process owns the file
+
+If a single process holds the only reference, never crashes mid-write, and you
+do not care about the machine losing power, plain `os.WriteFile` (or even
+`os.WriteFile` with a deferred remove-on-error) is simpler and faster. The
+fingerprinting pass, the lock, and the re-read all cost something; none of it
+buys safety you needed.
+
+## Append-only logs
+
+Log files grow by appending; writers do not replace content. Use `os.OpenFile`
+with `O_APPEND` — appends of less than `PIPE_BUF`-size records are atomic on
+POSIX for practical purposes, and rotation belongs to logrotate-style tooling,
+not rename-based replacement. Rewriting an entire log on every line would be
+absurd; that is what this library would push you toward.
+
+## Network filesystems (NFS, SMB)
+
+`flock` over NFS is only as good as the server's lock daemon, and the
+close-open race on NFS can silently discard locks. The verify step (re-read +
+fingerprint) still protects your data, but the mutual exclusion between two
+hosts is best-effort at best. On shared network storage, use server-side
+serialization (a lock service, or single-writer access) instead.
+
+## Streams larger than available RAM
+
+`WriteVerified` re-reads the whole file while holding the lock to verify the
+fingerprint, and stages the new content as a second full copy on disk. For
+multi-gigabyte files the memory and I/O cost is real. If you write huge files
+sequentially and can tolerate a torn tail on crash, streaming writes with
+periodic fsync are the honest tool; if you need correctness, chunk the file.
+
+## What plain `os.WriteFile` still does fine
+
+Config files written once at deploy time, cache files where a torn write just
+means a cache miss, build artifacts no other process reads concurrently.
+`os.WriteFile` does none of the locking, none of the fsync, and none of the
+verify — and for these files that is perfectly fine.
+
+## The boundary in one sentence
+
+The moment two processes can write the same file, or the file must survive a
+crash **and** losing it costs hours, this library is the cheap insurance. See
+[Error Handling](/guides/error-handling/) for what the failure modes look like
+in code.

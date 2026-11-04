@@ -63,6 +63,7 @@ export default defineConfig({
 						{ label: "Error Handling", slug: "guides/error-handling" },
 						{ label: "Platform Support", slug: "guides/platform-support" },
 						{ label: "Benchmarks", slug: "guides/benchmarks" },
+						{ label: "When Not To Use", slug: "guides/when-not-to-use" },
 					],
 				},
 				{
@@ -78,6 +79,7 @@ export default defineConfig({
 				{
 					label: "Community",
 					items: [
+						{ label: "FAQ", slug: "faq" },
 						{ label: "Changelog", slug: "changelog" },
 						{ label: "Contributing", slug: "contributing" },
 						{ label: "Related Tools", slug: "related-tools" },

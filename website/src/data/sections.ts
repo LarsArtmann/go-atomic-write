@@ -72,6 +72,7 @@ export const faqItems: FaqItem[] = [
     question: "When should I not use this?",
     answer:
       "If one process owns the file, never crashes mid-write, and you do not need durability across reboots, plain os.WriteFile is simpler. This library earns its keep when a file is shared between processes or has to survive a crash.",
+    links: [{ href: "/guides/when-not-to-use/", label: "The full wrong-tool list" }],
   },
   {
     question: "What does a write cost?",

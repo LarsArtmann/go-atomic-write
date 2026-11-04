@@ -25,19 +25,23 @@ const { title } = Astro.props;
     <meta property="og:type" content="website" />
     <meta property="og:url" content={siteConfig.siteUrl} />
     <meta property="og:image" content={`${siteConfig.siteUrl}/og-image.png`} />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="go-atomic-write — crash-safe, race-free file writes for Go" />
+    <meta property="og:site_name" content="go-atomic-write" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={siteConfig.name} />
     <meta name="twitter:description" content={siteConfig.description} />
     <meta name="twitter:image" content={`${siteConfig.siteUrl}/og-image.png`} />
+    <meta name="twitter:image:alt" content="go-atomic-write — crash-safe, race-free file writes for Go" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={siteConfig.siteUrl} />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#10b981" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0908" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafaf9" />
     <script is:inline src="/js/theme-init.js"></script>
   </head>
   <body class="font-sans bg-bg-primary text-text-secondary antialiased leading-relaxed">

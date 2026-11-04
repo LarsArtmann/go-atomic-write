@@ -8,6 +8,10 @@ common case, and `*Verified` variants (`WriteVerified`, `WriteFuncVerified`) whe
 need TOCTOU protection against concurrent modification. `WriteIfChanged` is the
 idempotent primitive for config writers and code generators.
 
+```bash
+go get github.com/larsartmann/go-atomic-write@latest
+```
+
 ## Core Types
 
 ### Fingerprint

@@ -37,7 +37,7 @@ export default defineConfig({
 	],
 
 	integrations: [
-		sitemap(),
+		sitemap({ lastmod: new Date().toISOString() }),
 		starlight({
 			title: "go-atomic-write",
 			favicon: "/favicon.svg",
@@ -101,10 +101,11 @@ export default defineConfig({
 				},
 				{
 					tag: "meta",
-					attrs: {
-						property: "og:image",
-						content: "https://atomicwrite.lars.software/og-image.png",
-					},
+					attrs: { property: "og:image", content: "https://atomicwrite.lars.software/og-image.png" },
+				},
+				{
+					tag: "meta",
+					attrs: { property: "og:image:type", content: "image/png" },
 				},
 				{
 					tag: "meta",
@@ -116,6 +117,17 @@ export default defineConfig({
 				},
 				{
 					tag: "meta",
+					attrs: {
+						property: "og:image:alt",
+						content: "go-atomic-write — crash-safe, race-free file writes for Go",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: { property: "og:site_name", content: "go-atomic-write" },
+				},
+				{
+					tag: "meta",
 					attrs: { name: "twitter:card", content: "summary_large_image" },
 				},
 				{
@@ -123,6 +135,20 @@ export default defineConfig({
 					attrs: {
 						name: "twitter:image",
 						content: "https://atomicwrite.lars.software/og-image.png",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "twitter:image:alt",
+						content: "go-atomic-write — crash-safe, race-free file writes for Go",
+					},
+				},
+				{
+					tag: "meta",
+					attrs: {
+						name: "theme-color",
+						content: "#0a0908",
 					},
 				},
 			],

@@ -1,5 +1,7 @@
 # Status: PR preview channels live, docs gates green, consumer fixes (2026-11-04 17:05)
 
+> **Archived 2026-11-04 (cadence sweep).** Live remainder: none — T32–T34 closed, PR preview channels live (merged `011e0bc`), all four consumer fixes landed (samber#62 landed the same day; crm baseline moved to crm#7).
+
 Session resumed from the 07:09 WAIT handoff with the mandate "NOW GET SHIT DONE! The WHOLE TODO LIST!". This report covers T32 completion (smoke suite + CI + PR previews), T33 (brand rasters), T34 (annotation sweep), the AGENTS.md memory pass, and 4 consumer fixes (3 landed, 1 mid-flight). Written **before** the v0.6.2 release + fleet bump, which are the next block.
 
 ## a) FULLY DONE

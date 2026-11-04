@@ -1,5 +1,7 @@
 # Status: v0.6.2 released, fleet bump in flight (2026-11-04 19:35)
 
+> **Archived 2026-11-04 (cadence sweep).** Live remainder: none — superseded by `2026-11-04_20-45_fleet-bump-v062-summary.md` (final 17-bump ledger) and `2026-11-04_20-46_fleet-v062-closeout-status.md` (closeout + §f survivors); the v0.6.2 release and fleet bump it tracked are done.
+
 Delta report since the 17:05 status (`docs/status/2026-11-04_17-05_consumer-fixes-t34-gates-preview-channels-status.md`). This session arc: finish the samber-do-auditlog gate (issue #62), close the 4 consumer issues, cut v0.6.2, start the fleet bump. **The fleet bump loop is still running in the background** — repo 9 of 21 (library-policy) has been in-flight for ~45 minutes; the report below reflects the state at 19:31.
 
 ## a) FULLY DONE

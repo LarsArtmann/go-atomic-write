@@ -33,7 +33,10 @@ function walkHtml(dir) {
 }
 
 function sha256B64(text) {
-  return `sha256-${createHash("sha256").update(text, "utf8").digest("base64")}`;
+  // CSP grammar requires hash sources to be single-quoted: 'sha256-<b64>'.
+  // Bare tokens parse as invalid sources and are silently ignored, which
+  // blocked every allow-listed inline script until 2026-11-04.
+  return `'sha256-${createHash("sha256").update(text, "utf8").digest("base64")}'`;
 }
 
 function buildCsp(hashes) {
@@ -42,7 +45,6 @@ function buildCsp(hashes) {
     "default-src 'self'",
     "base-uri 'self'",
     "object-src 'none'",
-    "frame-ancestors 'none'",
     "form-action 'self' https://buttondown.email",
     "connect-src 'self'",
     "img-src 'self' data: https:",

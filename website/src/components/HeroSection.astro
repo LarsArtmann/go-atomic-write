@@ -37,7 +37,7 @@ const metrics = [
 
 <section class="relative flex items-center justify-center overflow-hidden pt-36 pb-20">
   <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/5 blur-[140px] rounded-full pointer-events-none"></div>
-  <div class="relative max-w-3xl xl:max-w-7xl mx-auto px-6 text-center">
+  <div class="relative max-w-3xl xl:max-w-7xl mx-auto px-6 text-center min-w-0 w-full">
     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card-solid text-xs font-mono text-text-secondary mb-8 backdrop-blur-sm">
       <span class="relative flex w-2 h-2">
         <span class="animate-pulse-dot absolute inline-flex w-full h-full rounded-full bg-accent"></span>
@@ -73,7 +73,7 @@ const metrics = [
       </a>
     </div>
 
-    <div class="flex items-center justify-center gap-6 md:gap-10 mb-16 max-w-xl mx-auto">
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:gap-x-10 mb-16 max-w-xl mx-auto">
       {metrics.map((metric, index) => (
         <>
           {index > 0 && <div class="w-px h-10 bg-border shrink-0"></div>}

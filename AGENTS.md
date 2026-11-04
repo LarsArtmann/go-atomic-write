@@ -146,8 +146,10 @@ Both are intentional, minimal, and not candidates for replacement.
 5. If the brand glyph changed, regenerate the rasters (`magick` for `favicon.ico` + `og-image.png` — commands in `assets/brand/README.md`). `brand:check` byte-gates only the SVG artifacts, not rasters.
 6. If the toolchain changed, bump the version trio together (`go.mod`, `.golangci.yml` `run.go`, this file) — CI now fails on drift
 7. Annotated tag `vX.Y.Z`, push the tag — never re-tag/delete tags (module proxy poisoning)
-8. Verify `pkg.go.dev` shows the new version and `go get github.com/larsartmann/go-atomic-write@vX.Y.Z` resolves
-9. Website: changelog page syncs on build; deploy rides the `Website` workflow or `firebase deploy --only hosting:atomicwrite`
+8. GitHub Release: `gh release create vX.Y.Z --notes …` **without `--prerelease`** — the flag made v0.6.2 sit unflagged-as-latest while v0.6.1 kept the Latest badge for half a day (user directive 2026-11-04, overriding the go-release skill's 0.x-prerelease default; `go get @latest` is proxy-governed, so the flag was never load-bearing). Also run `gh release edit vX.Y.Z --latest` when cutting from a non-head state.
+9. Verify the three release surfaces agree: `CHANGELOG.md` section, the live changelog page, and `gh release list` showing the new version as Latest — v0.6.2 shipped with the first two green and the third stale for hours before anyone looked.
+10. Verify `pkg.go.dev` shows the new version and `go get github.com/larsartmann/go-atomic-write@vX.Y.Z` resolves
+11. Website: changelog page syncs on build; deploy rides the `Website` workflow or `firebase deploy --only hosting:atomicwrite`
 
 ## Gotchas
 

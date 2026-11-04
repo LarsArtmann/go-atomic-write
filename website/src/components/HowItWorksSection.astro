@@ -26,3 +26,12 @@ import { steps } from '../data/sections';
     </div>
   ))}
 </div>
+
+<div class="mt-3 rounded-xl border border-amber/20 bg-amber/5 px-5 py-4 text-left">
+  <p class="text-xs text-amber font-mono mb-1.5">if fingerprint != disk</p>
+  <p class="text-xs text-text-muted leading-relaxed">
+    Stage 4 never runs: the temp file is discarded, the original file is left byte-for-byte
+    untouched, and the caller gets <code class="text-accent/80 font-mono">ErrConcurrentModification</code> —
+    not a lost update. Exactly one writer wins; the loser knows it and can retry with fresh data.
+  </p>
+</div>

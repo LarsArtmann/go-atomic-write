@@ -1,4 +1,4 @@
-import type { ComparisonMatrix, FaqItem, StepCard, UseCase } from "./types";
+import type { ComparisonMatrix, FaqItem, PlatformRow, StepCard, UseCase } from "./types";
 
 export const steps: StepCard[] = [
   {
@@ -59,6 +59,38 @@ export const useCases: UseCase[] = [
     title: "CI/CD Pipelines",
     desc: "Concurrent writers on shared artifacts and lock files",
     icon: "refresh",
+  },
+  {
+    title: "Config Reloaders",
+    desc: "SIGHUP loops that must never publish a half-written file",
+    icon: "bolt",
+  },
+];
+
+export const platformRows: PlatformRow[] = [
+  {
+    feature: "File locking",
+    linux: "flock (advisory, cross-process)",
+    darwin: "flock (advisory, cross-process)",
+    windows: "LockFileEx",
+  },
+  {
+    feature: "Replace",
+    linux: "rename(2) — atomic",
+    darwin: "rename(2) — atomic",
+    windows: "MoveFileEx + 5 retries on AV locks",
+  },
+  {
+    feature: "Crash durability",
+    linux: "fsync file + directory",
+    darwin: "fsync file + directory",
+    windows: "FlushFileBuffers (no dir sync exists)",
+  },
+  {
+    feature: "Tested",
+    linux: "CI: race + lint + govulncheck",
+    darwin: "CI: amd64 + arm64 builds",
+    windows: "CI: amd64 build per push",
   },
 ];
 

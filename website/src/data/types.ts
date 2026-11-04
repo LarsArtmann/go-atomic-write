@@ -45,6 +45,13 @@ export interface UseCase {
   icon: UseCaseIcon;
 }
 
+export interface PlatformRow {
+  feature: string;
+  linux: string;
+  darwin: string;
+  windows: string;
+}
+
 export interface FaqItem {
   question: string;
   answer: string;

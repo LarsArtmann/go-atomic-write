@@ -3,6 +3,7 @@ import CTASection from './CTASection.astro';
 import ComparisonSection from './ComparisonSection.astro';
 import FaqSection from './FaqSection.astro';
 import HowItWorksSection from './HowItWorksSection.astro';
+import PlatformsSection from './PlatformsSection.astro';
 import Section from './Section.astro';
 import UseCasesSection from './UseCasesSection.astro';
 
@@ -10,6 +11,7 @@ const sections = [
   { component: HowItWorksSection, key: 'howitworks', width: 'wide' as const },
   { component: ComparisonSection, key: 'comparison', width: 'wide' as const },
   { component: UseCasesSection, key: 'usecases', width: 'wide' as const },
+  { component: PlatformsSection, key: 'platforms', width: 'wide' as const },
   { component: FaqSection, key: 'faq', width: 'wide' as const },
   { component: CTASection, key: 'cta', width: 'narrow' as const },
 ] as const;

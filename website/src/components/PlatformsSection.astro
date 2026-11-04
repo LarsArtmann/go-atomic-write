@@ -1,0 +1,32 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import { platformRows } from '../data/sections';
+---
+
+<SectionHeader eyebrow="Platforms" title="Three operating systems. One contract." subtitle="Every guarantee holds on every platform CI builds — the differences are the mechanism names, not the promises." />
+
+<div class="overflow-x-auto rounded-xl border border-border">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-border bg-bg-card-solid/50">
+        <th scope="col" class="text-left font-semibold text-text-primary px-4 py-3">Guarantee</th>
+        <th scope="col" class="text-left font-semibold text-text-primary px-4 py-3">Linux</th>
+        <th scope="col" class="text-left font-semibold text-text-primary px-4 py-3">macOS</th>
+        <th scope="col" class="text-left font-semibold text-text-primary px-4 py-3">Windows</th>
+      </tr>
+    </thead>
+    <tbody>
+      {platformRows.map((row) => (
+        <tr class="border-b border-border last:border-b-0">
+          <th scope="row" class="text-left font-medium text-text-secondary px-4 py-3 whitespace-nowrap">{row.feature}</th>
+          <td class="px-4 py-3 text-xs text-text-muted">{row.linux}</td>
+          <td class="px-4 py-3 text-xs text-text-muted">{row.darwin}</td>
+          <td class="px-4 py-3 text-xs text-text-muted">{row.windows}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="mt-3 text-xs text-text-muted">
+  Full notes per platform in <a href="/guides/platform-support/" class="text-accent hover:text-accent-hover no-underline">Platform Support</a>.
+</p>

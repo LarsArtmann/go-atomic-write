@@ -91,8 +91,12 @@ Three deliberate decisions:
   collisions between the header and footer instances on one page.
 - The horizontal lockup is laid out left-anchored with the canvas sized for the
   wide DejaVu fallback (the render target of ImageMagick on Linux). Space
-  Grotesk — the site's actual font — is narrower, so browsers may show a few
-  extra pixels of trailing air. SVG text rendered through `<img>` cannot fetch
+  Grotesk — the site's actual font — is narrower, so browsers show a measured
+  10.1 px of trailing air (wordmark 215.9 px at 30 px/700, canvas 300 − 74 px
+  mark slot = 226 px available; measured via headless Chromium against the
+  bundled woff2, 2026-11-04). That is ~3% of the canvas: invisible as a layout
+  flaw, and resizing the canvas would clip the ImageMagick render, so the air
+  is the correct tradeoff. SVG text rendered through `<img>` cannot fetch
   web fonts, so the SVGs declare the `'Space Grotesk', 'Helvetica Neue', Arial,
   sans-serif` fallback stack.
 

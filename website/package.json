@@ -2,7 +2,7 @@
   "name": "go-atomic-write-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Website and documentation for go-atomic-write \u2014 crash-safe, race-free file writes for Go",
+  "description": "Website and documentation for go-atomic-write — crash-safe, race-free file writes for Go",
   "keywords": [
     "astro",
     "atomic-write",
@@ -58,6 +58,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@lhci/cli": "^0.16.0",
+    "@playwright/test": "1.56.1",
     "html-validate": "^11.18.0",
     "typescript": "^7.0.2"
   },

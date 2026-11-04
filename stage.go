@@ -40,7 +40,9 @@ func tempPathFor(path string) (string, error) {
 	return path + "." + suffix + ".tmp", nil
 }
 
-func randomSuffix() (string, error) {
+// randomSuffix is a var so tests can inject a fixed suffix and pin the
+// temp-path format (and the collision precondition) deterministically.
+var randomSuffix = func() (string, error) { //nolint:gochecknoglobals // deliberate test seam, not mutable state in production paths
 	var buf [4]byte
 
 	_, err := rand.Read(buf[:])

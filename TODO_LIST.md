@@ -24,7 +24,7 @@
 
 | Task                                                                                                                          | Status  | Impact | Effort | Evidence                                              |
 | ----------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ----------------------------------------------------- |
-| Cut release `v0.6.1` from `[Unreleased]` (temp-file leak fix, source split, brand system, npm sweep, CI hardening, deploy-paths fix) — the fleet bump depends on it | 🔴 TODO | High   | S      | `CHANGELOG.md` `[Unreleased]`; AGENTS.md Release Checklist |
+| ✅ DONE 2026-11-04: release `v0.6.1` cut — changelog section inside tag commit `7106379`, proxy-verified at that hash, scratch `go get`+build+run green, GitHub release marked Latest (fixes stale v0.4.0 pointer) | ✅ DONE | High   | S      | v0.6.1 tag; `gh release view v0.6.1`; proxy `@v/v0.6.1.info` |
 
 ## Medium Impact
 

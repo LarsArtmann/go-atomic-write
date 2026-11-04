@@ -59,9 +59,7 @@ func TestTempPathForUniqueAcrossWriters(t *testing.T) {
 // No t.Parallel: this test swaps the package-level randomSuffix seam, and
 // sequential top-level tests finish before any parallel batch starts, so the
 // mutation cannot race the parallel readers of tempPathFor.
-func TestTempPathForFixedSuffixIsDeterministic(
-	t *testing.T,
-) { //nolint:paralleltest // mutates the shared suffix seam; see comment above
+func TestTempPathForFixedSuffixIsDeterministic(t *testing.T) { //nolint:paralleltest // mutates shared seam
 	originalSuffix := randomSuffix
 
 	t.Cleanup(func() { randomSuffix = originalSuffix })

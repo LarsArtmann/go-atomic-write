@@ -4,7 +4,7 @@ import SectionHeader from './SectionHeader.astro';
 import { useCases } from '../data/sections';
 ---
 
-<SectionHeader eyebrow="Use Cases" title="Built for real workloads." subtitle="Drop it into any read-modify-write cycle." />
+<SectionHeader eyebrow="Use Cases" title="Where lost updates cost hours." subtitle="Config, checkpoints, and lock files: read-modify-write cycles shared between processes." />
 
 <div class="grid gap-3 sm:grid-cols-3">
   {useCases.map((useCase) => (

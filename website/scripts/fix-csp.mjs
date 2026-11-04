@@ -43,7 +43,7 @@ function buildCsp(hashes) {
     "base-uri 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
-    "form-action 'self'",
+    "form-action 'self' https://buttondown.email",
     "connect-src 'self'",
     "img-src 'self' data: https:",
     "font-src 'self' data:",

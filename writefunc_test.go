@@ -169,6 +169,92 @@ func TestWriteFunc_PreservesPermissions(t *testing.T) {
 	}
 }
 
+func TestWriteFuncWithPerm_SetsPermOnCreate(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "export.journal")
+
+	err := WriteFuncWithPerm(path, func(w io.Writer) error {
+		_, writeErr := w.Write([]byte("sensitive stream"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
+
+		return nil
+	}, 0o600)
+	if err != nil {
+		t.Fatalf("WriteFuncWithPerm: %v", err)
+	}
+
+	info, statErr := os.Stat(path)
+	if statErr != nil {
+		t.Fatal(statErr)
+	}
+
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Errorf("perm = %o, want 600", got)
+	}
+
+	assertFileContent(t, path, "sensitive stream")
+}
+
+func TestWriteFuncWithPerm_OverridesExistingPerm(t *testing.T) {
+	t.Parallel()
+
+	path := tempFile(t, "old")
+
+	chmodErr := os.Chmod(path, 0o644)
+	if chmodErr != nil {
+		t.Fatal(chmodErr)
+	}
+
+	err := WriteFuncWithPerm(path, func(w io.Writer) error {
+		_, writeErr := w.Write([]byte("new"))
+		if writeErr != nil {
+			return fmt.Errorf("writing content: %w", writeErr)
+		}
+
+		return nil
+	}, 0o600)
+	if err != nil {
+		t.Fatalf("WriteFuncWithPerm: %v", err)
+	}
+
+	info, statErr := os.Stat(path)
+	if statErr != nil {
+		t.Fatal(statErr)
+	}
+
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Errorf("perm = %o, want 600 (explicit perm takes precedence)", got)
+	}
+}
+
+func TestWriteFuncWithPerm_CallbackErrorCleansUpTempFile(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "failed.journal")
+
+	err := WriteFuncWithPerm(path, func(_ io.Writer) error {
+		return errTestCallback
+	}, 0o600)
+	if err == nil {
+		t.Fatal("expected error from callback")
+	}
+
+	_, statErr := os.Stat(path)
+	if statErr == nil {
+		t.Error("target file should not exist after callback error")
+	}
+
+	matches, globErr := filepath.Glob(path + ".*.tmp")
+	if globErr == nil && len(matches) > 0 {
+		t.Error("temp file should not linger")
+	}
+}
+
 func TestWriteFunc_LeavesNoLeftoverFiles(t *testing.T) {
 	t.Parallel()
 

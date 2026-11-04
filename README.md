@@ -189,9 +189,11 @@ if fp.Matches(currentData) {
 | `FingerprintFromBytes(data)`      | Computes fingerprint from raw bytes                        |
 | `FingerprintFile(path)`           | Computes fingerprint from a file (zero if nonexistent)     |
 | `Write(path, data)`               | Atomic write, no TOCTOU check (first write, single-writer) |
+| `WriteWithPerm(path, data, perm)` | Atomic write with explicit file permission                 |
 | `WriteVerified(path, data, fp)`   | Atomic write with fingerprint race-check                   |
 | `WriteIfChanged(path, data)`      | Writes only if content differs; returns `(changed, err)`   |
 | `WriteFunc(path, fn)`             | Streams content via callback, no TOCTOU check              |
+| `WriteFuncWithPerm(path, fn, p)`  | Streams content with explicit permission, no TOCTOU check  |
 | `WriteFuncVerified(path, fn, fp)` | Streams content via callback with TOCTOU check             |
 | `ErrConcurrentModification`       | Sentinel error: file changed between read and write        |
 

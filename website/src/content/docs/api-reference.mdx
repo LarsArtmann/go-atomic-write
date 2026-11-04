@@ -6,7 +6,9 @@ description: Public API for go-atomic-write.
 The API is **split by intent**: plain atomic writes (`Write`, `WriteFunc`) for the
 common case, and `*Verified` variants (`WriteVerified`, `WriteFuncVerified`) when you
 need TOCTOU protection against concurrent modification. `WriteIfChanged` is the
-idempotent primitive for config writers and code generators.
+idempotent primitive for config writers and code generators. The `*WithPerm` variants
+(`WriteWithPerm`, `WriteFuncWithPerm`) pin the file mode instead of preserving the
+existing file's mode (or the 0o644 default).
 
 ```bash
 go get github.com/larsartmann/go-atomic-write@latest
@@ -45,6 +47,21 @@ creation, single-writer scenarios).
 
 ```go
 func Write(path string, data []byte) error
+```
+
+### WriteWithPerm
+
+Like `Write` but with an explicit `fs.FileMode` instead of preserve/default. The temp
+file is created with the requested permission, so the final file appears atomically
+with the correct mode — there is no chmod-after-rename window in which the file is
+briefly visible with the wrong permissions.
+
+The explicit permission takes precedence over an existing file's current mode. Use
+`Write` instead to preserve an existing file's mode (or the 0o644 default for new
+files).
+
+```go
+func WriteWithPerm(path string, data []byte, perm fs.FileMode) error
 ```
 
 ### WriteVerified
@@ -96,6 +113,20 @@ Use `WriteFunc` instead of `Write` when the content is large or produced increme
 func WriteFunc(path string, fn func(w io.Writer) error) error
 ```
 
+### WriteFuncWithPerm
+
+Like `WriteFunc` but with an explicit `fs.FileMode` instead of preserve/default — the
+streaming twin of `WriteWithPerm`. Use it when streamed output must land with a pinned
+mode (e.g. a PII journal export at 0600) without buffering the payload or racing a
+caller-side `os.Chmod`.
+
+See `WriteWithPerm` for permission semantics: the explicit permission takes precedence
+over an existing file's current mode.
+
+```go
+func WriteFuncWithPerm(path string, fn func(w io.Writer) error, perm fs.FileMode) error
+```
+
 ### WriteFuncVerified
 
 Writes to `path` via a streaming callback with TOCTOU protection **and** crash
@@ -140,9 +171,11 @@ var ErrConcurrentModification = errors.New("file was modified concurrently since
 | If you...                                          | Use                 |
 | -------------------------------------------------- | ------------------- |
 | Just want a crash-durable write                    | `Write`             |
+| Write with an explicit file mode                   | `WriteWithPerm`     |
 | Must detect concurrent modification                | `WriteVerified`     |
 | Write config/codegen output and skip no-op re-runs | `WriteIfChanged`    |
 | Stream large or incrementally-produced content     | `WriteFunc`         |
+| Stream content with a pinned file mode             | `WriteFuncWithPerm` |
 | Stream content AND need TOCTOU protection          | `WriteFuncVerified` |
 
 ## API Summary
@@ -155,9 +188,11 @@ var ErrConcurrentModification = errors.New("file was modified concurrently since
 | `FingerprintFromBytes(data)`      | Computes fingerprint from raw bytes                      |
 | `FingerprintFile(path)`           | Computes fingerprint from a file (zero if nonexistent)   |
 | `Write(path, data)`               | Crash-durable atomic write (no TOCTOU check)             |
+| `WriteWithPerm(path, data, perm)` | Atomic write with an explicit file permission            |
 | `WriteVerified(path, data, fp)`   | Atomic write with TOCTOU fingerprint verification        |
 | `WriteIfChanged(path, data)`      | Idempotent write — skips when content matches disk       |
 | `WriteFunc(path, fn)`             | Streams content via callback (no TOCTOU check)           |
+| `WriteFuncWithPerm(path, fn, p)`  | Streams content with an explicit permission              |
 | `WriteFuncVerified(path, fn, fp)` | Streams content via callback with TOCTOU verification    |
 | `ErrConcurrentModification`       | Sentinel error: file changed between read and write      |
 

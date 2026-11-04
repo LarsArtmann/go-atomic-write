@@ -134,6 +134,32 @@ func WriteFunc(path string, fn func(w io.Writer) error) error {
 	return commitRename(path, tmpPath)
 }
 
+// WriteFuncWithPerm writes to path via a streaming callback with an explicit
+// file permission and crash durability (fsync + atomic rename). See
+// WriteWithPerm for permission semantics and WriteFunc for streaming behavior.
+// The temp file is created with the requested permission, so the final file
+// appears atomically with the correct mode — there is no chmod-after-rename
+// window in which the file is briefly visible with the wrong permissions.
+//
+// The explicit permission takes precedence over an existing file's current
+// mode. Use WriteFunc instead to preserve an existing file's mode (or the
+// 0o644 default for new files).
+//
+// It does NOT perform TOCTOU verification — use WriteFuncVerified for that.
+func WriteFuncWithPerm(path string, fn func(io.Writer) error, perm fs.FileMode) error {
+	tmpPath, err := tempPathFor(path)
+	if err != nil {
+		return err
+	}
+
+	stageErr := writeFuncAndSync(tmpPath, fn, perm)
+	if stageErr != nil {
+		return stageErr
+	}
+
+	return commitRename(path, tmpPath)
+}
+
 // WriteFuncVerified writes to path via a streaming callback with TOCTOU
 // protection and crash durability. See WriteVerified for fingerprint semantics.
 func WriteFuncVerified(path string, fn func(w io.Writer) error, fingerprint Fingerprint) error {

@@ -30,7 +30,7 @@ Flat single-package layout — all source in the repository root:
 
 | File                     | Purpose                                                                                                                       |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `atomicwrite.go`         | Package doc + public write API: `Write`, `WriteWithPerm`, `WriteVerified`, `WriteIfChanged`, `WriteFunc`, `WriteFuncVerified` |
+| `atomicwrite.go`         | Package doc + public write API: `Write`, `WriteWithPerm`, `WriteVerified`, `WriteIfChanged`, `WriteFunc`, `WriteFuncWithPerm`, `WriteFuncVerified` |
 | `fingerprint.go`         | Fingerprinting: `Fingerprint`, `IsZero`, `Matches`, `FingerprintFromBytes`, `FingerprintFile`                                 |
 | `commit.go`              | Commit path: `ErrConcurrentModification`, `commitVerified` (flock + verify), `commitRename`                                   |
 | `stage.go`               | Staging: `prepareTempPath`, `tempPathFor`, `randomSuffix`, `writeAndSync`, `writeFuncAndSync`, `cleanupTmp`                   |

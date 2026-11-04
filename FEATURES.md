@@ -25,10 +25,10 @@
 | Feature                             | Status                | Notes                                                                                                                                                       |
 | ----------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Plain atomic write (`Write`)        | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:15`; fsync + atomic rename, no TOCTOU check. Covered by `TestWriteFirstRun`, `TestWriteLeavesNoLeftoverFiles`.                              |
-| Atomic write with explicit perms    | 🟢 `FULLY_FUNCTIONAL` | `WriteWithPerm` at `atomicwrite.go:40` (shipped v0.5.0); caller-supplied `fs.FileMode` instead of preserved/defaulted mode.                                 |
+| Atomic write with explicit perms    | 🟢 `FULLY_FUNCTIONAL` | `WriteWithPerm` at `atomicwrite.go:40` (shipped v0.5.0) + streaming twin `WriteFuncWithPerm` at `:149` (shipped unreleased); caller-supplied `fs.FileMode` instead of preserved/defaulted mode, temp file created with the final mode (no chmod window). |
 | TOCTOU-verified write               | 🟢 `FULLY_FUNCTIONAL` | `WriteVerified` at `atomicwrite.go:63`; fingerprint re-checked under lock. Covered by `TestWriteWithFingerprint`, `TestWriteRejectsConcurrentModification`. |
 | Idempotent write (`WriteIfChanged`) | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:89`; skips when content matches disk. 7 tests incl. empty-file, new-file, permission, no-leftover cases.                                    |
-| Streaming write (`WriteFunc`)       | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:123` (plain) + `:139` (`WriteFuncVerified`); 64KB buffered callback. Covered by `TestWriteFunc_*` (6 tests, incl. 400KB stream).            |
+| Streaming write (`WriteFunc`)       | 🟢 `FULLY_FUNCTIONAL` | `atomicwrite.go:123` (plain), `:149` (`WriteFuncWithPerm`), `:165` (`WriteFuncVerified`); 64KB buffered callback. Covered by `TestWriteFunc_*` (6 tests, incl. 400KB stream) + `TestWriteFuncWithPerm_*` (3 tests). |
 
 ## Fingerprinting & integrity
 

@@ -103,7 +103,10 @@ export default defineConfig({
 				},
 				{
 					tag: "meta",
-					attrs: { property: "og:image", content: "https://atomicwrite.lars.software/og-image.png" },
+					attrs: {
+						property: "og:image",
+						content: "https://atomicwrite.lars.software/og-image.png",
+					},
 				},
 				{
 					tag: "meta",

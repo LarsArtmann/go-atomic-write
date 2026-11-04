@@ -7,7 +7,9 @@ import { resolve } from "node:path";
 const here = import.meta.dirname;
 // Overridable for the regression tests (website/scripts/test/); production uses the repo root.
 const sourcePath = resolve(process.env.CHANGELOG_SOURCE ?? resolve(here, "../../CHANGELOG.md"));
-const targetPath = resolve(process.env.CHANGELOG_TARGET ?? resolve(here, "../src/content/docs/changelog.mdx"));
+const targetPath = resolve(
+	process.env.CHANGELOG_TARGET ?? resolve(here, "../src/content/docs/changelog.mdx"),
+);
 
 const raw = readFileSync(sourcePath, "utf8");
 

@@ -47,7 +47,7 @@ wordmark, so an edit to one is an edit to both.
 | `png/lockup-*-light.png`                  | 600 × 128 raster, 2×                        | Light backgrounds, raster-only slots          |
 | `png/lockup-*-dark.png`                   | 600 × 128 raster, 2×                        | Dark backgrounds, raster-only slots           |
 | `png/lockup-stacked-*.png`                | 680 × 234 raster, 2×                        | Square-ish slots, raster-only                 |
-| `social-preview.png`                      | 1280 × 640 GitHub social preview card       | Repo Settings → Social preview (owner action)|
+| `social-preview.png`                      | 1280 × 640 GitHub social preview card       | Repo Settings → Social preview (owner action) |
 | `contact-sheet.png`                       | Overview grid of all five compositions      | Brand review, quick reference                 |
 
 ## Regenerate

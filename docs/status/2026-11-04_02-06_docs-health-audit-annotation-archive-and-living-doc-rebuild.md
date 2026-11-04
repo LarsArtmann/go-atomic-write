@@ -101,58 +101,58 @@ Honest list. Nothing was destroyed; these are real defects of THIS session's pro
 
 Ranked: impact first. (HARVEST already landed the High/Medium/Low survivors in `TODO_LIST.md`; the tail below is ROADMAP-fuel per the docs-health anti-pattern — treat 30–50 as a brainstorm, not a commitment.)
 
-| #  | Task                                                                                                                                      | Impact | Effort |
-| -- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 1  | Cut `v0.6.1` (checklist steps 1–9; changelog section BEFORE tag — the new rule)                                                           | High   | S      |
-| 2  | ~~Push `master` (7 commits)~~ done at `eec3cd6` — the 23:26Z deploy rendered: brand + benchmarks + changelog live; OG card in real previewers remains an owner check | High   | S      |
-| 3  | Post-release: `pkg.go.dev` shows v0.6.1; `go get @v0.6.1` resolves; changelog page synced                                                 | High   | S      |
-| 4  | Fleet bump: all 22 enumerated importer repos via go-ecosystem-upgrade                                                                     | High   | L      |
-| 5  | Browser verification sweep: 320px + desktop screenshots, theme first-paint, ClientRouter nav                                              | High   | M      |
-| 6  | Full-palette WCAG contrast audit (amber/danger/success/code-comment, both themes) + fixes                                                 | High   | M      |
-| 7  | Lighthouse: baseline-measured budgets, docs-page scores, LHCI gate in `website.yml`                                                       | High   | M      |
-| 8  | Newsletter CSP: browser-test the Buttondown POST, fix `form-action` (header CSP or allowlist)                                             | High   | S      |
-| 9  | Header/footer logo a11y: `aria-hidden` vs `aria-label` decision, apply to both instances                                                  | High   | S      |
-| 10 | Codify pixel-QA: `qa-brand-pixels.mjs` asserting glyph ink in headless screenshots                                                        | High   | S      |
-| 11 | `brand-tokens.json` — one palette source for generator + `global.css`                                                                     | High   | M      |
-| 12 | Build-gate hardening batch (source-level parity, meta-description, FAQ count, CSP assert, button count, stale-API grep, `pnpm run check`) | High   | M      |
-| 13 | Landing voice pass completion (titles/eyebrows/badge/Footer/Newsletter/CTA)                                                               | Medium | S      |
-| 14 | FAQ ↔ `guides/benchmarks` / `guides/error-handling` links                                                                                 | Medium | S      |
-| 15 | `brand:png` script — rasters regenerated from code, not README                                                                            | Medium | S      |
-| 16 | SVG well-formedness parse inside `brand:check`                                                                                            | Medium | S      |
-| 17 | Wordmark: measure real Space Grotesk width headlessly, fix canvas or record the air                                                       | Medium | S      |
-| 18 | Footer 20px logo screenshot QA                                                                                                            | Medium | S      |
-| 19 | Favicon-scale CI gate (render 16/22/32, assert non-blank + glyph color)                                                                   | Medium | S      |
-| 20 | OG tagline/CTA voice in the generator (kill "TOCTOU-safe", pkg.go.dev CTA) + re-raster PNG                                                | Medium | S      |
-| 21 | Test OG card in Slack/Twitter/Facebook previewers                                                                                         | Medium | S      |
-| 22 | Compress `og-image.png` (59 KB → ~30 KB)                                                                                                  | Medium | S      |
-| 23 | apple-touch-icon 180×180 + link tag; manifest icons 192/512 PNG                                                                           | Medium | S      |
-| 24 | GitHub social preview 1280×640 built from the lockup                                                                                      | Medium | S      |
-| 25 | Fingerprint edge tests: `FingerprintFile(directory)` + `Matches(nil)`                                                                     | Medium | S      |
-| 26 | `animations.js`: hook `astro:page-load` (fixes post-navigation dead animations)                                                           | Medium | S      |
-| 27 | Internal link checker for docs + README (CI-able)                                                                                         | Medium | S      |
-| 28 | Build-script regression tests: `fix-csp.mjs` idempotency, `sync-changelog.mjs` escaping                                                   | Medium | S      |
-| 29 | `gitleaks` step in CI                                                                                                                     | Medium | S      |
-| 30 | Deploy-secret posture: WIF federation vs rotation cadence; delete 7 stale SA keys (GCP console)                                           | Medium | S      |
-| 31 | CONTRIBUTING: release-cutting section + deploy/secret recipe                                                                              | Medium | S      |
-| 32 | Fleet npm sweep: identify, teach it the TS6/pnpm constraints or exclude this repo                                                         | Medium | M      |
-| 33 | Sitemap `lastmod` + `go get` in every docs entry point                                                                                    | Low    | S      |
-| 34 | `theme-color` light variant + `og:image:type`/`og:site_name`/`og:image:alt`/`twitter:image:alt`                                           | Low    | S      |
-| 35 | `engines.node` field + `website/flake.lock` update                                                                                        | Low    | S      |
-| 36 | `CopyButton.astro` extraction (repeated ~300-char class string)                                                                           | Low    | S      |
-| 37 | Unique-temp-file invariant test (`stage.go`)                                                                                              | Low    | S      |
-| ~~38~~ | ~~"When not to use this" docs page (promote FAQ item)~~ done at `f1aa3ab` | ~~Low~~ | ~~M~~ |
-| ~~39~~ | ~~Port the landing FAQ into docs (site-search coverage)~~ done at `f1aa3ab` | ~~Low~~ | ~~M~~ |
-| 40 | Surface `WriteIfChanged`/`WriteFunc`/`WriteWithPerm` on the landing page                                                                  | Low    | M      |
-| 41 | Playwright smoke suite (copy payload, FAQ opens, install bar at 320px)                                                                    | Low    | M      |
-| 42 | PR preview channel (Firebase preview per PR)                                                                                              | Low    | M      |
-| 43 | PNG raster lockups (dark/light @2×) + decide stacked-lockup usage                                                                         | Low    | S      |
-| 44 | 3-concept contact sheet validating the atomic-swap mark post-hoc                                                                          | Low    | M      |
-| 45 | Screenshot visual-regression harness for header/docs/OG surfaces                                                                          | Low    | M      |
-| 46 | Per-page OG cards for docs routes                                                                                                         | Low    | M      |
-| 47 | Brand usage rules (clear space, min sizes) in `assets/brand/README.md`                                                                    | Low    | S      |
-| 48 | Generator oxlint warnings fixed or rationale-ignored; `.jscpd` scripts/** exclusion check                                                 | Low    | S      |
-| 49 | Annotate the 11-03 reports once their items land (keep the snapshot chain accurate)                                                       | Low    | S      |
-| 50 | Fleet: roll the brand-system pattern (one geometry + byte-check) to the next unbranded sibling                                            | Low    | M      |
+| #      | Task                                                                                                                                                                 | Impact  | Effort |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ |
+| 1      | Cut `v0.6.1` (checklist steps 1–9; changelog section BEFORE tag — the new rule)                                                                                      | High    | S      |
+| 2      | ~~Push `master` (7 commits)~~ done at `eec3cd6` — the 23:26Z deploy rendered: brand + benchmarks + changelog live; OG card in real previewers remains an owner check | High    | S      |
+| 3      | Post-release: `pkg.go.dev` shows v0.6.1; `go get @v0.6.1` resolves; changelog page synced                                                                            | High    | S      |
+| 4      | Fleet bump: all 22 enumerated importer repos via go-ecosystem-upgrade                                                                                                | High    | L      |
+| 5      | Browser verification sweep: 320px + desktop screenshots, theme first-paint, ClientRouter nav                                                                         | High    | M      |
+| 6      | Full-palette WCAG contrast audit (amber/danger/success/code-comment, both themes) + fixes                                                                            | High    | M      |
+| 7      | Lighthouse: baseline-measured budgets, docs-page scores, LHCI gate in `website.yml`                                                                                  | High    | M      |
+| 8      | Newsletter CSP: browser-test the Buttondown POST, fix `form-action` (header CSP or allowlist)                                                                        | High    | S      |
+| 9      | Header/footer logo a11y: `aria-hidden` vs `aria-label` decision, apply to both instances                                                                             | High    | S      |
+| 10     | Codify pixel-QA: `qa-brand-pixels.mjs` asserting glyph ink in headless screenshots                                                                                   | High    | S      |
+| 11     | `brand-tokens.json` — one palette source for generator + `global.css`                                                                                                | High    | M      |
+| 12     | Build-gate hardening batch (source-level parity, meta-description, FAQ count, CSP assert, button count, stale-API grep, `pnpm run check`)                            | High    | M      |
+| 13     | Landing voice pass completion (titles/eyebrows/badge/Footer/Newsletter/CTA)                                                                                          | Medium  | S      |
+| 14     | FAQ ↔ `guides/benchmarks` / `guides/error-handling` links                                                                                                            | Medium  | S      |
+| 15     | `brand:png` script — rasters regenerated from code, not README                                                                                                       | Medium  | S      |
+| 16     | SVG well-formedness parse inside `brand:check`                                                                                                                       | Medium  | S      |
+| 17     | Wordmark: measure real Space Grotesk width headlessly, fix canvas or record the air                                                                                  | Medium  | S      |
+| 18     | Footer 20px logo screenshot QA                                                                                                                                       | Medium  | S      |
+| 19     | Favicon-scale CI gate (render 16/22/32, assert non-blank + glyph color)                                                                                              | Medium  | S      |
+| 20     | OG tagline/CTA voice in the generator (kill "TOCTOU-safe", pkg.go.dev CTA) + re-raster PNG                                                                           | Medium  | S      |
+| 21     | Test OG card in Slack/Twitter/Facebook previewers                                                                                                                    | Medium  | S      |
+| 22     | Compress `og-image.png` (59 KB → ~30 KB)                                                                                                                             | Medium  | S      |
+| 23     | apple-touch-icon 180×180 + link tag; manifest icons 192/512 PNG                                                                                                      | Medium  | S      |
+| 24     | GitHub social preview 1280×640 built from the lockup                                                                                                                 | Medium  | S      |
+| 25     | Fingerprint edge tests: `FingerprintFile(directory)` + `Matches(nil)`                                                                                                | Medium  | S      |
+| 26     | `animations.js`: hook `astro:page-load` (fixes post-navigation dead animations)                                                                                      | Medium  | S      |
+| 27     | Internal link checker for docs + README (CI-able)                                                                                                                    | Medium  | S      |
+| 28     | Build-script regression tests: `fix-csp.mjs` idempotency, `sync-changelog.mjs` escaping                                                                              | Medium  | S      |
+| 29     | `gitleaks` step in CI                                                                                                                                                | Medium  | S      |
+| 30     | Deploy-secret posture: WIF federation vs rotation cadence; delete 7 stale SA keys (GCP console)                                                                      | Medium  | S      |
+| 31     | CONTRIBUTING: release-cutting section + deploy/secret recipe                                                                                                         | Medium  | S      |
+| 32     | Fleet npm sweep: identify, teach it the TS6/pnpm constraints or exclude this repo                                                                                    | Medium  | M      |
+| 33     | Sitemap `lastmod` + `go get` in every docs entry point                                                                                                               | Low     | S      |
+| 34     | `theme-color` light variant + `og:image:type`/`og:site_name`/`og:image:alt`/`twitter:image:alt`                                                                      | Low     | S      |
+| 35     | `engines.node` field + `website/flake.lock` update                                                                                                                   | Low     | S      |
+| 36     | `CopyButton.astro` extraction (repeated ~300-char class string)                                                                                                      | Low     | S      |
+| 37     | Unique-temp-file invariant test (`stage.go`)                                                                                                                         | Low     | S      |
+| ~~38~~ | ~~"When not to use this" docs page (promote FAQ item)~~ done at `f1aa3ab`                                                                                            | ~~Low~~ | ~~M~~  |
+| ~~39~~ | ~~Port the landing FAQ into docs (site-search coverage)~~ done at `f1aa3ab`                                                                                          | ~~Low~~ | ~~M~~  |
+| 40     | Surface `WriteIfChanged`/`WriteFunc`/`WriteWithPerm` on the landing page                                                                                             | Low     | M      |
+| 41     | Playwright smoke suite (copy payload, FAQ opens, install bar at 320px)                                                                                               | Low     | M      |
+| 42     | PR preview channel (Firebase preview per PR)                                                                                                                         | Low     | M      |
+| 43     | PNG raster lockups (dark/light @2×) + decide stacked-lockup usage                                                                                                    | Low     | S      |
+| 44     | 3-concept contact sheet validating the atomic-swap mark post-hoc                                                                                                     | Low     | M      |
+| 45     | Screenshot visual-regression harness for header/docs/OG surfaces                                                                                                     | Low     | M      |
+| 46     | Per-page OG cards for docs routes                                                                                                                                    | Low     | M      |
+| 47     | Brand usage rules (clear space, min sizes) in `assets/brand/README.md`                                                                                               | Low     | S      |
+| 48     | Generator oxlint warnings fixed or rationale-ignored; `.jscpd` scripts/** exclusion check                                                                            | Low     | S      |
+| 49     | Annotate the 11-03 reports once their items land (keep the snapshot chain accurate)                                                                                  | Low     | S      |
+| 50     | Fleet: roll the brand-system pattern (one geometry + byte-check) to the next unbranded sibling                                                                       | Low     | M      |
 
 ## g) Questions I cannot answer myself
 

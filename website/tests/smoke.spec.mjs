@@ -26,7 +26,9 @@ test("landing FAQ has exactly six questions", async ({ page }) => {
 test("no horizontal overflow at 320 px", async ({ page }) => {
 	await page.setViewportSize({ width: 320, height: 800 });
 	await page.goto("/");
-	const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+	const overflow = await page.evaluate(
+		() => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+	);
 	expect(overflow).toBeLessThanOrEqual(0);
 });
 

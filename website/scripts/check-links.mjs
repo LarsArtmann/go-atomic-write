@@ -23,7 +23,9 @@ function* walk(dir) {
 }
 
 function pageHasId(html, id) {
-	return new RegExp(String.raw`id=["']${id.replaceAll(/["'\\]/gu, String.raw`\$&`)}["']`, "u").test(html);
+	return new RegExp(String.raw`id=["']${id.replaceAll(/["'\\]/gu, String.raw`\$&`)}["']`, "u").test(
+		html,
+	);
 }
 
 function resolveTarget(fromFile, href) {
@@ -76,7 +78,9 @@ for (const file of [...walk(distDir)].filter((f) => f.endsWith(".html"))) {
 }
 
 const readme = readFileSync(join(repoRoot, "README.md"), "utf8");
-for (const ref of [...readme.matchAll(/\]\((?<ref>[^)#]+)(?:#[^)]*)?\)/gu)].map((m) => m.groups.ref)) {
+for (const ref of [...readme.matchAll(/\]\((?<ref>[^)#]+)(?:#[^)]*)?\)/gu)].map(
+	(m) => m.groups.ref,
+)) {
 	if (ref.startsWith("http://") || ref.startsWith("https://") || ref.startsWith("mailto:")) {
 		continue;
 	}

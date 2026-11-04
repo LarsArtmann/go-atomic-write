@@ -345,7 +345,10 @@ function svgWellFormed(svg) {
 		return problem;
 	}
 	const commentFree = svg.replaceAll(/<!--[\s\S]*?-->/gu, "");
-	const tagVolume = [...commentFree.matchAll(svgTagPattern)].reduce((sum, tag) => sum + tag[0].length, 0);
+	const tagVolume = [...commentFree.matchAll(svgTagPattern)].reduce(
+		(sum, tag) => sum + tag[0].length,
+		0,
+	);
 	return commentFree.trim().length > tagVolume * 2 ? "unaccounted markup outside tags" : null;
 }
 
@@ -385,22 +388,46 @@ for (const artifact of ARTIFACTS) {
 if (pngMode) {
 	const tokenDrift = siteTokenDrift();
 	if (tokenDrift.length > 0) {
-		console.error(`brand:png: brand-tokens.json and global.css have drifted: ${tokenDrift.join("; ")}`);
+		console.error(
+			`brand:png: brand-tokens.json and global.css have drifted: ${tokenDrift.join("; ")}`,
+		);
 		process.exit(1);
 	}
 	const site = (rel) => path.join(repoRoot, "website", rel);
-	const quantize = (file) => magick([file, "-colors", "256", "-define", "png:compression-level=9", file]);
+	const quantize = (file) =>
+		magick([file, "-colors", "256", "-define", "png:compression-level=9", file]);
 
-	magick(["-background", "none", site("public/favicon.svg"), "-define", "icon:auto-resize=16,32,48", site("public/favicon.ico")]);
+	magick([
+		"-background",
+		"none",
+		site("public/favicon.svg"),
+		"-define",
+		"icon:auto-resize=16,32,48",
+		site("public/favicon.ico"),
+	]);
 	console.log("wrote website/public/favicon.ico");
 
-	magick(["-background", "none", site("public/og-image.svg"), "-resize", "1200x630!", site("public/og-image.png")]);
+	magick([
+		"-background",
+		"none",
+		site("public/og-image.svg"),
+		"-resize",
+		"1200x630!",
+		site("public/og-image.png"),
+	]);
 	quantize(site("public/og-image.png"));
 	console.log("wrote website/public/og-image.png (256-color quantized)");
 
 	for (const size of [180, 192, 512]) {
 		const icon = site(`public/icon-${size}.png`);
-		magick(["-background", brandTokens.iconBackground, path.join(repoRoot, "assets/brand/mark.svg"), "-resize", `${size}x${size}!`, icon]);
+		magick([
+			"-background",
+			brandTokens.iconBackground,
+			path.join(repoRoot, "assets/brand/mark.svg"),
+			"-resize",
+			`${size}x${size}!`,
+			icon,
+		]);
 		quantize(icon);
 		console.log(`wrote website/public/icon-${size}.png`);
 	}
@@ -417,7 +444,14 @@ if (pngMode) {
 		["lockup-stacked-dark.svg", "png/lockup-stacked-dark.png", "680x234!"],
 	];
 	for (const [source, target, size] of rasterLockups) {
-		magick(["-background", "none", path.join(repoRoot, "assets/brand", source), "-resize", size, brand(target)]);
+		magick([
+			"-background",
+			"none",
+			path.join(repoRoot, "assets/brand", source),
+			"-resize",
+			size,
+			brand(target),
+		]);
 		console.log(`wrote assets/brand/${target} (2x raster)`);
 	}
 
@@ -456,10 +490,26 @@ if (pngMode) {
 				"-background",
 				"#f5f5f4",
 				...sheetCell({ source: "mark.svg", bg: "#0a0908", label: "mark 64x64" }),
-				...sheetCell({ source: "lockup-horizontal-light.svg", bg: "#ffffff", label: "horizontal light 300x64" }),
-				...sheetCell({ source: "lockup-horizontal-dark.svg", bg: "#0a0908", label: "horizontal dark 300x64" }),
-				...sheetCell({ source: "lockup-stacked-light.svg", bg: "#ffffff", label: "stacked light 340x117" }),
-				...sheetCell({ source: "lockup-stacked-dark.svg", bg: "#0a0908", label: "stacked dark 340x117" }),
+				...sheetCell({
+					source: "lockup-horizontal-light.svg",
+					bg: "#ffffff",
+					label: "horizontal light 300x64",
+				}),
+				...sheetCell({
+					source: "lockup-horizontal-dark.svg",
+					bg: "#0a0908",
+					label: "horizontal dark 300x64",
+				}),
+				...sheetCell({
+					source: "lockup-stacked-light.svg",
+					bg: "#ffffff",
+					label: "stacked light 340x117",
+				}),
+				...sheetCell({
+					source: "lockup-stacked-dark.svg",
+					bg: "#0a0908",
+					label: "stacked dark 340x117",
+				}),
 				"-tile",
 				"2x3",
 				"-geometry",
@@ -492,10 +542,14 @@ if (pngMode) {
 		for (const problem of tokenDrift) {
 			console.error(`  - ${problem}`);
 		}
-		console.error("Update assets/brand/brand-tokens.json and website/src/styles/global.css together.");
+		console.error(
+			"Update assets/brand/brand-tokens.json and website/src/styles/global.css together.",
+		);
 		process.exit(1);
 	}
-	console.log(`brand:check: OK (${ARTIFACTS.length} artifacts match the generator, ${SITE_TOKEN_MIRRORS.length} site-token mirrors in sync)`);
+	console.log(
+		`brand:check: OK (${ARTIFACTS.length} artifacts match the generator, ${SITE_TOKEN_MIRRORS.length} site-token mirrors in sync)`,
+	);
 } else {
 	const tokenDrift = siteTokenDrift();
 	if (tokenDrift.length > 0) {
@@ -503,7 +557,9 @@ if (pngMode) {
 		for (const problem of tokenDrift) {
 			console.error(`  - ${problem}`);
 		}
-		console.error("Fix the drift before regenerating (assets/brand/brand-tokens.json vs website/src/styles/global.css).");
+		console.error(
+			"Fix the drift before regenerating (assets/brand/brand-tokens.json vs website/src/styles/global.css).",
+		);
 		process.exit(1);
 	}
 	for (const artifact of ARTIFACTS) {

@@ -55,46 +55,46 @@ Marketing website and documentation built with Astro + Starlight + Tailwind v4. 
 
 ### Website Commands
 
-| Command                                                                | Purpose                                                                                       |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `cd website && pnpm run dev`                                           | Local dev server                                                                              |
-| `cd website && pnpm run build`                                         | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP)             |
-| `cd website && pnpm run typecheck`                                     | TypeScript + Astro type checking                                                              |
-| `cd website && pnpm run preview`                                       | Preview production build locally                                                              |
-| `cd website && pnpm run sync:changelog`                                | Regenerate changelog page from root `CHANGELOG.md`                                            |
-| `cd website && pnpm run brand:generate`                                | Regenerate all brand artifacts from the single geometry (`scripts/generate-brand-assets.mjs`) |
-| `cd website && pnpm run brand:check`                                   | Exit 1 if any generated brand artifact drifted (CI gates on this)                             |
-| `cd website && pnpm run test:scripts`                                 | `node --test` regression suite for the build scripts (CSP, changelog, link checker)           |
-| `cd website && pnpm run check:links`                                   | Crawl `dist/`, verify all internal links + fragments (CI gate)                                |
+| Command                                                                | Purpose                                                                                                                                                         |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cd website && pnpm run dev`                                           | Local dev server                                                                                                                                                |
+| `cd website && pnpm run build`                                         | Production build to `dist/` (`prebuild` syncs changelog, `postbuild` injects CSP)                                                                               |
+| `cd website && pnpm run typecheck`                                     | TypeScript + Astro type checking                                                                                                                                |
+| `cd website && pnpm run preview`                                       | Preview production build locally                                                                                                                                |
+| `cd website && pnpm run sync:changelog`                                | Regenerate changelog page from root `CHANGELOG.md`                                                                                                              |
+| `cd website && pnpm run brand:generate`                                | Regenerate all brand artifacts from the single geometry (`scripts/generate-brand-assets.mjs`)                                                                   |
+| `cd website && pnpm run brand:check`                                   | Exit 1 if any generated brand artifact drifted (CI gates on this)                                                                                               |
+| `cd website && pnpm run test:scripts`                                  | `node --test` regression suite for the build scripts (CSP, changelog, link checker)                                                                             |
+| `cd website && pnpm run check:links`                                   | Crawl `dist/`, verify all internal links + fragments (CI gate)                                                                                                  |
 | `cd website && pnpm run test:ui`                                       | Playwright smoke suite over the production build (`pnpm run build` first; `CHROME_PATH=$(nix shell nixpkgs#chromium -c bash -c 'command -v chromium')` locally) |
-| `cd website && pnpm run lighthouse`                                    | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)                         |
-| `nix run github:Artmann-Technologies/docs-gates -- run .`              | Docs-health battery: freshness/annotate/routing/cadence gates over `docs/` (all five must stay green) |
-| `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                            |
+| `cd website && pnpm run lighthouse`                                    | Run Lighthouse CI against `dist/` (requires chromium in Nix devShell)                                                                                           |
+| `nix run github:Artmann-Technologies/docs-gates -- run .`              | Docs-health battery: freshness/annotate/routing/cadence gates over `docs/` (all five must stay green)                                                           |
+| `cd website && firebase deploy --only hosting --project lars-software` | Deploy to Firebase                                                                                                                                              |
 
 Node.js 24 required (use `nix shell nixpkgs#nodejs_24` if not in PATH).
 
 ### Website Structure
 
-| Path                                | Purpose                                                                                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `website/astro.config.mjs`          | Astro config: Starlight (incl. docs-header `logo`), fonts, sitemap                                                                   |
-| `website/src/pages/index.astro`     | Landing page                                                                                                                         |
-| `website/src/components/`           | 16 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, FAQ, etc.)                                                           |
-| `website/src/data/`                 | Typed content: config, features, sections, hero-code                                                                                 |
-| `website/src/assets/brand.svg`      | GENERATED bundled copy of the mark for the Starlight docs header logo                                                                |
-| `website/src/content/docs/`         | 9 Starlight documentation pages                                                                                                      |
-| `website/src/styles/`               | global.css (emerald theme) + starlight.css                                                                                           |
-| `website/public/`                   | favicon.svg, favicon.ico, og-image.svg (source) + og-image.png (1200×630), manifest, robots.txt, JS (theme, animations, copy-code)   |
-| `assets/brand/`                     | GENERATED standalone logo marks + lockups (`mark.svg`, horizontal/stacked lockups in light+dark) + brand README                      |
-| `website/firebase.json`             | Hosting config with security headers                                                                                                 |
-| `website/.firebaserc`               | Firebase project + hosting target                                                                                                    |
-| `website/lighthouserc.json`         | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)                                                         |
-| `website/.editorconfig`             | Standalone editor config for the website subtree (2-space indent, `root = true`)                                                     |
-| `website/scripts/`                  | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` + `verify-build.mjs` (postbuild), `check-links.mjs`, `contrast-audit.mjs`, `check-hero-source.mjs`, `tests/` (node:test suite)        |
-| `website/tests/smoke.spec.mjs`      | Playwright smoke suite (copy payloads, FAQ count, 320px overflow, animation binding) + `playwright.config.mjs`                             |
-| `scripts/generate-brand-assets.mjs` | GENERATED brand system: one geometry → favicon, Logo.astro, OG card, lockups; `--check` mode gates CI; `--png` mode rasterizes everything (icons, 2× lockups, social preview, contact sheet)              |
-| `assets/brand/brand-tokens.json`    | Single palette source the generator reads; 4 tokens mirror `global.css` dark theme and `brand:check` verifies the mirror                    |
-| `scripts/fleet-bump.sh`             | Persisted fleet bump runner (version as arg; SKIP_DIRTY / SKIP_INCONSISTENT / SKIP_SCOPE / AFTER_RED guards)                                |
+| Path                                | Purpose                                                                                                                                                                                                            |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `website/astro.config.mjs`          | Astro config: Starlight (incl. docs-header `logo`), fonts, sitemap                                                                                                                                                 |
+| `website/src/pages/index.astro`     | Landing page                                                                                                                                                                                                       |
+| `website/src/components/`           | 16 Astro components (Hero, FeatureGrid, HowItWorks, Comparison, FAQ, etc.)                                                                                                                                         |
+| `website/src/data/`                 | Typed content: config, features, sections, hero-code                                                                                                                                                               |
+| `website/src/assets/brand.svg`      | GENERATED bundled copy of the mark for the Starlight docs header logo                                                                                                                                              |
+| `website/src/content/docs/`         | 9 Starlight documentation pages                                                                                                                                                                                    |
+| `website/src/styles/`               | global.css (emerald theme) + starlight.css                                                                                                                                                                         |
+| `website/public/`                   | favicon.svg, favicon.ico, og-image.svg (source) + og-image.png (1200×630), manifest, robots.txt, JS (theme, animations, copy-code)                                                                                 |
+| `assets/brand/`                     | GENERATED standalone logo marks + lockups (`mark.svg`, horizontal/stacked lockups in light+dark) + brand README                                                                                                    |
+| `website/firebase.json`             | Hosting config with security headers                                                                                                                                                                               |
+| `website/.firebaserc`               | Firebase project + hosting target                                                                                                                                                                                  |
+| `website/lighthouserc.json`         | Lighthouse CI config: performance/accessibility/SEO budgets (desktop preset)                                                                                                                                       |
+| `website/.editorconfig`             | Standalone editor config for the website subtree (2-space indent, `root = true`)                                                                                                                                   |
+| `website/scripts/`                  | Build-time tooling: `sync-changelog.mjs` (prebuild), `fix-csp.mjs` + `verify-build.mjs` (postbuild), `check-links.mjs`, `contrast-audit.mjs`, `check-hero-source.mjs`, `tests/` (node:test suite)                  |
+| `website/tests/smoke.spec.mjs`      | Playwright smoke suite (copy payloads, FAQ count, 320px overflow, animation binding) + `playwright.config.mjs`                                                                                                     |
+| `scripts/generate-brand-assets.mjs` | GENERATED brand system: one geometry → favicon, Logo.astro, OG card, lockups; `--check` mode gates CI; `--png` mode rasterizes everything (icons, 2× lockups, social preview, contact sheet)                       |
+| `assets/brand/brand-tokens.json`    | Single palette source the generator reads; 4 tokens mirror `global.css` dark theme and `brand:check` verifies the mirror                                                                                           |
+| `scripts/fleet-bump.sh`             | Persisted fleet bump runner (version as arg; SKIP_DIRTY / SKIP_INCONSISTENT / SKIP_SCOPE / AFTER_RED guards)                                                                                                       |
 | `.github/workflows/`                | CI (`ci.yml`: test/race + lint + cross-compile + govulncheck + gitleaks + drift guard incl. brand:check) + Website (`website.yml`: build gates, smoke suite, Lighthouse budgets, live deploy, PR preview channels) |
 
 ### DNS

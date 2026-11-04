@@ -74,7 +74,7 @@ Delta report since the 17:05 status (`docs/status/2026-11-04_17-05_consumer-fixe
 26. Spot-check the two new pnpm lockfiles (video/e2e) don't break their repos' non-CI tooling (scripts referencing those dirs).
 27. Cross-project lesson candidate for crush-config `references/lessons.md`: "gate-as-a-whole before closure" + "restart-safety/liveness after interrupted tool calls" (commit there, never in-session).
 28. AGENTS.md: record the samber stale-dual-lockfile + multi-tree audit gotcha (second data point for the existing npm incident class).
-29. ~~Retire throwaway artifacts: `/tmp/chr-prof-*`, `/tmp/gaw-verify`, `/tmp/sorttest`, `/tmp/fleet-v062-*.out` after the summary doc harvests them.~~ done — 2026-11-04 evening — fleet-v062-*.out + fleet-bump-logs + chr-prof-* + gaw-verify + sorttest deleted; fleet verdicts durable in the 20-45 fleet summary
+29. ~~Retire throwaway artifacts: `/tmp/chr-prof-*`, `/tmp/gaw-verify`, `/tmp/sorttest`, `/tmp/fleet-v062-*.out` after the summary doc harvests them.~~ done — 2026-11-04 evening — fleet-v062-_.out + fleet-bump-logs + chr-prof-_ + gaw-verify + sorttest deleted; fleet verdicts durable in the 20-45 fleet summary
 30. Verify `docs/status/README.md` index gets the 17:05 + this report (the battery's freshness gate will demand it).
 31. ROADMAP split-brain check post-release (nothing shipped in 0.6.2 lingers as a raw idea — the T30–T33 prune already landed; verify once).
 32. `website/flake.lock` nixpkgs drift check (last bumped 11-01).

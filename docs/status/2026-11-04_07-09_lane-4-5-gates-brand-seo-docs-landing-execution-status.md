@@ -154,7 +154,7 @@
 22. ~~**oxlint sort-imports decision** (improvement #6): inline-disable with rationale or upstream issue — pick one, stop paying the tax.~~ done — decided — curated oxlint profile documented in AGENTS.md (sort-imports semantics + disables recorded); no upstream issue needed
 23. ~~**Daemon coexistence for the release lane** (05:36 improvement #7): consider squashing the session's heuristic commits before the v0.6.2 changelog cut so the tag's history reads clean.~~ **NOT-DO — release shipped with daemon-carried history — v0.6.2 tagged atop daemon commits (accepted pattern; squashing would rewrite shared history).**
 24. ~~**`.hermes` ghost** also exists in the 05:36 report §a text — correct inline during T34 annotation.~~ done — covered — 05:36 item 26 annotated this sweep
-25. ~~**Retire `/tmp` fleet artifacts** (`fleet-bump.sh` now persisted; logs remain — reference the repo copy in the fleet summary to prevent future drift).~~ done — retired 2026-11-04 evening — fleet-v062-*.out + fleet-bump-logs + chr-prof-* + gaw-verify + sorttest deleted; verdicts durable in the 20-45 summary
+25. ~~**Retire `/tmp` fleet artifacts** (`fleet-bump.sh` now persisted; logs remain — reference the repo copy in the fleet summary to prevent future drift).~~ done — retired 2026-11-04 evening — fleet-v062-_.out + fleet-bump-logs + chr-prof-_ + gaw-verify + sorttest deleted; verdicts durable in the 20-45 summary
 
 ## g) QUESTION I CANNOT FIGURE OUT MYSELF
 

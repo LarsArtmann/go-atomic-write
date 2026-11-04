@@ -114,7 +114,7 @@ Nothing else qualifies as fucked up: no test regressions, no lint debt, no broke
 15. `[T]` README "Streaming large content" section: one-line mention of `WriteFuncWithPerm`.
 16. `[T]` POSIX-only umask integration test (`syscall.Umask`, build-tagged file) if f.6 keeps umask-respecting semantics.
 17. `[T]` Run BuildFlow gates uncached (`BUILDFLOW_NO_RESULT_CACHE=1 buildflow -s golangci-lint`) before the next release — not run this session.
-18. ~~`[T]` v062 item 29: retire throwaway artifacts (`/tmp/chr-prof-*`, `/tmp/gaw-verify`, `/tmp/sorttest`, `/tmp/fleet-v062-*.out`).~~ done — 2026-11-04 evening — fleet-v062-*.out + fleet-bump-logs + chr-prof-* + gaw-verify + sorttest deleted; fleet verdicts durable in the 20-45 fleet summary
+18. ~~`[T]` v062 item 29: retire throwaway artifacts (`/tmp/chr-prof-*`, `/tmp/gaw-verify`, `/tmp/sorttest`, `/tmp/fleet-v062-*.out`).~~ done — 2026-11-04 evening — fleet-v062-_.out + fleet-bump-logs + chr-prof-_ + gaw-verify + sorttest deleted; fleet verdicts durable in the 20-45 fleet summary
 19. `[T]` v062 item 33: consider a docs-gates CI job (battery is manual-only today). **→ routed to TODO_LIST Low row 'Wire the docs-gates battery into CI' (added 2026-11-04)**
 20. `[T]` Owner: tick + stamp the MANUALLY REVIEWED box on issue #20 after reading (cannot be done by an agent).
 21. `[T]` Decision record for the arg-order convention (variant param last) so future issue-filers stop proposing perm-middle.

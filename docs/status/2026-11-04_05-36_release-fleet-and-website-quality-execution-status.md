@@ -45,12 +45,12 @@
 ## b) PARTIALLY DONE
 
 1. ~~**T19 animations.js `astro:page-load` re-bind** — rewritten (delegated `astro:page-load` listener, `data-animate-bound` guard, reduced-motion path preserved), lint warnings fixed (`dataset` over `setAttribute`), build green. Committed by the daemon (`41f636e`); **push state unverified and post-navigation behavior verified by construction only, not by an interactive navigation test** (that belongs to T32's Playwright suite).~~ done at `41f636e`, `bb3c47b`
-2. **Website deploys of this session's ~12 pushes** — several Website runs were observed queued/in-progress during the session; the final live state (new OG card live, `[0.6.1]` on the changelog page, newsletter CSP live) is **expected but not yet re-fetched**.
+2. ~~**Website deploys of this session's ~12 pushes** — several Website runs were observed queued/in-progress during the session; the final live state (new OG card live, `[0.6.1]` on the changelog page, newsletter CSP live) is **expected but not yet re-fetched**.~~ done — live site re-fetched — the [0.6.2] changelog section is live on atomicwrite.web.app/changelog (fetched 2026-11-04 evening; post-release deploys settled)
 3. **Real-client OG previewer checks (T08's Slack/Twitter/Facebook leg)** — mechanically impossible for me: the previewer caches need the deployed URL and real clients. The card's content (consequence voice + pkg.go.dev URL) is verified at the artifact level.
 4. ~~**TODO_LIST currency** — release/fleet/deploy rows are updated with evidence, but the browser/contrast/Lighthouse/voice/FAQ/logo/icon rows still read 🔴 TODO even though T09–T15 closed them.~~ done — TODO_LIST rebuilt 2026-11-04 docs-health sweep
 5. ~~**CHANGELOG completeness for [Unreleased]** — the contrast fix, OG voice, newsletter CSP, and gate hardening have entries; the **CSP-quoting incident and the mobile-overflow fixes do not** (they exist only in commit `6ce67ba`'s message).~~ done at `0e7e010`
 6. ~~**New gates in CI** — `check:hero`, `audit:contrast`, and `pnpm run check` exist but are **local-only**; `website.yml` runs none of them yet (only the Lighthouse job was added).~~ done at `939738b`
-7. **Fleet bump of the remaining 4 repos** (crm, BuildFlow, index, clean-wizard) — skipped with documented reasons (concurrent sessions / pre-existing broken go.mod / staged in-flight work), not retried.
+7. ~~**Fleet bump of the remaining 4 repos** (crm, BuildFlow, index, clean-wizard) — skipped with documented reasons (concurrent sessions / pre-existing broken go.mod / staged in-flight work), not retried.~~ done — retried in the v0.6.2 pass — clean-wizard carried by first-pass commit b061a7c; crm baseline-red filed as crm#7; BuildFlow/index still dirty (live concurrent writers); ledger in docs/status/2026-11-04_20-45_fleet-bump-v062-summary.md
 
 ## c) NOT STARTED
 
@@ -101,7 +101,7 @@ T20 (gitleaks CI), T21 (fix-csp/sync-changelog regression tests), T22 (CopyButto
 22. ~~T33: PNG raster lockups @2×, GitHub social preview upload, brand usage rules + contact sheet.~~ done at `a6fbb9e`
 23. ~~T34: ANNOTATE the 11-03/11-04 reports once their items land; refresh `docs/status/README.md` index.~~ done — executed by this T34 sweep
 24. File the **CV Go-test chronic red** (10/10 jobs failing on every master commit) — after confirming the storm session doesn't already own it. **→ routed to TODO_LIST Low rows (CV chronic red)**
-25. Fix the four filed consumer issues if asked: samber-do-auditlog#62 (undici override in pnpm-workspace.yaml), go-checker-helpers#3, project-meta#3, DiscordSync#18.
+25. ~~Fix the four filed consumer issues if asked: samber-do-auditlog#62 (undici override in pnpm-workspace.yaml), go-checker-helpers#3, project-meta#3, DiscordSync#18.~~ done at `d3f4dbe`, ` 487012f9`, ` a7ee760 — project-meta#3 closed as obsolete (does not reproduce)`
 26. ~~Reconcile the **`.hermes` ghost entry** in the plan/TODO docs (repo does not exist on disk).~~ done — plan-doc ghost rows annotated this sweep
 27. ~~Decide release cadence for the Lane 2–3 fixes (v0.6.2 now vs. after T20–T24) — the plan's guardrail says they ride the _next_ release; that decision is now due.~~ done — resolved — batched v0.6.2 cut mandated and executing
 28. Add a deterministic collision test for `tempPathFor` (inject/seed `randomSuffix`) — the current test is statistical at 200 writers. **→ routed to TODO_LIST Low (deterministic collision test)**
@@ -112,7 +112,7 @@ T20 (gitleaks CI), T21 (fix-csp/sync-changelog regression tests), T22 (CopyButto
 33. apple-touch-icon visual check on a real iOS device (owner action). **→ routed to TODO_LIST owner-actions bundle**
 34. ~~Confirm `go get github.com/larsartmann/go-atomic-write@latest` resolves v0.6.1 (proxy `@latest` endpoint not explicitly fetched — the pinned `@v0.6.1` was).~~ done — go get @latest resolves v0.6.1 (verified 2026-11-04)
 35. ~~Check Dependabot state on go-atomic-write post-release (v0.6.1 may trigger consumer PRs).~~ done — post-release Dependabot checked 2026-11-04 — actions bumps only (PR 21 gitleaks-action, PR 7 svgo), no Go-module consumer PRs
-36. Record the BuildFlow result-cache release-gate lesson (`BUILDFLOW_NO_RESULT_CACHE=1` for gates) in the project's AGENTS.md or as a BuildFlow issue — the 1.18 ms "pass" would have failed the release had the cache been stale.
+36. ~~Record the BuildFlow result-cache release-gate lesson (`BUILDFLOW_NO_RESULT_CACHE=1` for gates) in the project's AGENTS.md or as a BuildFlow issue — the 1.18 ms "pass" would have failed the release had the cache been stale.~~ done — lesson recorded in the AGENTS.md gotchas ('BuildFlow gates must run uncached — BUILDFLOW_NO_RESULT_CACHE=1')
 37. Consider filing the `nix build` vendorHash mismatch pattern (library-policy dirty-tree build) as a documented limitation of building trees with in-flight dependency edits.
 38. ~~Mark T34's input: this report + the 02:06/02:12 docs are now the ANNOTATE queue.~~ done — this sweep is that queue
 39. ~~`pnpm run typecheck` after the FAQ `links` type change — ran green this session, but re-run after any further `types.ts` edits.~~ done — Website typecheck green in CI (PR 22 run 41786622321)

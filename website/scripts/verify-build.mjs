@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
 
@@ -56,11 +57,54 @@ if (modulePath) {
 }
 
 const copyButtons = html.match(/<button[^>]*data-copy[^>]*>/gu) ?? [];
-check(copyButtons.length >= 2, "expected at least two copy buttons on the landing page");
+check(
+  copyButtons.length === 2,
+  `expected exactly two copy buttons on the landing page, found ${copyButtons.length}`,
+);
 
 for (const tag of copyButtons) {
   const code = tag.match(/data-code="(?<codeValue>[^"]*)"/u)?.groups?.codeValue ?? "";
   check(decodeEntities(code).trim().length > 0, `copy button has an empty data-code: ${tag}`);
+}
+
+const metaDescription = html.match(
+  /<meta name="description" content="(?<desc>[^"]*)"/u,
+)?.groups?.desc;
+check(
+  Boolean(metaDescription && metaDescription.length >= 50),
+  "meta description missing or suspiciously short",
+);
+check(
+  !metaDescription?.toLowerCase().includes("toctou"),
+  "meta description still uses the mechanism register (TOCTOU)",
+);
+
+const faqCount = (html.match(/<details[^>]*class="[^"]*group[^"]*"/gu) ?? []).length;
+check(faqCount === 6, `expected 6 FAQ items, found ${faqCount}`);
+
+const staleApi = ["atomicwrite.Write(path, newData, fp)", "WriteFunc(path, fn, Fingerprint{})"];
+for (const pattern of staleApi) {
+  check(!html.includes(pattern), `dist teaches the removed pre-0.4.0 API: ${pattern}`);
+}
+
+// Every inline <script> (Astro-inlined modules) must have its quoted hash in
+// the meta CSP — the 2026-11-04 incident: bare hash tokens were invalid, so
+// every inline script was silently blocked.
+const csp = html.match(
+  /<meta http-equiv="Content-Security-Policy" content="(?<csp>[^"]*)"/u,
+)?.groups?.csp;
+check(Boolean(csp), "CSP meta not found in dist/index.html");
+const quotedHashes = new Set(csp?.match(/'sha256-[^']+'/gu));
+const inlineScripts = html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type="application\/ld\+json")(?<attrs>[^>]*)>(?<body>[\s\S]*?)<\/script>/gu);
+for (const m of inlineScripts) {
+  if (m.groups.body.trim().length === 0) {
+    continue;
+  }
+  const hash = `'sha256-${createHash("sha256").update(m.groups.body, "utf8").digest("base64")}'`;
+  check(
+    quotedHashes.has(hash),
+    `inline script (attrs: ${m.groups.attrs.slice(0, 40)}) is not allow-listed by a quoted hash in the CSP`,
+  );
 }
 
 if (failures.length > 0) {

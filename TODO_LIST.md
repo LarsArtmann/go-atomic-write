@@ -19,8 +19,12 @@
 > tests, CopyButton, brand pipeline + 2× rasters, brand tokens, SEO batch,
 > link checker, CONTRIBUTING/deploy docs, npm-sweep tracker, when-not-to-use +
 > FAQ pages, platforms matrix, Playwright smoke suite + PR preview channels).
-> Evidence in `CHANGELOG.md` [Unreleased] and
-> `docs/status/2026-11-04_07-09_lane-4-5-gates-brand-seo-docs-landing-execution-status.md`.
+> Third harvest 2026-11-04 evening after the v0.6.2 release + fleet bump:
+> consumer-fix rows and the fleet-bump row closed (v0.6.2 shipped, 17/17
+> consumers bumped), lighthouse:deployed observed (row removed), docs-gates
+> CI row added. Evidence in `CHANGELOG.md` [0.6.2],
+> `docs/status/2026-11-04_20-45_fleet-bump-v062-summary.md`, and
+> `docs/status/2026-11-04_19-35_v062-release-fleet-bump-inflight-status.md`.
 
 ## Medium Impact
 
@@ -40,7 +44,6 @@
 | Visual-regression screenshot harness for header/docs/OG surfaces (the smoke suite covers the landing page only)                                                                                                                                                                 | 🔴 TODO    | Low    | M      | routed from `docs/status/2026-11-04_02-06…` row 45 (docs-gates audit 2026-11-04) |
 | Deterministic collision test for `tempPathFor` (seed/inject `randomSuffix`); the current 200-writer test is statistical                                                                                                                                                         | 🔴 TODO    | Low    | S      | `atomicwrite_test.go`; routed from `docs/status/2026-11-04_05-36…` f.28          |
 | File the CV Go-test chronic red (10/10 jobs failing on every master commit) after confirming the concurrent storm session does not own it                                                                                                                                       | 🔴 TODO    | Low    | S      | `docs/status/2026-11-04_05-36…` f.24                                             |
-| `pnpm run lighthouse:deployed` against the live site after the next deploy settles (config exists since v0.6.0, never observed)                                                                                                                                                 | 🔴 TODO    | Low    | S      | `lighthouserc.deployed.json`; `docs/status/2026-11-04_05-36…` f.30               |
 | Wire the docs-gates battery into CI (it is manual-only today — every gate has been green only when a session remembers to run it; the 2026-11-04 audit-all drift went unnoticed until the next session's sweep) | 🔴 TODO    | Low    | M      | `nix run github:Artmann-Technologies/docs-gates -- run .`; routed from `docs/status/2026-11-04_19-35…` f.33                                       |
 
 ---

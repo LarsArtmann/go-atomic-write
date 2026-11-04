@@ -21,6 +21,10 @@ every item carries a disposition. Living documents live at the repo root
 | `2026-11-04_05-36_release-fleet-and-website-quality-execution-status.md`               | v0.6.1 release + 17-repo fleet bump + website quality execution (T01–T19); §f is the T20–T34 seed                         |
 | `2026-11-04_06-15_fleet-bump-v0.6.1-summary.md`                                        | Fleet bump ledger: 17 repos × hashes, 4 skips + reasons, 4 filed consumer issues                                          |
 | `2026-11-04_07-09_lane-4-5-gates-brand-seo-docs-landing-execution-status.md`           | Lane 4–5 execution: gates, brand pipeline, SEO, docs, landing (T20–T31); WAIT handoff report                              |
+| `2026-11-04_17-05_consumer-fixes-t34-gates-preview-channels-status.md`                 | Consumer-fix arc: samber gate-greening (#62), T32-T34 closure, PR preview channels; WAIT handoff report                    |
+| `2026-11-04_19-35_v062-release-fleet-bump-inflight-status.md`                          | v0.6.2 release shipped + fleet bump in flight (8/21 at report time); WAIT handoff report                                  |
+| `2026-11-04_19-55_writefuncwithperm-issue20-session-status.md`                         | Concurrent session: WriteFuncWithPerm feature (issue #20) + website deps hardening; §f brainstorm                         |
+| `2026-11-04_20-45_fleet-bump-v062-summary.md`                                          | Fleet bump ledger v0.6.2: 17 repos × hashes, vendor-ordering bug + fix, skips + reasons (crm#7 filed)                     |
 | `2026-06-28_03-32_atomicity-durability-overhaul.html`                                  | LEAVE-ALONE (v0.2.0 release dashboard; referenced by `CHANGELOG.md` [0.2.0] — moving it would break that historical link) |
 
 ## Archived (resolved — every item carries an inline verdict)

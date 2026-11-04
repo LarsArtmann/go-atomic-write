@@ -114,8 +114,8 @@ Nothing else qualifies as fucked up: no test regressions, no lint debt, no broke
 15. `[T]` README "Streaming large content" section: one-line mention of `WriteFuncWithPerm`.
 16. `[T]` POSIX-only umask integration test (`syscall.Umask`, build-tagged file) if f.6 keeps umask-respecting semantics.
 17. `[T]` Run BuildFlow gates uncached (`BUILDFLOW_NO_RESULT_CACHE=1 buildflow -s golangci-lint`) before the next release — not run this session.
-18. `[T]` v062 item 29: retire throwaway artifacts (`/tmp/chr-prof-*`, `/tmp/gaw-verify`, `/tmp/sorttest`, `/tmp/fleet-v062-*.out`).
-19. `[T]` v062 item 33: consider a docs-gates CI job (battery is manual-only today).
+18. ~~`[T]` v062 item 29: retire throwaway artifacts (`/tmp/chr-prof-*`, `/tmp/gaw-verify`, `/tmp/sorttest`, `/tmp/fleet-v062-*.out`).~~ done — 2026-11-04 evening — fleet-v062-*.out + fleet-bump-logs + chr-prof-* + gaw-verify + sorttest deleted; fleet verdicts durable in the 20-45 fleet summary
+19. `[T]` v062 item 33: consider a docs-gates CI job (battery is manual-only today). **→ routed to TODO_LIST Low row 'Wire the docs-gates battery into CI' (added 2026-11-04)**
 20. `[T]` Owner: tick + stamp the MANUALLY REVIEWED box on issue #20 after reading (cannot be done by an agent).
 21. `[T]` Decision record for the arg-order convention (variant param last) so future issue-filers stop proposing perm-middle.
 22. `[T]` FAQ entry: "how do I write sensitive files?" → `*WithPerm` 0600.
@@ -131,7 +131,7 @@ Nothing else qualifies as fucked up: no test regressions, no lint debt, no broke
 32. `[T]` Archive cadence: 13 unarchived reports (threshold 15) — archive the oldest batch at next docs-health pass.
 33. `[T]` Route obligations of the stray 2026-06-28 HTML status report into living docs or archive it (docs-gates WARN).
 34. `[R]` Stale temp-file self-cleanup sweeper (FEATURES ⚪ PLANNED since v0.2.0).
-35. `[X]` Configurable `writeFuncBufferSize` — YAGNI, rejected.
+35. ~~`[X]` Configurable `writeFuncBufferSize` — YAGNI, rejected.~~ **Won't implement — YAGNI — buffer size is an implementation constant; no caller has needed it.**
 36. `[X]` `WriteFuncWithPerm` TOCTOU+perm mega-variant — blocked on f.11 decision, not a standalone task.
 37. `[T]` Verify CRM export path wants TOCTOU or not (if yes, f.11 becomes urgent; if no, `WriteFuncWithPerm` alone is correct).
 38. `[T]` Keep `docs/drafts/issue-20-close-comment.md` (deliberate per skill: drafts live in the repo) — no action, recorded so nobody "cleans" it.

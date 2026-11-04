@@ -101,7 +101,7 @@ T20 (gitleaks CI), T21 (fix-csp/sync-changelog regression tests), T22 (CopyButto
 22. ~~T33: PNG raster lockups @2×, GitHub social preview upload, brand usage rules + contact sheet.~~ done at `a6fbb9e`
 23. ~~T34: ANNOTATE the 11-03/11-04 reports once their items land; refresh `docs/status/README.md` index.~~ done — executed by this T34 sweep
 24. File the **CV Go-test chronic red** (10/10 jobs failing on every master commit) — after confirming the storm session doesn't already own it. **→ routed to TODO_LIST Low rows (CV chronic red)**
-25. ~~Fix the four filed consumer issues if asked: samber-do-auditlog#62 (undici override in pnpm-workspace.yaml), go-checker-helpers#3, project-meta#3, DiscordSync#18.~~ done at `d3f4dbe`, ` 487012f9`, ` a7ee760 — project-meta#3 closed as obsolete (does not reproduce)`
+25. ~~Fix the four filed consumer issues if asked: samber-do-auditlog#62 (undici override in pnpm-workspace.yaml), go-checker-helpers#3, project-meta#3, DiscordSync#18.~~ done — d3f4dbe (go-checker-helpers#3); 487012f9 (DiscordSync#18); a7ee760 (samber-do-auditlog#62); project-meta#3 closed as obsolete (does not reproduce)
 26. ~~Reconcile the **`.hermes` ghost entry** in the plan/TODO docs (repo does not exist on disk).~~ done — plan-doc ghost rows annotated this sweep
 27. ~~Decide release cadence for the Lane 2–3 fixes (v0.6.2 now vs. after T20–T24) — the plan's guardrail says they ride the _next_ release; that decision is now due.~~ done — resolved — batched v0.6.2 cut mandated and executing
 28. Add a deterministic collision test for `tempPathFor` (inject/seed `randomSuffix`) — the current test is statistical at 200 writers. **→ routed to TODO_LIST Low (deterministic collision test)**

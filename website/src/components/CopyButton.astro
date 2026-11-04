@@ -1,0 +1,21 @@
+---
+// The single copyable-snippet button. Behavior lives in /js/copy-code.js
+// (one delegated document listener keyed on [data-copy]), so this component
+// only owns the markup. `class` carries the per-context variant (the hero
+// install row keeps it inline; the code block overlays and reveals on hover).
+interface Props {
+  code: string;
+  label: string;
+  class?: string;
+}
+
+const { code, label, class: className = '' } = Astro.props;
+---
+
+<button
+  type="button"
+  data-copy
+  data-code={code}
+  class={`bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 ${className}`}
+  aria-label={label}
+>Copy</button>

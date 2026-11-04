@@ -1,6 +1,7 @@
 ---
 import { heroCode, highlightedHeroCode } from '../data/hero-code';
 import Icon from './Icon.astro';
+import CopyButton from './CopyButton.astro';
 import { siteConfig } from '../data/config';
 
 async function getGitHubStars(): Promise<number | null> {
@@ -58,7 +59,7 @@ const metrics = [
       <div class="flex items-center gap-3 px-4 py-3 rounded-lg border border-border-accent bg-bg-card-solid text-left font-mono text-sm">
         <span class="text-accent select-none" aria-hidden="true">$</span>
         <code tabindex="0" class="flex-1 min-w-0 overflow-x-auto whitespace-nowrap text-text-primary">{installCommand}</code>
-        <button type="button" data-copy data-code={installCommand} class="shrink-0 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150" aria-label="Copy install command">Copy</button>
+        <CopyButton code={installCommand} label="Copy install command" class="shrink-0" />
       </div>
     </div>
 
@@ -95,7 +96,7 @@ const metrics = [
           <span class="ml-3 text-xs text-text-muted font-mono">main.go</span>
         </div>
         <pre tabindex="0" class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative"><code set:html={highlightedCode} /></pre>
-        <button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" data-copy data-code={heroCode} aria-label="Copy code to clipboard">Copy</button>
+        <CopyButton code={heroCode} label="Copy code to clipboard" class="absolute top-2 right-2 opacity-0 [.code-preview:hover_&]:opacity-100" />
       </div>
     </div>
   </div>

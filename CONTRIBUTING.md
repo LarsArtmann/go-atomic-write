@@ -55,7 +55,36 @@ pnpm run preview                   # Preview the production build locally
   from the repo-root `CHANGELOG.md` by `website/scripts/sync-changelog.mjs`, which runs
   automatically via the `prebuild`/`predev` hooks. Edit `CHANGELOG.md` — never the
   generated `.mdx`.
-- **Deploy** with `firebase deploy --only hosting --project lars-software` (from `website/`).
+- **Deploy** — CI deploys on every push to `master` that touches `website/**`,
+  `CHANGELOG.md`, or `README.md` (needs the `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE`
+  secret; see [docs/deploy-secret-posture.md](docs/deploy-secret-posture.md)). Locally:
+
+  ```bash
+  cd website && pnpm run build
+  nix shell nixpkgs#nodejs nixpkgs#firebase-tools -c \
+    firebase deploy --only hosting:atomicwrite --project lars-software
+  ```
+
+## Cutting a Release
+
+Releases are cut by maintainers. The authoritative checklist lives in `AGENTS.md`
+(Release Checklist); the short form:
+
+1. `golangci-lint run ./...` exits `0 issues` — the gate. Fix findings before
+   anything else. Run it fresh (a cached "pass" proves nothing).
+2. `go build ./...` and `go test -race ./...` locally.
+3. CI green on `master` **before** tagging — test+race, lint, cross-compile
+   (windows/amd64, darwin/*), govulncheck, drift guard. v0.5.1 shipped a Windows
+   compile break because Linux CI passed while the tag was already cut.
+4. Move `CHANGELOG.md` `[Unreleased]` into a new `[X.Y.Z]` section (with compare
+   links) **before** tagging — the tag commit carries the changelog.
+5. Keep the version trio in sync (`go.mod`, `.golangci.yml` `run.go`, `AGENTS.md`) —
+   CI fails on drift.
+6. Annotated tag `vX.Y.Z`, push it. Never re-tag or delete tags — the module
+   proxy caches poisoned versions forever.
+7. `gh release create vX.Y.Z` with rendered notes, marked `--latest`.
+8. Verify: `proxy.golang.org/@v/vX.Y.Z.info` resolves at the tag commit, a scratch
+   module `go get`s and builds it, pkg.go.dev lists it as Latest.
 
 ## Brand Assets
 

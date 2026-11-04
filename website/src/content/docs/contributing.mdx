@@ -70,3 +70,16 @@ Adding a new third-party import requires updating the `depguard.rules.main.allow
 - Ensure linting passes: `golangci-lint run ./...`
 - Add tests for new functionality
 - Keep changes focused and atomic
+
+## Releases and Deploys
+
+Releases are cut by maintainers: lint gate (`0 issues`), CI green on `master`
+**before** tagging (test+race, lint, windows/darwin cross-compile, govulncheck,
+drift guard), `[Unreleased]` moved into a dated `[X.Y.Z]` CHANGELOG section
+inside the tag commit, annotated tag, GitHub release marked latest, then
+end-to-end verification on the module proxy and pkg.go.dev. Tags are never
+re-tagged or deleted — the module proxy caches poisoned versions forever.
+
+The website deploys automatically on every push to `master` that touches
+`website/**`, `CHANGELOG.md`, or `README.md`. The full checklists live in the
+repo's `CONTRIBUTING.md` and `AGENTS.md`.

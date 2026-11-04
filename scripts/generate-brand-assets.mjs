@@ -406,6 +406,72 @@ if (pngMode) {
 	}
 	execFileSync("cp", [site("public/icon-180.png"), site("public/apple-touch-icon.png")]);
 	console.log("wrote website/public/apple-touch-icon.png");
+
+	const brand = (rel) => path.join(repoRoot, "assets/brand", rel);
+	mkdirSync(path.join(repoRoot, "assets/brand/png"), { recursive: true });
+	const rasterLockups = [
+		["mark.svg", "png/mark.png", "128x128!"],
+		["lockup-horizontal-light.svg", "png/lockup-horizontal-light.png", "600x128!"],
+		["lockup-horizontal-dark.svg", "png/lockup-horizontal-dark.png", "600x128!"],
+		["lockup-stacked-light.svg", "png/lockup-stacked-light.png", "680x234!"],
+		["lockup-stacked-dark.svg", "png/lockup-stacked-dark.png", "680x234!"],
+	];
+	for (const [source, target, size] of rasterLockups) {
+		magick(["-background", "none", path.join(repoRoot, "assets/brand", source), "-resize", size, brand(target)]);
+		console.log(`wrote assets/brand/${target} (2x raster)`);
+	}
+
+	magick([
+		"-background",
+		"#0a0908",
+		site("public/og-image.svg"),
+		"-resize",
+		"x640",
+		"-gravity",
+		"center",
+		"-extent",
+		"1280x640",
+		brand("social-preview.png"),
+	]);
+	quantize(brand("social-preview.png"));
+	console.log("wrote assets/brand/social-preview.png (GitHub social preview 1280x640)");
+
+	const sheetCell = ({ source, bg, label }) => [
+		"-background",
+		bg,
+		"-label",
+		label,
+		path.join(repoRoot, "assets/brand", source),
+	];
+	try {
+		execFileSync(
+			"montage",
+			[
+				"-font",
+				"DejaVu-Sans",
+				"-pointsize",
+				"18",
+				"-fill",
+				"#1c1917",
+				"-background",
+				"#f5f5f4",
+				...sheetCell({ source: "mark.svg", bg: "#0a0908", label: "mark 64x64" }),
+				...sheetCell({ source: "lockup-horizontal-light.svg", bg: "#ffffff", label: "horizontal light 300x64" }),
+				...sheetCell({ source: "lockup-horizontal-dark.svg", bg: "#0a0908", label: "horizontal dark 300x64" }),
+				...sheetCell({ source: "lockup-stacked-light.svg", bg: "#ffffff", label: "stacked light 340x117" }),
+				...sheetCell({ source: "lockup-stacked-dark.svg", bg: "#0a0908", label: "stacked dark 340x117" }),
+				"-tile",
+				"2x3",
+				"-geometry",
+				"+16+16",
+				brand("contact-sheet.png"),
+			],
+			{ stdio: "pipe" },
+		);
+		console.log("wrote assets/brand/contact-sheet.png");
+	} catch (error) {
+		console.error(`brand:png: montage failed (contact sheet skipped): ${error.message}`);
+	}
 	console.log("brand:png: rasters regenerated from the generated SVGs.");
 } else if (checkMode) {
 	const tokenDrift = siteTokenDrift();

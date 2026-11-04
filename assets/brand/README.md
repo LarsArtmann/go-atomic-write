@@ -43,6 +43,12 @@ wordmark, so an edit to one is an edit to both.
 | `../../website/public/favicon.ico`        | 16/32/48 raster fallback                    | Legacy favicon `<link rel="alternate icon">`  |
 | `../../website/public/og-image.svg`       | 1200 × 630 social card embedding the emblem | Rasterized to `og-image.png`                  |
 | `../../website/public/og-image.png`       | 1200 × 630 PNG social card                  | Open Graph / Twitter meta tags                |
+| `png/mark.png`                            | 128 × 128 raster of the mark (2×)           | Tools that cannot render SVG (slides, docs)   |
+| `png/lockup-*-light.png`                  | 600 × 128 raster, 2×                        | Light backgrounds, raster-only slots          |
+| `png/lockup-*-dark.png`                   | 600 × 128 raster, 2×                        | Dark backgrounds, raster-only slots           |
+| `png/lockup-stacked-*.png`                | 680 × 234 raster, 2×                        | Square-ish slots, raster-only                 |
+| `social-preview.png`                      | 1280 × 640 GitHub social preview card       | Repo Settings → Social preview (owner action)|
+| `contact-sheet.png`                       | Overview grid of all five compositions      | Brand review, quick reference                 |
 
 ## Regenerate
 
@@ -68,6 +74,34 @@ That codifies (and replaces) the previous manual pipeline: favicon.ico at
 background color, and the apple-touch copy — each PNG 256-color quantized
 (the OG card lands at ~28 KB instead of 62 KB raw, with no visible banding
 on the flat-design gradients and exact text areas).
+
+The same command also writes the 2× lockup rasters into `png/`, the GitHub
+social preview (`social-preview.png`, the OG card scaled to height 640 and
+padded to 1280×640 on the card background — the padding is invisible), and
+`contact-sheet.png` (labeled montage of all five compositions; needs the
+`montage` binary that ships with ImageMagick).
+
+The social preview must be uploaded once by an owner:
+**GitHub → repo Settings → Social preview → upload `social-preview.png`**.
+There is no API for it.
+
+## Usage rules
+
+- **Clear space** — keep at least 25% of the mark's height free on all sides
+  of any composition (the squircle's own corner radius is the visual unit).
+  Nothing else enters that margin, not even other brand elements.
+- **Minimum sizes** — mark 16 px (the favicon floor, verified legible),
+  horizontal lockup 150 px wide, stacked lockup 170 px wide. Below those the
+  wordmark stops reading; use the mark alone instead.
+- **Composition by slot, not taste** — square slot → `mark`, wide slot →
+  horizontal lockup, roughly-square slot → stacked lockup. Never stretch,
+  crop, or rearrange the atoms.
+- **Color is tokenized** — only the values in [`brand-tokens.json`](./brand-tokens.json)
+  (and their site-token mirrors) may appear. No recoloring, gradients beyond
+  the defined accent ramp, outlines, shadows, or rotation.
+- **Backgrounds pick the variant** — light variant on light backgrounds,
+  dark variant on dark backgrounds; the one-color fallback is the flat accent
+  fill (see `Logo.astro`), never a hand-mixed substitute.
 
 ## Palette
 

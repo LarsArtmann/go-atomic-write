@@ -3,7 +3,7 @@
 //   - sync-changelog.mjs (<-escaping so MDX cannot break the build)
 // Run: pnpm run test:scripts  (node --test)
 import { join, resolve } from "node:path";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
@@ -114,4 +114,36 @@ test("sync-changelog keeps a page without a leading H1 intact", () => {
     assert.equal(runScript("sync-changelog.mjs", { CHANGELOG_SOURCE: source, CHANGELOG_TARGET: target }).status, 0);
     assert.match(readFileSync(target, "utf8"), /## \[0\.1\.0\]/u);
   });
+});
+
+function writeFixture(dist, indexHtml) {
+  writeFileSync(join(dist, "index.html"), indexHtml, "utf8");
+  mkdirSync(join(dist, "docs"), { recursive: true });
+  writeFileSync(join(dist, "docs", "index.html"), '<section id="setup">s</section>', "utf8");
+  mkdirSync(join(dist, "home"), { recursive: true });
+  writeFileSync(join(dist, "home", "other.html"), '<a href="../docs/">up</a>', "utf8");
+}
+
+function expectCheckLinks(dist, status, pattern) {
+  const run = runScript("check-links.mjs", { DIST_DIR: dist });
+  assert.equal(run.status, status, run.stderr);
+  if (pattern) {
+    assert.match(run.stderr, pattern);
+  }
+}
+
+test("check-links accepts a clean fixture and rejects broken links and fragments", () => {
+  const dist = mkdtempSync(join(tmpdir(), "links-test-"));
+  try {
+    writeFixture(dist, '<span id="install"></span><a href="/docs/">docs</a><a href="/docs/#setup">setup</a><a href="#install">install</a>');
+    expectCheckLinks(dist, 0);
+
+    writeFixture(dist, '<a href="/missing-page/">broken</a>');
+    expectCheckLinks(dist, 1, /missing-page/u);
+
+    writeFixture(dist, '<a href="/docs/#no-such-id">broken anchor</a>');
+    expectCheckLinks(dist, 1, /no-such-id/u);
+  } finally {
+    rmSync(dist, { recursive: true, force: true });
+  }
 });

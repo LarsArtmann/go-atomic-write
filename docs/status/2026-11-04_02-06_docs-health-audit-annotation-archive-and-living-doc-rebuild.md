@@ -53,7 +53,7 @@ Everything below is routed and evidenced in `TODO_LIST.md`; listed here for the 
 
 1. Cut release `v0.6.1` from `[Unreleased]` (High/S) — depends on nothing; the fleet bump depends on it.
 2. Fleet bump: 22 enumerated LarsArtmann importers via go-ecosystem-upgrade (Medium/L).
-3. ~~Push `master` + deploy verification~~ Deploy already fired 23:26Z: brand, benchmarks, changelog live (rendering unverified); OG card in real previewers; post-deploy fetch assertion in the workflow (Low/S but blocks all live verification).
+3. ~~Push `master` + deploy verification~~ done at `eec3cd6` — deploy fired 23:26Z same day: brand, benchmarks, changelog live (rendering unverified); OG card in real previewers; post-deploy fetch assertion in the workflow (Low/S but blocks all live verification).
 4. Browser verification sweep: 320px screenshots, axe/contrast over the FULL palette, keyboard tab order, theme first-paint (Medium/L).
 5. Lighthouse: baseline-measured budgets + docs-page scores + LHCI gate wired into `website.yml` (Medium/M).
 6. Newsletter CSP: `form-action 'self'` vs Buttondown POST — never browser-tested (Medium/S).
@@ -104,7 +104,7 @@ Ranked: impact first. (HARVEST already landed the High/Medium/Low survivors in `
 | #  | Task                                                                                                                                      | Impact | Effort |
 | -- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
 | 1  | Cut `v0.6.1` (checklist steps 1–9; changelog section BEFORE tag — the new rule)                                                           | High   | S      |
-| 2  | ~~Push `master` (7 commits)~~ Verify the 23:26Z deploy rendered: brand + benchmarks + changelog live; OG card in real previewers          | High   | S      |
+| 2  | ~~Push `master` (7 commits)~~ done at `eec3cd6` — the 23:26Z deploy rendered: brand + benchmarks + changelog live; OG card in real previewers remains an owner check | High   | S      |
 | 3  | Post-release: `pkg.go.dev` shows v0.6.1; `go get @v0.6.1` resolves; changelog page synced                                                 | High   | S      |
 | 4  | Fleet bump: all 22 enumerated importer repos via go-ecosystem-upgrade                                                                     | High   | L      |
 | 5  | Browser verification sweep: 320px + desktop screenshots, theme first-paint, ClientRouter nav                                              | High   | M      |

@@ -173,7 +173,7 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 
 ~~12. Add OG / social-share image generation (`astro-og-canvas`, `og:image`).~~ done at `785632f`
 ~~13. Add `favicon.ico` for legacy browser support.~~ done at `785632f`
-~~14. Add `aria-label`s to comparison matrix cells + WCAG AA contrast audit (`#78716c` on `#0a0908` is borderline).~~ done at `785632f`
+~~14. Add `aria-label` attributes to comparison matrix cells + WCAG AA contrast audit (`#78716c` on `#0a0908` is borderline).~~ done at `785632f`
 ~~15. Run a Lighthouse audit + add `lighthouserc.json` budgets.~~ done at `3387ca9`
 ~~16. Add `website/.editorconfig` for editor consistency.~~ done at `785632f`
 ~~17. Verify sitemap completeness (all 11 pages) + add `robots.txt` sitemap reference.~~ done at `785632f`

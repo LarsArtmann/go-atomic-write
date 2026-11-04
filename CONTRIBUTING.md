@@ -84,7 +84,7 @@ Releases are cut by maintainers. The authoritative checklist lives in `AGENTS.md
    proxy caches poisoned versions forever.
 7. `gh release create vX.Y.Z` with rendered notes, marked `--latest`.
 8. Verify: `proxy.golang.org/@v/vX.Y.Z.info` resolves at the tag commit, a scratch
-   module `go get`s and builds it, pkg.go.dev lists it as Latest.
+   module installs it with `go get` and builds, pkg.go.dev lists it as Latest.
 
 ## Brand Assets
 

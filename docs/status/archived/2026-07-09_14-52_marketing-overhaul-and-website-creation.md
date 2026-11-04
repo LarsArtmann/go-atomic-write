@@ -234,9 +234,9 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 
 ~~6. Create `.github/workflows/ci.yml` (Go: build, test -race, vet, golangci-lint)~~ done at `046e4ff`
 ~~7. Create `.github/workflows/website.yml` (build + deploy on push to master)~~ done at `046e4ff`
-8. Create `.github/workflows/release.yml` (tag-based GitHub release) **→ ROADMAP: release automation (theme 4)**
+8. Create `.github/workflows/release.yml` (tag-based GitHub release) **→ ROADMAP: release automation (theme 4) — releases currently ride the manual CONTRIBUTING recipe, `gh release create` after a green CI run**
 ~~9. Create `.github/dependabot.yml` (Go + pnpm dependency updates)~~ done at `25ae518`
-10. Create `.github/FUNDING.yml`
+~~10. Create `.github/FUNDING.yml`~~ **Won't implement — no funding setup requested since 2026-07; owner can revisit on demand.**
 ~~11. Add CI badge to README once CI exists~~ **Won't implement — owner decision - not requested since.**
 
 ### CSP & Security

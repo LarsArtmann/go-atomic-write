@@ -30,7 +30,7 @@ All tests pass (including race detector). `go vet` clean. Build clean. Benchmark
 - `Fingerprint` as a named type (`[8]byte`) with methods — good domain modeling
 - `ErrConcurrentModification` as a sentinel error with `errors.Is` support — idiomatic
 - Permission preservation from existing file — thoughtful
-- ~~`.bak` creation for crash recovery — good safety net~~ Removed in v0.2.0 — the `.bak` two-rename pattern was itself an atomicity bug; a single `rename(2)` + directory fsync replaced it.
+- ~~`.bak` creation for crash recovery — good safety net~~ NOT-DO — removed in v0.2.0: the .bak two-rename pattern was itself an atomicity bug; a single `rename(2)` + directory fsync replaced it.
 - Proper error wrapping with `%w` throughout
 
 **Issues Found:**

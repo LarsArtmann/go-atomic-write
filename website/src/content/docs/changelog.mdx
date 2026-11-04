@@ -12,6 +12,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added (website)
+
+- **Declarative copy buttons** — a `CopyButton.astro` component now backs both landing-page copy actions; the displayed code and the copied payload derive from one source, a single delegated listener (`/js/copy-code.js`) serves every `[data-copy]` element and rebinds across client-side navigations, and success/failure is announced through a polite live region.
+- **PNG raster pipeline** — `pnpm run brand:png` rasterizes the generated SVGs into `favicon.ico`, the 1200×630 OG card, PWA icons (180/192/512), and `apple-touch-icon.png` via ImageMagick (quantized where file size matters). Brand colors now live in `assets/brand/brand-tokens.json` as the single source, and the generator's check mode fails if the SVG mirrors drift from those tokens or if any emitted SVG has unbalanced tags.
+- **"When not to use" guide + FAQ page** — the docs tree gains an honest anti-recommendations page (situations where go-atomic-write is the wrong tool) and a full FAQ (ported from the landing section), both wired into the docs sidebar.
+
+### Added (CI)
+
+- **Source + dist gates wired into the Website workflow** — `pnpm run check:hero` (source-level hero parity) and `pnpm run audit:contrast` (WCAG AA over the full palette, both themes) now run in CI's build job after the build, next to `pnpm run validate`; the new gates can no longer regress locally-only. The Lighthouse budget job (added with the 2026-11-04 budget tightening) runs the full 10-page assertion suite on every push.
+- **gitleaks secret scanning** — SHA-pinned gitleaks action over full git history runs on every push and PR; verified clean on first run.
+- **Build-script regression tests** — `pnpm run test:scripts` (`node --test`) covers the CSP hasher's quoting and idempotency, the changelog sync's escaping, and the link checker's negative paths; the negative-first tests caught real bugs before they shipped.
+- **Internal link checker** — `pnpm run check:links` crawls `dist/`, resolves `#fragments` against target headings and README references, and fails the Website workflow on broken links or fragments.
+- **Playwright smoke suite + PR preview channels** — a four-test smoke suite (copy payloads, FAQ count, 320px overflow, animation binding) runs against the production build in a new Website CI job, and every non-fork PR deploys an ephemeral Firebase preview channel (`pr-&lt;number>`) so reviewers see the rendered site before merge.
+
+### Changed (website)
+
+- **SEO hygiene batch** — the sitemap emits real `lastmod` dates (must be a `Date` object, not an ISO string — Astro rejects strings), pages gain `og:image:type`, `og:image:site_name`, and `twitter:image:alt`, `theme-color` ships as a light/dark media pair, and the website declares `engines.node >= 24`.
+- **Config-reloader use case** — a fourth use case ("Never publish a half-written config") joins the landing grid (4-up on desktop), and the HowItWorks section drops its misleading concurrent-race branch in favor of the fingerprint-mismatch reality.
+
+### Changed (docs)
+
+- **CONTRIBUTING gains release + deploy runbooks** — the release checklist (lint gate, CI green before tag, version trio, no re-tags) and the Firebase deploy recipes are written down where contributors look.
+- **Deploy-secret posture decided** — `docs/deploy-secret-posture.md` compares Workload Identity Federation (Option A, concrete OIDC commands) against key rotation (Option B) and documents the stale `firebase-adminsdk` key cleanup; CI keeps the shared `github-website-deploy` service account key until WIF lands.
+- **Fleet npm sweep tracker** — the recurring devDep-bump behavior is documented as ad-hoc fleet sessions (not a scheduler), alongside the guards that self-heal its known fallout (`typescript@>=7` override, `*.out.css` gitignore, CI drift guard).
+
 ### Fixed (website)
 
 - **CSP hash sources were invalid for 3.5 months — every allow-listed inline script was silently blocked** — `fix-csp.mjs` emitted hash sources bare (`sha256-…`), but the CSP grammar requires single quotes (`'sha256-…'`); browsers parsed every hash as an invalid source and ignored it, so since v0.4.0 (2026-07-26) Starlight's theme pickers, sidebar state, search shortcut, and Astro-inlined modules never executed on any page. Masked for months because the site's behavioral JS lives in external `/js/*` files, and "verification" fetched HTML instead of reading a browser console. Hashes are now quoted, `frame-ancestors` was dropped from the meta CSP (browsers ignore it there; `X-Frame-Options: DENY` already ships as a header), and `verify-build.mjs` now asserts every inline script is covered by a *quoted* hash so this incident class cannot silently return. Verified: zero CSP console violations on landing + docs pages.
@@ -19,10 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **Light-mode color audit: every text/background pair now meets WCAG AA** — the audit script (`pnpm run audit:contrast`, kept in-repo) computes real contrast ratios for all 11 foreground tokens against all backgrounds in both themes. Fixes: the hero code snippet's import string and amber strings were near-invisible in light mode (`accent-hover` 2.43:1, `amber` ~1.6:1 on near-white), light accent as text sat at 3.61:1, and code comments missed 4.5:1 in both themes. Light mode now uses the deeper emerald (#047857) with white button text; success/danger stay as icons (WCAG 1.4.11 graphics threshold, passing).
 - **Newsletter form worked again** — the hash-based CSP declared `form-action 'self'`, which silently blocked the footer form's POST to `https://buttondown.email` on every page since the CSP shipped (v0.4.0); clicking Subscribe did nothing. The CSP now allows `form-action 'self' https://buttondown.email` (the only cross-origin form target on the site).
 - **OG card voice aligned with the landing page** — the generated social-share card still said "TOCTOU-safe" (the pre-September mechanism voice) and pointed at the GitHub URL on every Slack/X/Facebook preview. The brand generator now emits "No lost updates" (consequence voice) and the pkg.go.dev URL; `og-image.svg`/`png`, the lockups, and `favicon.ico` were regenerated from the same geometry (`brand:check` gates the SVGs).
-
-### Added (CI)
-
-- **Source + dist gates wired into the Website workflow** — `pnpm run check:hero` (source-level hero parity) and `pnpm run audit:contrast` (WCAG AA over the full palette, both themes) now run in CI's build job after the build, next to `pnpm run validate`; the new gates can no longer regress locally-only. The Lighthouse budget job (added with the 2026-11-04 budget tightening) runs the full 10-page assertion suite on every push.
 
 ## [0.6.1] - 2026-11-04
 

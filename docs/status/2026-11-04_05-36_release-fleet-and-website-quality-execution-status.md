@@ -1,0 +1,139 @@
+# Status — Release v0.6.1, Fleet Bump, and Website Quality Execution
+
+**Created:** 2026-11-04 05:36 CET
+**Session:** Pareto-plan execution (release lane + Lanes 2–3 of `docs/planning/2026-11-04_02-12_release-fleet-and-site-quality-pareto-plan.md`)
+**Scope — what this report VERIFIED:** every claim below is backed by a command output or URL captured during this session: `gh run list` (CI states), `proxy.golang.org/@v/v0.6.1.info` (release hash), scratch-module `go get`+`go run` (consumer test), `pkg.go.dev/…@v0.6.1` (fetched at 05:36 CET — shows v0.6.1 Latest), per-repo `go build`+`go test`+`go mod verify` (17 fleet repos), `BUILDFLOW_NO_RESULT_CACHE=1 buildflow -s golangci-lint` (`0 issues`), chromium console sweeps (0 CSP violations on 4 pages), the overflow probe (scrollWidth 310 == clientWidth 310), `node scripts/contrast-audit.mjs` (0 failing pairs), `node scripts/check-hero-source.mjs` (11 tokens OK + negative test exits 1), Lighthouse CI (10 pages × 3 runs, all 100s).
+**Scope — what this report did NOT verify:** real Slack/Twitter/Facebook OG previews (requires those clients; human check), a real Buttondown subscribe (sends actual email), interactive ClientRouter navigation tests (verified by construction only — delegated listeners; Playwright is task T32), the first CI run of the new `lighthouse` job in `website.yml` (added this session, not yet observed on a push), and the four skipped fleet repos (crm, BuildFlow, index, clean-wizard — blocked by concurrent sessions/pre-existing breakage, not retried).
+
+---
+
+## a) FULLY DONE
+
+### Release lane (plan Tier 1)
+
+| Item | Evidence |
+| ---- | -------- |
+| **T01 live-deploy verification** | `https://atomicwrite.web.app` serves the consequence-voice hero, `[0.6.0]` + `[Unreleased]` changelog sections, docs pages render, og-image.png (59 KB at check time) + favicon.svg served. TODO deploy row truth-fixed (the stale "2 doc commits unpushed" claim from the previous report was already wrong — master was fully pushed). |
+| **T02 release gates** | Fresh (cache-bypassed) `golangci-lint` → `0 issues`; `buildflow --build-mode dev` → build + test-race green (54 steps, 0 failed); version trio `1.27` in sync across go.mod / .golangci.yml / AGENTS.md; go.mod free of replace directives and pseudo-versions; CI **success** on `7106379` BEFORE tagging (Phase-4.4 rule held). |
+| **T02 CHANGELOG discipline** | `[Unreleased]` → `[0.6.1] - 2026-11-04` with compare links; the v0.6.0 lesson (changelog inside the tag commit) held; the `adc075f` golangci-lint v2.14.0 fix was caught as an unsung master commit and added to the section before tagging. |
+| **T02 tag + release** | Annotated `v0.6.1` on `7106379`, pushed, `gh release create` with curated notes, marked `--latest` (fixes the stale v0.4.0 "Latest" pointer). |
+| **T03 end-to-end release verification** | Proxy `@v/v0.6.1.info` resolves with `Hash: 7106379…` (exactly the changelog commit); scratch module `go get @v0.6.1` → build → run produced a fingerprint; **pkg.go.dev lists v0.6.1 as Latest** (verified 05:36 CET, docs show the five-file source split). |
+| **T04/T05 fleet bump** | **17 repos bumped to v0.6.1, built, tested, `go mod verify` green, committed, pushed**: go-checker-helpers `35a4bc6`, mr-sync `b797371`, go-version-auto-configure `4d71931`, golangci-lint-auto-configure `8c12460`, samber-do-auditlog `981322a`, go-workflow-auditlog `84476e2`, project-meta `27007c1`, CV `7115e170e`, library-policy `268fdd0` (flake input), securitymd `521b82a`, linter-autoconfigure-sdk `9599414`, DiscordSync `97ac730b` + pin fix `d3a0de5f`, dependabot-auto-configure `0794e07`, ArtCode `b8c5172` (was v0.5.1), media-atlas `eb71925` (tracked vendor/), samber-linter `5105f89`, BDSM-World `6f88d0b` (was v0.5.1, missing from the plan's list — found by re-enumeration). BuildFlow/CV/project-meta sub-modules (14 extra go.mods) handled. |
+| **Fleet close-the-loop issues filed** | go-checker-helpers#3 (TestFilterByRule red), samber-do-auditlog#62 (11 undici error findings block its pre-commit gate), project-meta#3 (linter/ go.mod inconsistent), DiscordSync#18 (QuickTime MIME test pre-existing — verified failing at parent commit in a clean worktree). All four verified at source level, banner'd as AI-run filings, voice-checked (`0 FAIL, 0 WARN`). |
+| **DiscordSync flake-pin repair** | The consumer's own guard test caught my bump: flake pinned go-atomic-write at the v0.4.1 rev. Fixed to the peeled v0.6.1 tag commit, guard green, pushed `d3a0de5f`. |
+| **CV chronic-red classification** | CV Go-test fails on every master commit with an **identical failed-job set before and after** my bump (10/10 jobs both runs) — pre-existing, owned by the concurrent storm session; no new failures introduced. |
+
+### Website quality lanes (plan Tiers 2–3)
+
+| Item | Evidence |
+| ---- | -------- |
+| **T06 OG voice fix** | Generator constants: "TOCTOU-safe" → "No lost updates", GitHub URL → pkg.go.dev URL. 9 artifacts regenerated, `brand:check` green, rasters re-encoded. `03cb928`. |
+| **T07 newsletter CSP** | Root cause: `form-action 'self'` blocked the Buttondown POST since v0.4.0. Now `form-action 'self' https://buttondown.email`. `aef0d3b` (+ daemon `e35008c` for the script edit). |
+| **T08 OG compression** | 62 KB → **28.3 KB** via 256-color quantization (0.28% pixel delta, confined to gradients; text exact). Command persisted in `assets/brand/README.md`. `580a709`. |
+| **T09 browser sweep — mobile overflow** | Chromium probe (iframe scrollWidth + uncontained-element walk) found the hero flex item inheriting the code block's min-content (527 px), the newsletter input+button row overflowing, and stats labels clipping. Fixed: `min-w-0 w-full` on the hero container, vertical stacking on small screens, stats wrap to 2×2. Verified: `scrollWidth 310 == clientWidth 310`, zero uncontained elements; 320 px screenshot visually clean. |
+| **T09 browser sweep — THE BIG ONE: CSP was blocking all inline scripts** | `fix-csp.mjs` emitted hash sources **bare** (`sha256-…`); the CSP grammar requires single quotes (`'sha256-…'`). Every hash since v0.4.0 parsed as an *invalid source* and was ignored → **every allow-listed inline script (Starlight theme pickers, sidebar state, Astro-inlined modules) was silently blocked on every page** — masked for years because the behavioral JS lives in external `/js/*` files. Fixed (quoted hashes), plus: `frame-ancestors` dropped from the meta (browsers ignore it there; `X-Frame-Options: DENY` already ships via headers), and the unhashable `onsubmit` handler moved into an Astro-bundled delegated listener. Verified: **zero CSP console violations on 4 pages**. Bisected via minimal repro + the empty-string hash token. `6ce67ba`. AGENTS.md gotcha updated. |
+| **T10 contrast audit** | New in-repo auditor (`pnpm run audit:contrast`) computes real WCAG ratios for 11 foreground tokens × backgrounds × both themes. Found 16 failures → **0**. Worst: light-mode hero import string at 2.43:1 and amber code strings at ~1.6:1 (near-invisible). Light mode now uses deeper emerald `#047857` + white button text; success/danger correctly reclassified as graphics (1.4.11, 3:1, passing). `cc578c3`. |
+| **T11 Lighthouse** | Baseline: **all 10 pages 100/100/100/100** (desktop, 3 runs each). Budgets tightened to measured+10% (byte-weight 900 KB → 75 KB; category gates now error-severity); config expanded 4 → 10 pages; deprecated audits dropped. New `lighthouse` job in `website.yml` (SHA-pinned `browser-actions/setup-chrome@48ad9237`, v2.2.0), independent of deploy per the plan's guardrail. FEATURES CSP/OG/CI rows de-staled while recording scores. `88c4c3b`. |
+| **T12 voice pass** | Three corporate-register holdovers rewritten ("Safety you can rely on." → "What can go wrong, and what can't.", "Built for real workloads." → "Where lost updates cost hours.", "Start writing safely." → "Never lose a byte."). HowItWorks/FAQ/Comparison already carried the voice — deliberately untouched (anti-Verschlimmbesser). `195bbc8`. |
+| **T13 FAQ deep links + API surface** | `FaqItem.links` added; benchmark and error-handling answers link to their guides. CTA now names all six public writers + `FingerprintFile` — "Two functions" had gone stale when the API split grew the surface. `a1fc892`. |
+| **T14 logo a11y** | Header logo announced "go-atomic-write" twice (svg `role=img` + adjacent text). Generator now emits `aria-hidden="true"`; `brand:check` green; zero `role="img"` left in dist. Landed via daemon commit `ad61a0e`. |
+| **T15 icon set** | apple-touch-icon (180) + PWA 192/512 (`any` + `maskable`) rendered from the brand mark on the site background color, quantized (94 KB → 22 KB). Manifest + landing layout wired; commands persisted in the brand README. `f96c57d`. |
+| **T16 gate hardening** | `verify-build.mjs` now asserts: exactly 2 copy buttons with payloads, real consequence-voice meta description, 6 FAQ items, **no removed pre-0.4.0 API signatures in dist**, and **every Astro-inlined inline script is allow-listed by a quoted CSP hash** (the 11-04 incident class cannot silently return). New source-level `check-hero-source.mjs` (token list, API currency, literal Tailwind classes; negative test verified: poisoned fixture exits 1). `pnpm run check` aggregates the battery. `9c491b2`. |
+| **T17/T18 Go edge tests** | `TestFingerprintFileDirectory` (directory → error + zero fp, pins the documented contract), `TestFingerprintMatchesNil` (nil = valid empty content, no panic), `TestTempPathsNeverCollide` (200 concurrent writers → 0 collisions; the invariant the unique-suffix design exists for), `TestPrepareTempPathPreservesMode` (0600 carry-over, 0644 default). Fresh lint gate: **`0 issues`**; race green. `6fc35bb`. |
+| **Release-verification plumbing** | Local module-cache corruption (0-byte `.info`) diagnosed and cleared by hand (trash, not rm) when the scratch `go get` failed; BuildFlow result-cache bypass (`BUILDFLOW_NO_RESULT_CACHE=1`) used for the release gate after a 100 %-cache-hit 1.18 ms "pass" was rejected as evidence. |
+
+## b) PARTIALLY DONE
+
+1. **T19 animations.js `astro:page-load` re-bind** — rewritten (delegated `astro:page-load` listener, `data-animate-bound` guard, reduced-motion path preserved), lint warnings fixed (`dataset` over `setAttribute`), build green. Committed by the daemon (`41f636e`); **push state unverified and post-navigation behavior verified by construction only, not by an interactive navigation test** (that belongs to T32's Playwright suite).
+2. **Website deploys of this session's ~12 pushes** — several Website runs were observed queued/in-progress during the session; the final live state (new OG card live, `[0.6.1]` on the changelog page, newsletter CSP live) is **expected but not yet re-fetched**.
+3. **Real-client OG previewer checks (T08's Slack/Twitter/Facebook leg)** — mechanically impossible for me: the previewer caches need the deployed URL and real clients. The card's content (consequence voice + pkg.go.dev URL) is verified at the artifact level.
+4. **TODO_LIST currency** — release/fleet/deploy rows are updated with evidence, but the browser/contrast/Lighthouse/voice/FAQ/logo/icon rows still read 🔴 TODO even though T09–T15 closed them.
+5. **CHANGELOG completeness for [Unreleased]** — the contrast fix, OG voice, newsletter CSP, and gate hardening have entries; the **CSP-quoting incident and the mobile-overflow fixes do not** (they exist only in commit `6ce67ba`'s message).
+6. **New gates in CI** — `check:hero`, `audit:contrast`, and `pnpm run check` exist but are **local-only**; `website.yml` runs none of them yet (only the Lighthouse job was added).
+7. **Fleet bump of the remaining 4 repos** (crm, BuildFlow, index, clean-wizard) — skipped with documented reasons (concurrent sessions / pre-existing broken go.mod / staged in-flight work), not retried.
+
+## c) NOT STARTED
+
+T20 (gitleaks CI), T21 (fix-csp/sync-changelog regression tests), T22 (CopyButton.astro), T23 (brand pipeline: `brand:png`, SVG parse in `brand:check`), T24 (`brand-tokens.json`), T25 (SEO hygiene: lastmod, `og:image:type/alt`, `theme-color` light, `engines.node`), T26 (internal link checker), T27 (CONTRIBUTING release/deploy sections), T28 (deploy-secret posture doc), T29 (npm sweep tracker), T30 (when-not-to-use docs + FAQ port), T31 (platform matrix + error-flow diagram + config-reloader use case), T32 (PR preview channel + Playwright smoke), T33 (raster lockups + GitHub social preview + usage rules), T34 (ANNOTATE the 11-03/11-04 reports + refresh `docs/status/README.md`).
+
+## d) TOTALLY FUCKED UP
+
+1. **The crm scope-creep push (worst moment of the session).** My runner ran `go get` on crm whose go.mod was *already* inconsistent at baseline; the command silently upgraded unrelated dependencies (templ v0.3.1070→v0.3.1100, breaking templ-components v1.26.0 — `templ.ResolveAttributeValue` undefined), the after-build failure was detected but **the runner pushed anyway**, on top of a dirty tree belonging to an active concurrent "storm" session. Reverted with `git revert` (`b7438f8`). Root cause: I wrote the runner WITHOUT the four guards the go-ecosystem-upgrade skill exists to enforce (dirty-tree skip, inconsistent-go.mod skip, scope check, hook-blocked-commit fallback) — all four were retrofitted *after* the incident. Retrofit, not design. The skill's failure catalog was loaded, read, and then not encoded into the tool before execution.
+2. **mr-sync vendor commit miss.** The runner's changed-file detection only looked at `go.(mod|sum)`, so the freshly synced `vendor/` was left out of the bump commit. No user harm (that repo's `vendor/` is gitignored, so fresh clones build from the module cache), but I then burned another cycle trying `git add vendor` on an ignored path.
+3. **The CSP bug sat in production for 3.5 months** (since v0.4.0, 2026-07-26) and was found only because this session finally ran a console sweep. The site "worked" because its JS is external — a textbook masked-defect. Nobody checked the browser console for 100 days, including several sessions that "verified" the site by fetching HTML.
+4. **Daemon-commit message pollution.** Because the auto-commit daemon races every edit, several finished fixes (T14 logo a11y, parts of T16) landed under generic `chore: auto-commit N changed file(s)` messages, and one batch needed a manual soft-reset squash (5 daemon commits → 1 real commit). History readability suffered where the daemon won the race.
+5. **Repeated edit-tool guard fights.** The `modified since last read` guard rejected edits to CHANGELOG.md twice, global.css, Newsletter.astro, CTASection.astro, and flake-adjacent files because bash `grep`/`sed` reads don't refresh the tracker. Every one cost a wasted round trip. The habit failure is mine: `view` before `edit`, always.
+6. **A nonsense code block shipped into Newsletter.astro for one edit cycle** (an `astro:page-load` rebinder calling `openPopup.add ? ... : ...` — syntactically valid, semantically absurd). Caught and removed in the immediately following edit, before any build. It happened because I composed the delegation fix and the navigation fix in one write instead of the minimal one.
+
+## e) WHAT WE SHOULD IMPROVE
+
+1. **Encode skill failure-modes into tooling BEFORE execution, not after an incident.** The four fleet-runner guards should have existed at first run; the go-ecosystem-upgrade skill's catalog was consulted for *diagnosis* but not converted into *preconditions*.
+2. **Verification loops must close.** pkg.go.dev stayed unverified for ~3 hours after the release because "propagation delay" was accepted as an answer instead of scheduling a re-check. Every deferred verification needs an owner and a retry.
+3. **CHANGELOG at fix time.** The CSP-quoting incident is the most significant website fix of the year and it is missing from CHANGELOG.md because I batched changelog edits by task instead of writing the entry when the fix landed.
+4. **Local gates belong in CI the same day they're written.** `audit:contrast` and `check:hero` would have caught the light-mode unreadability and the hero drift in CI for months if they'd existed; today's new ones will suffer the same fate unless wired immediately.
+5. **Concurrent-session awareness must be a precondition check, not a warn.** The dirty-tree WARN in the original runner invited exactly the crm incident. Exit-on-dirty is the correct default; humans can override deliberately.
+6. **Browser-console verification should be a standing gate for any site change** — an HTML fetch "verification" (the old pattern) missed a site-wide JS blockage for 3.5 months.
+7. **Daemon coexistence:** during release/bump lanes, either pause the daemon or plan to squash; generic `chore: auto-commit` messages on top of release work degrade the history the release checklist tries to keep clean.
+
+## f) TOP 50 NEXT (impact-sorted; items 1–8 are this session's loose ends, 9+ map to plan tasks T20–T34)
+
+1. **Commit/push T19 animations.js** — daemon committed it (`41f636e`); confirm push and CI green on that commit.
+2. **Verify the live site post-deploy**: `[0.6.1]` on the changelog page, new OG card (28 KB, "No lost updates"), `form-action … buttondown.email` CSP live, quoted-hash CSP metas on docs pages.
+3. **Wire `check:hero` + `audit:contrast` (+ `pnpm run check`) into `website.yml`** — the new gates are local-only today; one day unwired is one day they can regress.
+4. **CHANGELOG `[Unreleased]` entries for the CSP-quoting incident + mobile-overflow fixes** (currently only in commit messages).
+5. **Update the remaining TODO_LIST rows** (browser/contrast/Lighthouse/voice/FAQ/logo/icons → ✅ DONE with evidence) to kill the doc-vs-reality split brain.
+6. **Observe the first CI run of the new `lighthouse` job** on a real push (Chrome install + assertions on GH runners is unproven).
+7. **Retry the 4 skipped fleet repos** (crm, BuildFlow, index, clean-wizard) once the concurrent storm session lands — the runner now has all four guards.
+8. **Write the fleet-bump summary doc** (17 repos × commit hashes, 4 skips + reasons, issues filed) into `docs/status/` — it currently lives only in this report and TODO_LIST row.
+9. T20: gitleaks CI step (baseline run first, on-demand semantics documented).
+10. T21: regression tests for `fix-csp.mjs` idempotency and `sync-changelog.mjs` `<`-escaping (both are load-bearing postbuild scripts with zero tests).
+11. T22: extract `CopyButton.astro` (the markup is duplicated across Hero + docs pages).
+12. T23: `brand:png` script — codify the og-image/apple-touch/PWA magick pipelines (currently README-persisted manual steps) + SVG well-formedness inside `brand:check`.
+13. T24: `brand-tokens.json` single palette source feeding generator + `global.css` (the contrast fixes just touched ~8 tokens in two places by hand).
+14. T25: SEO hygiene batch (sitemap `lastmod`, `go get` in remaining docs entries, `theme-color` light variant, `og:image:type/alt`, `engines.node`, flake.lock update).
+15. T26: internal link checker script (docs + README hrefs) as a CI-able step.
+16. T27: CONTRIBUTING release-cutting + deploy/secret recipe sections (mirror AGENTS.md checklist).
+17. T28: deploy-secret posture doc (WIF-vs-rotation decision + the 7 stale `firebase-adminsdk` keys list for owner deletion).
+18. T29: fleet npm sweep tracker (identify the sweep that force-bumps devDeps; propose constraint).
+19. T30: "when not to use" docs page + port the landing FAQ into the docs tree.
+20. T31: platform-matrix + error-flow-diagram landing sections + config-reloader use case.
+21. T32: Firebase PR preview channel + Playwright smoke suite (copy payload, FAQ count, 320px bar) — this also closes T09's interactive-nav gap properly.
+22. T33: PNG raster lockups @2×, GitHub social preview upload, brand usage rules + contact sheet.
+23. T34: ANNOTATE the 11-03/11-04 reports once their items land; refresh `docs/status/README.md` index.
+24. File the **CV Go-test chronic red** (10/10 jobs failing on every master commit) — after confirming the storm session doesn't already own it.
+25. Fix the four filed consumer issues if asked: samber-do-auditlog#62 (undici override in pnpm-workspace.yaml), go-checker-helpers#3, project-meta#3, DiscordSync#18.
+26. Reconcile the **`.hermes` ghost entry** in the plan/TODO docs (repo does not exist on disk).
+27. Decide release cadence for the Lane 2–3 fixes (v0.6.2 now vs. after T20–T24) — the plan's guardrail says they ride the *next* release; that decision is now due.
+28. Add a deterministic collision test for `tempPathFor` (inject/seed `randomSuffix`) — the current test is statistical at 200 writers.
+29. Verify the Windows cross-compile still passes with the new test files (`os.ReadFile` directory semantics differ on Windows; CI matrix will tell).
+30. Run `pnpm run lighthouse:deployed` against the live site after deploys settle (config exists since v0.6.0, never observed in this session).
+31. Human OG preview check in Slack/X/Discord (needs the deployed URL + real clients; owner action).
+32. Real Buttondown subscribe test (owner action — sends an actual email).
+33. apple-touch-icon visual check on a real iOS device (owner action).
+34. Confirm `go get github.com/larsartmann/go-atomic-write@latest` resolves v0.6.1 (proxy `@latest` endpoint not explicitly fetched — the pinned `@v0.6.1` was).
+35. Check Dependabot state on go-atomic-write post-release (v0.6.1 may trigger consumer PRs).
+36. Record the BuildFlow result-cache release-gate lesson (`BUILDFLOW_NO_RESULT_CACHE=1` for gates) in the project's AGENTS.md or as a BuildFlow issue — the 1.18 ms "pass" would have failed the release had the cache been stale.
+37. Consider filing the `nix build` vendorHash mismatch pattern (library-policy dirty-tree build) as a documented limitation of building trees with in-flight dependency edits.
+38. Mark T34's input: this report + the 02:06/02:12 docs are now the ANNOTATE queue.
+39. `pnpm run typecheck` after the FAQ `links` type change — ran green this session, but re-run after any further `types.ts` edits.
+40. Move the Lighthouse baseline evidence (`.lighthouseci/` is gitignored) into a committed doc or the FEATURES row's link target.
+41. Sweep `docs/status/` index for the new report + the 02:06/02:12 entries.
+42. Review the 5 daemon single-file commits from the session for message quality (squash opportunity if ever re-written; low priority).
+43. `go-atomic-write` ROADMAP harvest: T30–T33 themes are still raw ideas — confirm ROADMAP reflects the plan's batches.
+44. Verify `sum.golang.org` has the v0.6.1 checksum (explicit GONOSUMDB-free fetch; the scratch module did verify transitively).
+45. Consider a `fleet-bump.sh` home: persist the hardened runner (with the four guards) in a tools repo instead of `/tmp` — it will be needed again for v0.6.2.
+46. Check whether `library-policy`'s flake build still fails on the concurrent session's huma bump (their lane; revisit after their commit).
+47. Regenerate `pnpm-lock.yaml` if `package.json` script additions drifted the lockfile (frozen-lockfile drift guard).
+48. Add `docs/status/README.md` index entry for this report.
+49. Keep `verify-build.mjs`'s FAQ-count assertion in sync when T30 ports the FAQ into docs (the count is landing-page-specific).
+50. Re-run the full `pnpm run check` battery after items 3–5 land, as the plan's "every lane closes with evidence" rule requires.
+
+## g) QUESTIONS I CANNOT ANSWER MYSELF
+
+1. **Release cadence:** v0.6.1 is 5 hours old and the website already accumulated a release-worthy pile (CSP-quoting unblock, newsletter fix, mobile overflow, contrast, OG voice). Cut **v0.6.2 now** and re-run the fleet bump for those consumers, or hold the Lane 2–3 fixes for a combined release after T20–T24 land? The plan's guardrail says lanes ride the *next* release — I can't tell whether you read "next" as v0.6.2-immediately or a later batched cut.
+2. **The four skipped fleet repos (crm, BuildFlow, index, clean-wizard):** a concurrent "storm" session was actively working in crm/CV/BuildFlow during my bump window. Should I retry those bumps once the storm lands (and if so, should I watch for its completion signal myself), or is the storm session expected to absorb the v0.6.1 bump itself?
+3. **Scope of the filed consumer issues:** samber-do-auditlog#62 (undici), go-checker-helpers#3, project-meta#3, DiscordSync#18 are filed but unfixed. Do you want me to fix them now as part of this session (each touches a repo with its own CI/hooks and two have concurrent sessions), or do their owning lanes pick them up?
+
+---
+
+*Per the status-report skill: WAIT FOR FURTHER INSTRUCTIONS.*

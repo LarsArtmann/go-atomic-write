@@ -50,3 +50,28 @@
 
 - Retry crm after its baseline is repaired (issue filed); retry BuildFlow/index in a clean window (next bump pass is fine — both are v0.6.1/v0.6.0 consumers with live concurrent writers).
 - CV chronic-red filing still pending storm-session-ownership confirmation (TODO_LIST row).
+
+## Consumer CI sweep (2026-11-04 ~23:15 CET, post-deploy) — the deferred b3/f5 check
+
+<!-- check-rows:ledger -->
+| Repo                          | CI on the bump commit                        | Disposition                                                                                                                                             |
+| ----------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| go-checker-helpers            | success (Dependency Graph; no own CI)        | none needed                                                                                                                                              |
+| go-version-auto-configure     | failure (CI: `erraudit@latest` install, 128) | baseline-red same-failure-set pre/post (private-module install in dogfood step) — not bump-caused; filed scope                                           |
+| golangci-lint-auto-configure  | failure → **success** (`28340f6`)            | bump-caused (stale `vendorHash.nix` after go.sum change; the nix guard only auto-repairs PR branches) — repaired on master                                |
+| samber-do-auditlog            | success (CI)                                 | none needed                                                                                                                                              |
+| go-workflow-auditlog          | failure → tracked (`#44`)                    | two layers: bump-adjacent lint-pin fix landed (`623fd38`, v2.13.2 → v2.14.0 for Go 1.27 export data); v2.14.0 then exposed 4 real lint findings — filed |
+| project-meta                  | no CI                                        | none needed                                                                                                                                              |
+| library-policy                | success (Dependency Graph)                   | none needed                                                                                                                                              |
+| securitymd                    | success (Graph + Security Policy Validation) | none needed                                                                                                                                              |
+| linter-autoconfigure-sdk      | success (CI)                                 | none needed                                                                                                                                              |
+| dependabot-auto-configure     | failure → **success** (`b8cc53e`)            | three stacked fixes: stale vendorHash (bump-caused), lint pin v2.13.2 → v2.14.0 (pre-existing Go 1.27 break), dprint 0.64.1 formatting drift            |
+| ArtCode                       | success (Dependency Graph)                   | none needed                                                                                                                                              |
+| samber-linter                 | failure (gocognit `options_test.go:15`)      | baseline-red same-failure-set pre/post — not bump-caused; repo-owner scope                                                                               |
+| clean-wizard                  | failure (type-safety lint findings)          | baseline-red same-failure-set pre/post — not bump-caused; repo-owner scope                                                                               |
+| mr-sync                       | failure (Docs Health)                        | baseline-red pre-dates the bump (13b0b87 18:32) — not bump-caused; repo-owner scope                                                                      |
+| CV, DiscordSync, media-atlas  | (see earlier sections)                       | CV chronic-red pending storm-session confirmation; DiscordSync baseline-red documented above; media-atlas pushes to `github`, not observed via origin    |
+
+Sweep method: `gh run list --commit <full-sha>` per repo (short SHAs silently match nothing — first pass was a false all-clear), failures compared pre/post bump commit for same-failure-set identity before attributing to the bump.
+
+New fleet lesson: **a dependency bump can green-light a lint toolchain past a typecheck wall and thereby expose previously-masked real findings** — the bump commits were not red *because of* the version change; they were the first commits where the linter could run at all.

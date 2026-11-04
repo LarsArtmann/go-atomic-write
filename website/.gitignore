@@ -22,6 +22,10 @@ Thumbs.db
 .lighthouseci/
 .lighthouseci-deployed/
 
+# Playwright
+test-results/
+playwright-report/
+
 # Bun (CI and the lockfile of record use pnpm)
 bun.lock
 

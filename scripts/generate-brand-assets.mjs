@@ -19,6 +19,7 @@
  * Run from anywhere: paths resolve relative to this file, not the cwd.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import brandTokens from "../assets/brand/brand-tokens.json" with { type: "json" };
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 
@@ -35,27 +36,53 @@ const SQUIRCLE_RADIUS = 14;
 // left (old bytes out). Heads are filled triangles; shafts are round-capped
 // strokes. The bbox is x 15.5-48.5, y 16.5-47.5 - dead center of the canvas.
 const GLYPH_STROKE_WIDTH = 6.5;
-const GLYPH_INK = "#0c0a09";
 const SWAP_ARROWS = [
 	{ shaft: "M17 24H39", head: "37 16.5 48.5 24 37 31.5" },
 	{ shaft: "M47 40H25", head: "27 32.5 15.5 40 27 47.5" },
 ];
 
 // ---------------------------------------------------------------------------
-// Palette (mirrors website/src/styles/global.css tokens)
+// Palette - single source: assets/brand/brand-tokens.json. The dark-theme
+// values mirror website/src/styles/global.css tokens; brand:check verifies the
+// mirror so the two can never drift (light-theme site tokens are deliberately
+// contrast-tuned and NOT mirrored - see the sync check below).
 // ---------------------------------------------------------------------------
 
-const ACCENT = "#10b981";
-const ACCENT_DEEP = "#059669";
-const INK_ON_LIGHT = "#0c0a09";
-const INK_ON_DARK = "#f5f5f4";
-const MUTED_ON_LIGHT = "#78716c";
-const MUTED_ON_DARK = "#a8a29e";
+const ACCENT = brandTokens.accent;
+const ACCENT_DEEP = brandTokens.accentDeep;
+const GLYPH_INK = brandTokens.inkOnAccent;
+const INK_ON_LIGHT = brandTokens.inkOnLight;
+const INK_ON_DARK = brandTokens.inkOnDark;
+const MUTED_ON_LIGHT = brandTokens.mutedOnLight;
+const MUTED_ON_DARK = brandTokens.mutedOnDark;
 
 const PALETTES = {
 	light: { ink: INK_ON_LIGHT, muted: MUTED_ON_LIGHT },
 	dark: { ink: INK_ON_DARK, muted: MUTED_ON_DARK },
 };
+
+// Brand tokens that intentionally mirror a dark-theme site token, with the
+// CSS variable that must carry the exact same value.
+const SITE_TOKEN_MIRRORS = [
+	{ cssVar: "--color-accent", token: brandTokens.accent },
+	{ cssVar: "--color-on-accent", token: brandTokens.inkOnAccent },
+	{ cssVar: "--color-text-primary", token: brandTokens.inkOnDark },
+	{ cssVar: "--color-text-secondary", token: brandTokens.mutedOnDark },
+];
+
+function siteTokenDrift() {
+	const css = readFileSync(path.join(repoRoot, "website/src/styles/global.css"), "utf8");
+	const problems = [];
+	for (const { cssVar, token } of SITE_TOKEN_MIRRORS) {
+		const declared = css.match(new RegExp(`${cssVar}:\\s*(#[0-9a-fA-F]{6})\\s*;`, "u"));
+		if (!declared) {
+			problems.push(`${cssVar} not found in global.css`);
+		} else if (declared[1].toLowerCase() !== token.toLowerCase()) {
+			problems.push(`${cssVar} is ${declared[1]} but brand-tokens.json says ${token}`);
+		}
+	}
+	return problems;
+}
 
 const STATIC_SANS = "'Space Grotesk', 'Helvetica Neue', Arial, sans-serif";
 const GENERATED_NOTICE = `<!--
@@ -356,6 +383,11 @@ for (const artifact of ARTIFACTS) {
 }
 
 if (pngMode) {
+	const tokenDrift = siteTokenDrift();
+	if (tokenDrift.length > 0) {
+		console.error(`brand:png: brand-tokens.json and global.css have drifted: ${tokenDrift.join("; ")}`);
+		process.exit(1);
+	}
 	const site = (rel) => path.join(repoRoot, "website", rel);
 	const quantize = (file) => magick([file, "-colors", "256", "-define", "png:compression-level=9", file]);
 
@@ -368,7 +400,7 @@ if (pngMode) {
 
 	for (const size of [180, 192, 512]) {
 		const icon = site(`public/icon-${size}.png`);
-		magick(["-background", "#0c0a09", path.join(repoRoot, "assets/brand/mark.svg"), "-resize", `${size}x${size}!`, icon]);
+		magick(["-background", brandTokens.iconBackground, path.join(repoRoot, "assets/brand/mark.svg"), "-resize", `${size}x${size}!`, icon]);
 		quantize(icon);
 		console.log(`wrote website/public/icon-${size}.png`);
 	}
@@ -376,20 +408,38 @@ if (pngMode) {
 	console.log("wrote website/public/apple-touch-icon.png");
 	console.log("brand:png: rasters regenerated from the generated SVGs.");
 } else if (checkMode) {
-	if (drifted.length > 0) {
-		console.error(
-			`brand:check failed - ${drifted.length} artifact(s) drifted from scripts/generate-brand-assets.mjs:`,
-		);
-		for (const artifactPath of drifted) {
-			console.error(`  - ${artifactPath}`);
+	const tokenDrift = siteTokenDrift();
+	if (drifted.length > 0 || tokenDrift.length > 0) {
+		if (drifted.length > 0) {
+			console.error(
+				`brand:check failed - ${drifted.length} artifact(s) drifted from scripts/generate-brand-assets.mjs:`,
+			);
+			for (const artifactPath of drifted) {
+				console.error(`  - ${artifactPath}`);
+			}
+			console.error(
+				"Run `node scripts/generate-brand-assets.mjs` to regenerate, or `pnpm run brand:generate` in website/.",
+			);
+			process.exit(1);
 		}
-		console.error(
-			"Run `node scripts/generate-brand-assets.mjs` to regenerate, or `pnpm run brand:generate` in website/.",
-		);
+		console.error(`brand:check failed - brand tokens out of sync with global.css:`);
+		for (const problem of tokenDrift) {
+			console.error(`  - ${problem}`);
+		}
+		console.error("Update assets/brand/brand-tokens.json and website/src/styles/global.css together.");
 		process.exit(1);
 	}
-	console.log(`brand:check: OK (${ARTIFACTS.length} artifacts match the generator)`);
+	console.log(`brand:check: OK (${ARTIFACTS.length} artifacts match the generator, ${SITE_TOKEN_MIRRORS.length} site-token mirrors in sync)`);
 } else {
+	const tokenDrift = siteTokenDrift();
+	if (tokenDrift.length > 0) {
+		console.error(`brand:generate: brand tokens out of sync with global.css:`);
+		for (const problem of tokenDrift) {
+			console.error(`  - ${problem}`);
+		}
+		console.error("Fix the drift before regenerating (assets/brand/brand-tokens.json vs website/src/styles/global.css).");
+		process.exit(1);
+	}
 	for (const artifact of ARTIFACTS) {
 		const target = path.join(repoRoot, artifact.path);
 		mkdirSync(path.dirname(target), { recursive: true });

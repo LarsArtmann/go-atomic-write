@@ -71,6 +71,14 @@ on the flat-design gradients and exact text areas).
 
 ## Palette
 
+The palette lives in [`brand-tokens.json`](./brand-tokens.json) — the single
+source the generator reads. Four of its values intentionally mirror dark-theme
+tokens in `website/src/styles/global.css` (`--color-accent`, `--color-on-accent`,
+`--color-text-primary`, `--color-text-secondary`); `brand:check` verifies that
+mirror on every run, so the brand and the site cannot drift apart. The
+light-theme site tokens are deliberately contrast-tuned and are NOT mirrored
+here.
+
 | Token            | Hex                   | Used for                                                           |
 | ---------------- | --------------------- | ------------------------------------------------------------------ |
 | Accent gradient  | `#10b981` → `#059669` | Squircle (135°), matches the site's emerald accent and the OG card |

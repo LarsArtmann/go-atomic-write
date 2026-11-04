@@ -262,7 +262,7 @@ const ogImageSvg = `\
   </g>
 
   <!-- Bottom URL -->
-  <text x="100" y="540" font-family="'JetBrains Mono','DejaVu Sans Mono',monospace" font-size="22" font-weight="400" fill="#8b827a">pkg.go.dev/github.com/larsartmann/go-atomic-write</text>
+  <text x="100" y="540" font-family="'JetBrains Mono','DejaVu Sans Mono',monospace" font-size="22" font-weight="400" fill="${MUTED_ON_DARK}">pkg.go.dev/github.com/larsartmann/go-atomic-write</text>
 
   <!-- Accent line -->
   <rect x="0" y="624" width="1200" height="6" fill="url(#emerald)"/>
@@ -333,7 +333,7 @@ function glyphInkProblems() {
 		const inks = content.match(/(?:stroke|fill)="#([0-9a-fA-F]{6})"/gu) ?? [];
 		for (const ink of inks) {
 			const hex = ink.match(/#([0-9a-fA-F]{6})/u)[1].toLowerCase();
-			if (!allowed.has(hex)) {
+			if (!allowed.has(`#${hex}`)) {
 				problems.push(`${artifact.path}: off-token ink #${hex}`);
 			}
 		}

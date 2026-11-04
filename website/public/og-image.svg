@@ -56,7 +56,7 @@
   </g>
 
   <!-- Bottom URL -->
-  <text x="100" y="540" font-family="'JetBrains Mono','DejaVu Sans Mono',monospace" font-size="22" font-weight="400" fill="#8b827a">pkg.go.dev/github.com/larsartmann/go-atomic-write</text>
+  <text x="100" y="540" font-family="'JetBrains Mono','DejaVu Sans Mono',monospace" font-size="22" font-weight="400" fill="#a8a29e">pkg.go.dev/github.com/larsartmann/go-atomic-write</text>
 
   <!-- Accent line -->
   <rect x="0" y="624" width="1200" height="6" fill="url(#emerald)"/>

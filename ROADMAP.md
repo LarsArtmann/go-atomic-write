@@ -29,8 +29,6 @@ Raw ideas:
 - "Migration from `os.WriteFile`" guide with before/after patterns
 - "Understanding TOCTOU races" deep-dive essay
 - "Why xxhash64?" design rationale page
-- "When not to use this" docs page (promote the FAQ answer; covers NFS, network filesystems, append-only logs)
-- Port the landing-page FAQ content into the docs so site search covers it
 - "Design decisions" as a dedicated docs page (currently a README section)
 
 ### 3. Website maturity
@@ -49,11 +47,7 @@ Raw ideas:
 - Promotion push: the library had zero importers until the 2026-11-03 enumeration (22 internal repos) — public promotion (HN/Reddit showcase, profile README) still untouched
 - Benchmark dashboard (à la GitHub Pages) for tracking xxhash64 vs SHA-256 over time; benchmark numbers inside the comparison matrix
 - Search Console submission + custom-domain canonicalization follow-through
-- PR preview deployments (Firebase preview channel per PR)
 - RSS/Atom feed, print stylesheet for docs, accessibility statement page, prefetch strategy tuning
-- Platform-compatibility matrix on the landing page; error-handling flow diagram; config-reloader use case
-- Playwright smoke suite (copy payload exactness, FAQ opens, install bar at 320px) replacing three manual checks
-- Internal link checker for docs + README (also a TODO_LIST hygiene item — automate it there first)
 - `siteConfig` JSON projection so build scripts consume the module path without importing TypeScript
 - DNS: `atomicwrite.lars.software` and `go-atomic-write.lars.software` custom
   domains (external dependency — Namecheap DNS via Terraform)

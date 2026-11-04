@@ -1,4 +1,4 @@
-# TODO List
+# Todo List
 
 > Short-term, actionable, bounded work items, verified against the actual code.
 > For long-term vision and unrefined ideas, use ROADMAP.md.
@@ -14,31 +14,33 @@
 | 🟢 `DONE`        | Completed. Remove from this list and log in `CHANGELOG.md`. |
 
 > Rebuilt 2026-11-03 from a full docs-health sweep; re-harvested 2026-11-04
-> after the release/quality execution session (v0.6.1 cut, 17-repo fleet bump,
-> CSP-quoting unblock, contrast audit, Lighthouse 100s, gate hardening, Go
-> edge tests — evidence in `docs/status/2026-11-04_05-36…` and `CHANGELOG.md`).
-> The rows below are the surviving open work; Lane 4–5 batches execute from
-> `docs/planning/2026-11-04_02-12_release-fleet-and-site-quality-pareto-plan.md`.
+> twice: after the release/quality session (v0.6.1, fleet bump, CSP unblock)
+> and after the Lane 4–5 execution (T20–T33: gitleaks, build-script regression
+> tests, CopyButton, brand pipeline + 2× rasters, brand tokens, SEO batch,
+> link checker, CONTRIBUTING/deploy docs, npm-sweep tracker, when-not-to-use +
+> FAQ pages, platforms matrix, Playwright smoke suite + PR preview channels).
+> Evidence in `CHANGELOG.md` [Unreleased] and
+> `docs/status/2026-11-04_07-09_lane-4-5-gates-brand-seo-docs-landing-execution-status.md`.
 
 ## Medium Impact
 
-| Task                                                                                                                                                                                              | Status  | Impact | Effort | Evidence                                                                                         |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ------------------------------------------------------------------------------------------------ |
-| Brand system batch (remainder): `brand:png` script (rasters in code, not README), SVG well-formedness parse inside `brand:check`, `brand-tokens.json` single palette source for generator + `global.css`, real-Space-Grotesk wordmark width measure, footer-logo screenshot QA, scripted pixel-QA (glyph-ink assertion) — the `aria-hidden` decision already landed (generator emits it) | 🔴 TODO | Medium | M      | `scripts/generate-brand-assets.mjs`; `docs/status/2026-11-03_23-29…` §2.3–2.5, §5.2–5.7          |
-| Fleet npm sweep tracker: find/configure the sweep that force-bumps devDeps to latest majors — it re-bumped `typescript` to 7.x three times on 11-03 (breaks `astro check`) and regenerated `global.out.css` twice; the workspace-yaml override neutralizes the TS damage, but the sweep should learn the constraint or exclude this repo | 🔴 TODO | Medium | M      | commits 3cf0176 + package.json mtimes 21:01/21:38/21:59 on 2026-11-03; `website/pnpm-workspace.yaml` `overrides` |
-| Interactive navigation verification: ClientRouter nav re-bind (`[data-copy]`, theme persistence, `astro:page-load` animations) + keyboard tab-order pass — verified by construction only so far; Playwright smoke suite closes it properly (plan T32) | 🔴 TODO | Medium | M      | `animations.js` `41f636e`; status report §b.1; plan T32                                          |
+| Task                                                                                                                                                        | Status  | Impact | Effort | Evidence                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ------ | ------ | ------------------------------------------------------------------------------------------------ |
+| Keyboard tab-order + theme first-paint verification — the Playwright smoke suite covers copy payloads and `astro:page-load` animation binding since `bb3c47b`; tab-order asserts and a theme-persistence check remain | 🔴 TODO | Medium | M      | `website/tests/smoke.spec.mjs`; supersedes the old interactive-nav row (plan T32)                |
+| Brand pixel-QA: scripted glyph-ink assertion + footer-logo screenshot QA (the rest of the brand batch shipped — `brand:png` rasters, `brand-tokens.json`, SVG well-formedness gate, measured wordmark air) | 🔴 TODO | Medium | M      | `scripts/generate-brand-assets.mjs`; `docs/status/2026-11-03_23-29…` §5.2–5.7                    |
 
 ## Low Impact
 
 | Task                                                                                                                                                        | Status     | Impact | Effort | Evidence                                                                      |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------ | ------ | ----------------------------------------------------------------------------- |
 | `minimatch@3.1.5` moderate advisory (glob@7 ← rimraf@3 ← chrome-launcher ← @lhci/cli): overriding to 11 breaks glob@7's CJS API at runtime — wait for rimraf/chrome-launcher upstream majors, then re-audit | 🔵 BLOCKED | Low    | S      | `website/pnpm-workspace.yaml` `overrides`; audit 2026-11-03 (1 advisory left) |
-| OG card in real previewers (Slack/Twitter/Facebook — needs real clients, owner action) + post-deploy fetch assertion in the Website workflow (real-client subscribe test and iOS icon check are owner actions too) | 🔴 TODO    | Low    | S      | live OG verified at artifact level 2026-11-04 (28.3 KB, quoted-hash CSP live) |
-| Docs/SEO hygiene batch: sitemap `lastmod`, `go get` install command in every docs entry point, `theme-color` light variant, `og:image:type`/`og:site_name`/`og:image:alt`+`twitter:image:alt`, `engines.node` field, `website/flake.lock` update, internal link checker for docs + README | 🔴 TODO    | Low    | M      | `astro.config.mjs` (no lastmod); grep 2026-11-03 (no og: extras, no link checker) |
-| `CopyButton.astro` extraction — the ~300-char Tailwind class string is repeated per copyable snippet                                                         | 🔴 TODO    | Low    | S      | `HeroSection.astro`, docs pages repeat the button markup                      |
-| `gitleaks` step in CI (secret scan; skipped in release reviews twice)                                                                                        | 🔴 TODO    | Low    | S      | no gitleaks anywhere in `.github/workflows/` (grep 2026-11-03)                |
-| Deploy-secret posture: decide workload-identity federation vs SA-JSON rotation cadence; delete the 7 stale `firebase-adminsdk` keys (GCP console, owner action) | 🔴 TODO    | Low    | S      | `docs/status/archived/2026-09-17_20-57…` §a.11, §g.1; AGENTS.md SA-cap gotcha |
-| CONTRIBUTING: release-cutting section for contributors + deploy/secret-minting recipe + "brand artifacts are generated — never hand-edit" note              | 🔴 TODO    | Low    | S      | `CONTRIBUTING.md` has no release/brand content (grep 2026-11-03)              |
+| Owner actions bundle: OG card in real previewers (Slack/X/Facebook), real Buttondown subscribe test, iOS apple-touch-icon check, GitHub social-preview upload (`assets/brand/social-preview.png` → repo Settings → Social preview), delete the 7 stale `firebase-adminsdk` keys | 🔴 TODO | Low | S | `assets/brand/README.md` (upload recipe); AGENTS.md SA-cap gotcha             |
+| Deploy-secret follow-through: migrate CI deploys to Workload Identity Federation (Option A of the decided posture doc); the decision doc itself shipped (`6142c78`) | 🔴 TODO | Low | M | `docs/deploy-secret-posture.md`                                               |
+| Real-Windows test run of the fingerprint/temp-path suite — cross-compile builds every push, but the tests have never executed on Windows hardware (windows CI test leg or one manual run) | 🔴 TODO | Low | M | routed from `docs/status/2026-11-03_20-42…` row 9 (docs-gates audit 2026-11-04) |
+| Visual-regression screenshot harness for header/docs/OG surfaces (the smoke suite covers the landing page only)                                              | 🔴 TODO | Low | M | routed from `docs/status/2026-11-04_02-06…` row 45 (docs-gates audit 2026-11-04) |
+| Deterministic collision test for `tempPathFor` (seed/inject `randomSuffix`); the current 200-writer test is statistical                                      | 🔴 TODO | Low | S | `atomicwrite_test.go`; routed from `docs/status/2026-11-04_05-36…` f.28       |
+| File the CV Go-test chronic red (10/10 jobs failing on every master commit) after confirming the concurrent storm session does not own it                    | 🔴 TODO | Low | S | `docs/status/2026-11-04_05-36…` f.24                                          |
+| `pnpm run lighthouse:deployed` against the live site after the next deploy settles (config exists since v0.6.0, never observed)                              | 🔴 TODO | Low | S | `lighthouserc.deployed.json`; `docs/status/2026-11-04_05-36…` f.30            |
 
 ---
 

@@ -160,7 +160,7 @@ Both are intentional, minimal, and not candidates for replacement.
 - File permissions are preserved from the existing file, defaulting to `0644` for new files
 - `ErrConcurrentModification` is a sentinel `errors.New` value — always check with `errors.Is`, not string matching
 - Only `//nolint:makezero` remains in `hash_bench_test.go` — the `//nolint:gosec` comments were removed in 0.5.2 when the linter config was realigned; do not re-add them reflexively
-- **golangci-lint GitHub Action must be v7+** for golangci-lint v2 (action v6 refuses `version: v2.x`), and the lint version must be pinned explicitly (`version: v2.13.2`) — `version: latest` resolves to the ancient v1.x line built with go1.24
+- **golangci-lint GitHub Action must be v7+** for golangci-lint v2 (action v6 refuses `version: v2.x`), and the lint version must be pinned explicitly (`version: v2.14.0`) — `version: latest` resolves to the ancient v1.x line built with go1.24. **The pinned binary must also be built with the repo's Go generation**: v2.13.2 (go1.26-built) cannot typecheck Go 1.27 stdlib (typecheck fails with `export data version 5 is greater than maximum supported version 4` on every stdlib import — CI was red 2026-11-03→04 on an otherwise-green tree). Bump the pin whenever the `go` directive crosses a minor.
 - Lint is gating: a single `golangci-lint` issue blocks merging. Common pitfalls:
   - Single-letter variables (`fp`, `wg`, `h`, `mb`) trigger `varnamelen` — use full words
   - Inline `if err := …; err != nil` triggers `noinlineerr` — assign first, then check

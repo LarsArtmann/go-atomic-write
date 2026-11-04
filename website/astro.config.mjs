@@ -37,7 +37,7 @@ export default defineConfig({
 	],
 
 	integrations: [
-		sitemap({ lastmod: new Date().toISOString() }),
+		sitemap({ lastmod: new Date() }),
 		starlight({
 			title: "go-atomic-write",
 			favicon: "/favicon.svg",

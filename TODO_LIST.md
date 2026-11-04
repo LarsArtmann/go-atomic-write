@@ -21,8 +21,11 @@
 > FAQ pages, platforms matrix, Playwright smoke suite + PR preview channels).
 > Third harvest 2026-11-04 evening after the v0.6.2 release + fleet bump:
 > consumer-fix rows and the fleet-bump row closed (v0.6.2 shipped, 17/17
-> consumers bumped), lighthouse:deployed observed (row removed), docs-gates
-> CI row added. Evidence in `CHANGELOG.md` [0.6.2],
+> consumers bumped), lighthouse:deployed re-verified WITH report files
+> (row removed, then re-opened once when a wrong-cwd invocation showed no
+> fresh reports — root cause: outputDir is cwd-relative; green from
+> website/, 25 files), sitemap gate added (check-sitemap.mjs), docs-gates
+> CI row added (PR #23, merged). Evidence in `CHANGELOG.md` [0.6.2],
 > `docs/status/2026-11-04_20-45_fleet-bump-v062-summary.md`, and
 > `docs/status/2026-11-04_19-35_v062-release-fleet-bump-inflight-status.md`.
 

@@ -168,3 +168,72 @@ test("check-links accepts a clean fixture and rejects broken links and fragments
 		rmSync(dist, { recursive: true, force: true });
 	}
 });
+
+// check-sitemap.mjs — the sitemap must exist, cover the built pages, and
+// carry lastmod dates (07:09 f.17: nothing asserted the sitemap at all).
+test("check-sitemap accepts a healthy sitemap", () => {
+	const dist = mkdtempSync(join(tmpdir(), "sitemap-ok-"));
+	writeFileSync(
+		join(dist, "sitemap-index.xml"),
+		'<?xml version="1.0"?><sitemapindex><sitemap><loc>https://x.test/sitemap-0.xml</loc></sitemap></sitemapindex>',
+	);
+	const urls = Array.from({ length: 12 }, (_, i) =>
+		`<url><loc>https://x.test/p${i}/</loc><lastmod>2026-11-04T00:00:00Z</lastmod></url>`,
+	).join("");
+	writeFileSync(
+		join(dist, "sitemap-0.xml"),
+		`<?xml version="1.0"?><urlset>${urls}</urlset>`,
+	);
+	const result = runScript("check-sitemap.mjs", { DIST_DIR_OVERRIDE: dist });
+	assert.equal(result.status, 0, result.stderr);
+	assert.match(result.stdout, /12 urls, lastmod present/);
+	rmSync(dist, { recursive: true, force: true });
+});
+
+test("check-sitemap fails when urls drop below the floor", () => {
+	const dist = mkdtempSync(join(tmpdir(), "sitemap-short-"));
+	writeFileSync(
+		join(dist, "sitemap-index.xml"),
+		'<?xml version="1.0"?><sitemapindex><sitemap><loc>https://x.test/sitemap-0.xml</loc></sitemap></sitemapindex>',
+	);
+	writeFileSync(
+		join(dist, "sitemap-0.xml"),
+		`<?xml version="1.0"?><urlset>${
+			Array.from({ length: 3 }, (_, i) =>
+				`<url><loc>https://x.test/p${i}/</loc><lastmod>2026-11-04</lastmod></url>`,
+			).join("")
+		}</urlset>`,
+	);
+	const result = runScript("check-sitemap.mjs", { DIST_DIR_OVERRIDE: dist });
+	assert.equal(result.status, 1);
+	assert.match(result.stderr, /lists 3 urls \(expected >= 10\)/);
+	rmSync(dist, { recursive: true, force: true });
+});
+
+test("check-sitemap fails when lastmod is missing", () => {
+	const dist = mkdtempSync(join(tmpdir(), "sitemap-nolastmod-"));
+	writeFileSync(
+		join(dist, "sitemap-index.xml"),
+		'<?xml version="1.0"?><sitemapindex><sitemap><loc>https://x.test/sitemap-0.xml</loc></sitemap></sitemapindex>',
+	);
+	writeFileSync(
+		join(dist, "sitemap-0.xml"),
+		`<?xml version="1.0"?><urlset>${
+			Array.from({ length: 12 }, (_, i) =>
+				`<url><loc>https://x.test/p${i}/</loc></url>`,
+			).join("")
+		}</urlset>`,
+	);
+	const result = runScript("check-sitemap.mjs", { DIST_DIR_OVERRIDE: dist });
+	assert.equal(result.status, 1);
+	assert.match(result.stderr, /no <lastmod> dates/);
+	rmSync(dist, { recursive: true, force: true });
+});
+
+test("check-sitemap fails cleanly when the index is absent", () => {
+	const dist = mkdtempSync(join(tmpdir(), "sitemap-missing-"));
+	const result = runScript("check-sitemap.mjs", { DIST_DIR_OVERRIDE: dist });
+	assert.equal(result.status, 1);
+	assert.match(result.stderr, /could not read the sitemap/);
+	rmSync(dist, { recursive: true, force: true });
+});

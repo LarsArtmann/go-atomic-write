@@ -77,11 +77,13 @@ export const faqItems: FaqItem[] = [
     question: "What does a write cost?",
     answer:
       "One xxhash64 pass (~23 GB/s, zero allocations), one advisory lock, and one full re-read of the file while the lock is held. Negligible for config, state, and checkpoint files; measurable for multi-gigabyte files.",
+    links: [{ href: "/guides/benchmarks/", label: "Full benchmark numbers" }],
   },
   {
     question: "What happens when two writers race?",
     answer:
       "Exactly one wins. The loser gets ErrConcurrentModification and the original file is left untouched, because the temp file is discarded before any rename. Writers holding fresh data can retry; writers that do not should surface the error.",
+    links: [{ href: "/guides/error-handling/", label: "Handling ErrConcurrentModification" }],
   },
   {
     question: "Does it work on Windows?",

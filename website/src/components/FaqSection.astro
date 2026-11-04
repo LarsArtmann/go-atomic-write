@@ -16,6 +16,13 @@ import { faqItems } from '../data/sections';
         </span>
       </summary>
       <p class="mt-3 text-sm text-text-muted leading-relaxed">{item.answer}</p>
+      {item.links && (
+        <p class="mt-2 text-sm">
+          {item.links.map((link) => (
+            <a href={link.href} class="text-accent hover:text-accent-hover underline underline-offset-2 transition-colors duration-150">{link.label}</a>
+          ))}
+        </p>
+      )}
     </details>
   ))}
 </div>

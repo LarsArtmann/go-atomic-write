@@ -48,6 +48,7 @@ export interface UseCase {
 export interface FaqItem {
   question: string;
   answer: string;
+  links?: { href: string; label: string }[];
 }
 
 export const uiIconKeys = [

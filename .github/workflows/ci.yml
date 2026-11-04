@@ -133,6 +133,22 @@ jobs:
         working-directory: website
         run: pnpm install --frozen-lockfile
 
+  docs-gates:
+    name: Docs health gates
+    runs-on: ubuntu-latest
+    steps:
+      # Full history: the annotate gate verifies every cited commit hash
+      # resolves, which a depth-1 checkout cannot do.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+
+      - name: Run docs-gates battery (freshness/audit/annotate/routing/cadence)
+        run: nix run github:Artmann-Technologies/docs-gates/67177410ebe51b90ef3b18be44164074e0a16b11 -- run .
+
   gitleaks:
     name: Secret scan (gitleaks)
     runs-on: ubuntu-latest

@@ -74,8 +74,10 @@ Releases are cut by maintainers. The authoritative checklist lives in `AGENTS.md
    anything else. Run it fresh (a cached "pass" proves nothing).
 2. `go build ./...` and `go test -race ./...` locally.
 3. CI green on `master` **before** tagging — test+race, lint, cross-compile
-   (windows/amd64, darwin/*), govulncheck, drift guard. v0.5.1 shipped a Windows
-   compile break because Linux CI passed while the tag was already cut.
+   (windows/amd64, darwin/*), govulncheck, drift guard, docs-gates (the five
+   docs-health gates: freshness, audit, annotate, routing, cadence), secret
+   scan. v0.5.1 shipped a Windows compile break because Linux CI passed while
+   the tag was already cut.
 4. Move `CHANGELOG.md` `[Unreleased]` into a new `[X.Y.Z]` section (with compare
    links) **before** tagging — the tag commit carries the changelog.
 5. Keep the version trio in sync (`go.mod`, `.golangci.yml` `run.go`, `AGENTS.md`) —

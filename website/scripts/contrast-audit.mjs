@@ -76,6 +76,9 @@ const texts = [
   "success",
   "code-comment",
 ];
+// success/danger render check/X icons (WCAG 1.4.11 non-text: 3:1), not body text.
+const graphics = new Set(["danger", "success"]);
+const threshold = (t) => (graphics.has(t) ? 3 : 4.5);
 const bgs = ["bg-primary", "bg-card-solid", "bg-elevated"];
 
 let failures = 0;
@@ -94,14 +97,12 @@ for (const theme of [dark, light]) {
       }
       const fg = (tc[3] ?? 1) < 1 ? blend(tc, bgc) : tc.slice(0, 3);
       const r = ratio(fg, bgc);
-      if (r >= 4.5) {
+      const need = threshold(t);
+      if (r >= need) {
         continue;
       }
       failures++;
-      const largePass = r >= 3;
-      console.log(
-        `FAIL ${t} on ${b}: ${r.toFixed(2)}:1 ${largePass ? "(AA-large ok)" : "(fails even AA-large)"}`,
-      );
+      console.log(`FAIL ${t} on ${b}: ${r.toFixed(2)}:1 (needs ${need}:1)`);
     }
   }
   const r = ratio(theme.tokens["on-accent"].slice(0, 3), theme.tokens["accent"].slice(0, 3));

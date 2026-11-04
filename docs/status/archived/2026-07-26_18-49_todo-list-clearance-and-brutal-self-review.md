@@ -91,28 +91,28 @@ These are accuracy-of-reporting failures, not code failures. The code works; the
 ### High impact
 
 1. **Wire Lighthouse CI into `.github/workflows/website.yml`** — fail PRs that drop Perf/A11y/SEO below budget. Without this, `lighthouserc.json` is decoration. **→ TODO_LIST: Lighthouse CI gate (browser batch)**
-~~2. **Actually run `pnpm run lighthouse` end-to-end** and confirm the config file (not CLI overrides) drives the run.~~ done at `3387ca9`
-3. **Baseline-measure `total-byte-weight` and `dom-size`** on landing + a docs page, then set budgets at measured + 10% headroom (replace the arbitrary 900000 / 1500). **→ TODO_LIST: measured budgets (browser batch)**
-4. **Extract and record Lighthouse scores for all 9 docs pages**, not just the landing page. Publish them in this report's appendix or FEATURES.md. **→ TODO_LIST: docs-page Lighthouse scores (browser batch)**
-5. **Full WCAG AA palette audit** — compute contrast for every `--color-*` token in `global.css` (dark + light) against every background it's used on. Fix all failures, not just `text-muted`. Candidates likely failing: `amber`, `danger`, `success`, `code-comment` on small text. **→ TODO_LIST: full palette contrast audit (browser batch)**
-6. **PWA icon set for `manifest.json`** — generate 192px, 512px, and 512px maskable PNGs from `favicon.svg`; add `icons` entries. Enables proper home-screen install. **→ TODO_LIST: PWA/app icon set**
-~~7. **Visually verify the OG image** — re-export at a small size and actually look at it (or have the user confirm). The current "shipped blind" state is unacceptable for a marketing asset.~~ done at `4faaa6c`
+   ~~2. **Actually run `pnpm run lighthouse` end-to-end** and confirm the config file (not CLI overrides) drives the run.~~ done at `3387ca9`
+2. **Baseline-measure `total-byte-weight` and `dom-size`** on landing + a docs page, then set budgets at measured + 10% headroom (replace the arbitrary 900000 / 1500). **→ TODO_LIST: measured budgets (browser batch)**
+3. **Extract and record Lighthouse scores for all 9 docs pages**, not just the landing page. Publish them in this report's appendix or FEATURES.md. **→ TODO_LIST: docs-page Lighthouse scores (browser batch)**
+4. **Full WCAG AA palette audit** — compute contrast for every `--color-*` token in `global.css` (dark + light) against every background it's used on. Fix all failures, not just `text-muted`. Candidates likely failing: `amber`, `danger`, `success`, `code-comment` on small text. **→ TODO_LIST: full palette contrast audit (browser batch)**
+5. **PWA icon set for `manifest.json`** — generate 192px, 512px, and 512px maskable PNGs from `favicon.svg`; add `icons` entries. Enables proper home-screen install. **→ TODO_LIST: PWA/app icon set**
+   ~~7. **Visually verify the OG image** — re-export at a small size and actually look at it (or have the user confirm). The current "shipped blind" state is unacceptable for a marketing asset.~~ done at `4faaa6c`
 
 ### Medium impact
 
 8. **Add `og:image:type` (`content="image/png"`)** meta tag to landing + docs. **→ TODO_LIST: OG/social meta tags**
 9. **Add `og:site_name`** to the landing page (docs pages already get it from Starlight). **→ TODO_LIST: OG/social meta tags**
-~~10. **Twitter card image dimensions** — Twitter recommends 1200×628; OG uses 1200×630. Consider a separate `twitter:image` at 1200×628 for pixel-perfect cropping, or accept the 2px crop.~~ **Won't implement — cosmetic 2px crop.**
-~~11. **Run `html-validate`** on `dist/` after build; fix any findings from the table semantic changes.~~ done at `5726b1d`
-~~12. **Add `pnpm run regenerate:og`** script (wraps the ImageMagick command from AGENTS.md).~~ **Superseded — brand:generate supersedes.**
-~~13. **Add `pnpm run regenerate:favicon`** script (wraps the ICO multi-res generation).~~ **Superseded — brand:generate supersedes.**
-~~14. **Add a `lighthouse` Nix app** (`nix run .#lighthouse`) for consistency with `dev`/`build`/`preview`/`deploy`.~~ **Won't implement — pnpm scripts cover it.**
-~~15. **Add `og-image.svg` to `.gitignore`?** — No: it's the source of truth. But consider a `# generated` banner or moving source SVGs to an `assets/` dir separate from `public/` so the source isn't publicly served.~~ **Superseded — og-image.svg is now generator-owned.**
-~~16. **Lighthouse `numberOfRuns: 3` in CI** (current config) will be slow (~90s/page × pages). Consider `numberOfRuns: 1` in CI, 3 locally.~~ done — moot until LHCI enters CI
-17. **Add `prefers-color-scheme` detection** — the site defaults to dark; light-mode users see dark until JS runs. A `media` query on `<html>` could set the initial theme before `theme-init.js`. **→ TODO_LIST: browser verification sweep**
-~~18. **Audit inline scripts for CSP hash stability** — the postbuild `fix-csp.mjs` re-hashes on every build; if a script's content is non-deterministic, CSP breaks. Verify all hashed scripts are static.~~ **NOT-DO — hashes recomputed per build - nothing pinned.**
-19. **Stale temp-file sweeper** (from FEATURES.md `PLANNED`) — still the only `⚪ PLANNED` core feature. Crashed writes leave `.tmp` files forever. **→ ROADMAP: stale .tmp sweeper (theme 1)**
-20. **Windows rename path is untested on real Windows** (FEATURES.md `🟡 PARTIALLY_FUNCTIONAL`). Needs a CI runner on Windows or a deliberate test plan. **→ ROADMAP: real-Windows testing (theme 1)**
+   ~~10. **Twitter card image dimensions** — Twitter recommends 1200×628; OG uses 1200×630. Consider a separate `twitter:image` at 1200×628 for pixel-perfect cropping, or accept the 2px crop.~~ **Won't implement — cosmetic 2px crop.**
+   ~~11. **Run `html-validate`** on `dist/` after build; fix any findings from the table semantic changes.~~ done at `5726b1d`
+   ~~12. **Add `pnpm run regenerate:og`** script (wraps the ImageMagick command from AGENTS.md).~~ **Superseded — brand:generate supersedes.**
+   ~~13. **Add `pnpm run regenerate:favicon`** script (wraps the ICO multi-res generation).~~ **Superseded — brand:generate supersedes.**
+   ~~14. **Add a `lighthouse` Nix app** (`nix run .#lighthouse`) for consistency with `dev`/`build`/`preview`/`deploy`.~~ **Won't implement — pnpm scripts cover it.**
+   ~~15. **Add `og-image.svg` to `.gitignore`?** — No: it's the source of truth. But consider a `# generated` banner or moving source SVGs to an `assets/` dir separate from `public/` so the source isn't publicly served.~~ **Superseded — og-image.svg is now generator-owned.**
+   ~~16. **Lighthouse `numberOfRuns: 3` in CI** (current config) will be slow (~90s/page × pages). Consider `numberOfRuns: 1` in CI, 3 locally.~~ done — moot until LHCI enters CI
+10. **Add `prefers-color-scheme` detection** — the site defaults to dark; light-mode users see dark until JS runs. A `media` query on `<html>` could set the initial theme before `theme-init.js`. **→ TODO_LIST: browser verification sweep**
+    ~~18. **Audit inline scripts for CSP hash stability** — the postbuild `fix-csp.mjs` re-hashes on every build; if a script's content is non-deterministic, CSP breaks. Verify all hashed scripts are static.~~ **NOT-DO — hashes recomputed per build - nothing pinned.**
+11. **Stale temp-file sweeper** (from FEATURES.md `PLANNED`) — still the only `⚪ PLANNED` core feature. Crashed writes leave `.tmp` files forever. **→ ROADMAP: stale .tmp sweeper (theme 1)**
+12. **Windows rename path is untested on real Windows** (FEATURES.md `🟡 PARTIALLY_FUNCTIONAL`). Needs a CI runner on Windows or a deliberate test plan. **→ ROADMAP: real-Windows testing (theme 1)**
 
 ### Low impact / polish
 
@@ -121,44 +121,44 @@ These are accuracy-of-reporting failures, not code failures. The code works; the
 23. **`og:image:alt`** — added, but verify it doesn't exceed ~420 chars (platform limits). **→ TODO_LIST: OG/social meta tags**
 24. **Add `<link rel="apple-touch-icon">` (180×180 PNG)** for iOS home-screen. **→ TODO_LIST: PWA/app icon set**
 25. **Sitemap `lastmod`** — currently omitted; add for better crawl prioritization. **→ TODO_LIST: sitemap lastmod**
-~~26. **`robots.txt`** — consider `Disallow: /api/` if any dynamic endpoints exist (none today, but future-proof).~~ **Won't implement — no dynamic endpoints exist.**
-~~27. **Font loading** — Space Grotesk + JetBrains Mono via Google/fontsource; verify `font-display: swap` and no layout shift (Lighthouse flagged nothing, but CLS on slow networks deserves a check).~~ done — Lighthouse Perf 100 - no CLS flag
-28. **Prefetch strategy** — currently `hover`; consider `viewport` for docs links (faster navigation, small bandwidth cost). **→ ROADMAP: prefetch strategy (theme 3)**
-29. **Starlight search index** — Pagefind builds on every `build`; verify the index isn't shipped to the landing page where there's no search box (wasted bytes). **→ TODO_LIST: docs/SEO hygiene batch**
-~~30. **`.htmlvalidate.json`** — review and tighten rules; run in CI alongside typecheck.~~ done at `5726b1d`
-~~31. **Dependabot / Renovate** — `package.json` deps are pinned with `^`; automated update PRs would catch security advisories (the LHCI install reported 10 vulnerabilities).~~ done at `25ae518`
-~~32. **`pnpm audit` resolution** — LHCI install surfaced "2 low, 3 moderate, 5 high" vulnerabilities (transitive deps of `@lhci/cli`). Run `pnpm audit fix` or document accepted risk.~~ done at `3387ca9`
-33. **`website/flake.lock`** — update to latest nixos-unstable; pin chromium version for reproducibility. **→ TODO_LIST: docs/SEO hygiene batch**
-~~34. **Consolidate favicon pipeline** — single SVG source → SVG, ICO, PNGs, manifest icons via one script + one source file.~~ done at `4faaa6c`
-~~35. **CHANGELOG concision** — my entries are verbose; consider a tighter style guide for future entries.~~ done — style preference - not blocking
-~~36. **AGENTS.md gotcha about OG regen** — add the `magick` requirement (ImageMagick 7) to the Nix devShell so contributors don't hit "command not found".~~ **Superseded — generator is pure Node - no magick dependency.**
-~~37. **Docs status reports** — 5 reports now exist in `docs/status/`; consider an index or auto-expiry policy so the directory doesn't accumulate forever.~~ done — docs/status/README.md index created in-audit
-~~38. **Landing page LCP element** — verify it's the H1, not a late-painted section (affects Core Web Vitals).~~ done — Lighthouse Perf 100 recorded
-39. **`theme-color` meta** — only set for dark (`#10b981`); add a `media (prefers-color-scheme: light)` variant. **→ TODO_LIST: docs/SEO hygiene batch**
-40. **Comparison matrix `hover:bg-bg-card/50`** — doesn't work on touch devices; add a `:focus-within` equivalent for keyboard nav. **→ TODO_LIST: browser verification sweep**
-~~41. **Skip-link target** — `#main-content` exists; verify it's visible and focusable in all layouts.~~ done — landing skip link present - Starlight ships its own
-42. **Reduced-motion** — the `pulse-dot` fix is in; audit the `fade-in` transition and `hover:-translate-y-0.5` cards for vestibular triggers. **→ TODO_LIST: browser verification sweep**
-43. **Print stylesheet** — docs pages likely print poorly (dark bg, fixed nav). Add `@media print` rules. **→ ROADMAP: print stylesheet (theme 3)**
-~~44. **404 page content** — Starlight's default 404 is generic; consider custom copy with search + top links.~~ **Won't implement — custom 404 collides with Starlight route - AGENTS.md gotcha.**
-45. **Newsletter form** — posts to Buttondown; verify CSP allows the form action (currently `form-action 'self'` — **this likely breaks the newsletter signup**). Investigate. **→ TODO_LIST: newsletter CSP fix**
-~~46. **Analytics** — none present; consider privacy-respecting analytics (Plausible/Umami) to measure if the OG image / docs actually drive traffic.~~ **NOT-DO — ROADMAP non-goal - intentional privacy stance.**
-47. **RSS/Atom feed** — Starlight supports it; useful for CHANGELOG subscribers. **→ ROADMAP: RSS feed (theme 3)**
-48. **`pkg.go.dev` link in OG image** — currently shows GitHub URL; consider `pkg.go.dev` as the developer-call-to-action. **→ TODO_LIST: OG tagline/CTA voice**
-49. **Accessibility statement page** — a `/accessibility` doc describing the WCAG commitment and reporting channel. **→ ROADMAP: accessibility statement (theme 3)**
-~~50. **Re-run this brutal self-review after the next batch of work** — the pattern of overclaiming won't fix itself without recurring friction.~~ done at `23-11 report`
+    ~~26. **`robots.txt`** — consider `Disallow: /api/` if any dynamic endpoints exist (none today, but future-proof).~~ **Won't implement — no dynamic endpoints exist.**
+    ~~27. **Font loading** — Space Grotesk + JetBrains Mono via Google/fontsource; verify `font-display: swap` and no layout shift (Lighthouse flagged nothing, but CLS on slow networks deserves a check).~~ done — Lighthouse Perf 100 - no CLS flag
+26. **Prefetch strategy** — currently `hover`; consider `viewport` for docs links (faster navigation, small bandwidth cost). **→ ROADMAP: prefetch strategy (theme 3)**
+27. **Starlight search index** — Pagefind builds on every `build`; verify the index isn't shipped to the landing page where there's no search box (wasted bytes). **→ TODO_LIST: docs/SEO hygiene batch**
+    ~~30. **`.htmlvalidate.json`** — review and tighten rules; run in CI alongside typecheck.~~ done at `5726b1d`
+    ~~31. **Dependabot / Renovate** — `package.json` deps are pinned with `^`; automated update PRs would catch security advisories (the LHCI install reported 10 vulnerabilities).~~ done at `25ae518`
+    ~~32. **`pnpm audit` resolution** — LHCI install surfaced "2 low, 3 moderate, 5 high" vulnerabilities (transitive deps of `@lhci/cli`). Run `pnpm audit fix` or document accepted risk.~~ done at `3387ca9`
+28. **`website/flake.lock`** — update to latest nixos-unstable; pin chromium version for reproducibility. **→ TODO_LIST: docs/SEO hygiene batch**
+    ~~34. **Consolidate favicon pipeline** — single SVG source → SVG, ICO, PNGs, manifest icons via one script + one source file.~~ done at `4faaa6c`
+    ~~35. **CHANGELOG concision** — my entries are verbose; consider a tighter style guide for future entries.~~ done — style preference - not blocking
+    ~~36. **AGENTS.md gotcha about OG regen** — add the `magick` requirement (ImageMagick 7) to the Nix devShell so contributors don't hit "command not found".~~ **Superseded — generator is pure Node - no magick dependency.**
+    ~~37. **Docs status reports** — 5 reports now exist in `docs/status/`; consider an index or auto-expiry policy so the directory doesn't accumulate forever.~~ done — docs/status/README.md index created in-audit
+    ~~38. **Landing page LCP element** — verify it's the H1, not a late-painted section (affects Core Web Vitals).~~ done — Lighthouse Perf 100 recorded
+29. **`theme-color` meta** — only set for dark (`#10b981`); add a `media (prefers-color-scheme: light)` variant. **→ TODO_LIST: docs/SEO hygiene batch**
+30. **Comparison matrix `hover:bg-bg-card/50`** — doesn't work on touch devices; add a `:focus-within` equivalent for keyboard nav. **→ TODO_LIST: browser verification sweep**
+    ~~41. **Skip-link target** — `#main-content` exists; verify it's visible and focusable in all layouts.~~ done — landing skip link present - Starlight ships its own
+31. **Reduced-motion** — the `pulse-dot` fix is in; audit the `fade-in` transition and `hover:-translate-y-0.5` cards for vestibular triggers. **→ TODO_LIST: browser verification sweep**
+32. **Print stylesheet** — docs pages likely print poorly (dark bg, fixed nav). Add `@media print` rules. **→ ROADMAP: print stylesheet (theme 3)**
+    ~~44. **404 page content** — Starlight's default 404 is generic; consider custom copy with search + top links.~~ **Won't implement — custom 404 collides with Starlight route - AGENTS.md gotcha.**
+33. **Newsletter form** — posts to Buttondown; verify CSP allows the form action (currently `form-action 'self'` — **this likely breaks the newsletter signup**). Investigate. **→ TODO_LIST: newsletter CSP fix**
+    ~~46. **Analytics** — none present; consider privacy-respecting analytics (Plausible/Umami) to measure if the OG image / docs actually drive traffic.~~ **NOT-DO — ROADMAP non-goal - intentional privacy stance.**
+34. **RSS/Atom feed** — Starlight supports it; useful for CHANGELOG subscribers. **→ ROADMAP: RSS feed (theme 3)**
+35. **`pkg.go.dev` link in OG image** — currently shows GitHub URL; consider `pkg.go.dev` as the developer-call-to-action. **→ TODO_LIST: OG tagline/CTA voice**
+36. **Accessibility statement page** — a `/accessibility` doc describing the WCAG commitment and reporting channel. **→ ROADMAP: accessibility statement (theme 3)**
+    ~~50. **Re-run this brutal self-review after the next batch of work** — the pattern of overclaiming won't fix itself without recurring friction.~~ done at `23-11 report`
 
 ---
 
 ## G) Questions I cannot figure out myself (max 3)
 
 ~~1. **Should OG image generation be dynamic (`astro-og-canvas`) or stay static?**~~ **Superseded — static OG won - generator-managed with CI drift check.**
-   Dynamic gives per-page titles (each docs page gets its own OG image with its title rendered), at the cost of a new dependency and slower builds. Static is one image for all pages — simpler but every docs page shares the landing-page card. This is a product/marketing decision, not a technical one; I cannot infer the right call from the codebase. **The static approach is what I shipped; confirm or redirect.**
+Dynamic gives per-page titles (each docs page gets its own OG image with its title rendered), at the cost of a new dependency and slower builds. Static is one image for all pages — simpler but every docs page shares the landing-page card. This is a product/marketing decision, not a technical one; I cannot infer the right call from the codebase. **The static approach is what I shipped; confirm or redirect.**
 
 2. **Is the newsletter form (`action="https://buttondown.email/..."`) actually working under the current CSP?** **→ TODO_LIST: newsletter CSP fix**
    `firebase.json`/`fix-csp.mjs` sets `form-action 'self'`, which should block the cross-origin POST to Buttondown. I noticed this but did **not** test it (would require a live browser + email submission). If it's broken, it's a pre-existing bug I shouldn't silently "fix" by widening CSP without your call on whether to allowlist `buttondown.email` or proxy the submission.
 
 ~~3. **What's the actual deployment/traffic situation — should Lighthouse run against `localhost` (current) or the live Firebase URL?**~~ done at `3387ca9`
-   Local Lighthouse misses real-network conditions, CDN behavior, and Firebase headers. Running against `https://atomicwrite.web.app` would be more honest but needs the site deployed first and may flap on network variance. The budget thresholds (and whether CI should fail on flaky runs) depend on which target you consider canonical. I picked `localhost` because the site isn't confirmed live under the custom domain yet.
+Local Lighthouse misses real-network conditions, CDN behavior, and Firebase headers. Running against `https://atomicwrite.web.app` would be more honest but needs the site deployed first and may flap on network variance. The budget thresholds (and whether CI should fail on flaky runs) depend on which target you consider canonical. I picked `localhost` because the site isn't confirmed live under the custom domain yet.
 
 ---
 

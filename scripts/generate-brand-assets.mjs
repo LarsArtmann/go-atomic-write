@@ -35,8 +35,8 @@ const SQUIRCLE_RADIUS = 14;
 const GLYPH_STROKE_WIDTH = 6.5;
 const GLYPH_INK = "#0c0a09";
 const SWAP_ARROWS = [
-  { shaft: "M17 24H39", head: "37 16.5 48.5 24 37 31.5" },
-  { shaft: "M47 40H25", head: "27 32.5 15.5 40 27 47.5" },
+	{ shaft: "M17 24H39", head: "37 16.5 48.5 24 37 31.5" },
+	{ shaft: "M47 40H25", head: "27 32.5 15.5 40 27 47.5" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -51,8 +51,8 @@ const MUTED_ON_LIGHT = "#78716c";
 const MUTED_ON_DARK = "#a8a29e";
 
 const PALETTES = {
-  light: { ink: INK_ON_LIGHT, muted: MUTED_ON_LIGHT },
-  dark: { ink: INK_ON_DARK, muted: MUTED_ON_DARK },
+	light: { ink: INK_ON_LIGHT, muted: MUTED_ON_LIGHT },
+	dark: { ink: INK_ON_DARK, muted: MUTED_ON_DARK },
 };
 
 const STATIC_SANS = "'Space Grotesk', 'Helvetica Neue', Arial, sans-serif";
@@ -67,13 +67,13 @@ const GENERATED_NOTICE = `<!--
 // ---------------------------------------------------------------------------
 
 const swapGlyph = (ink) =>
-  SWAP_ARROWS.map(
-    (arrow) =>
-      `<path d="${arrow.shaft}" stroke="${ink}" stroke-width="${GLYPH_STROKE_WIDTH}" stroke-linecap="round" fill="none" />\n  <polygon points="${arrow.head}" fill="${ink}" />`,
-  ).join("\n  ");
+	SWAP_ARROWS.map(
+		(arrow) =>
+			`<path d="${arrow.shaft}" stroke="${ink}" stroke-width="${GLYPH_STROKE_WIDTH}" stroke-linecap="round" fill="none" />\n  <polygon points="${arrow.head}" fill="${ink}" />`,
+	).join("\n  ");
 
 const squircleGradient = (id) =>
-  `<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">\n    <stop offset="0" stop-color="${ACCENT}" />\n    <stop offset="1" stop-color="${ACCENT_DEEP}" />\n  </linearGradient>`;
+	`<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">\n    <stop offset="0" stop-color="${ACCENT}" />\n    <stop offset="1" stop-color="${ACCENT_DEEP}" />\n  </linearGradient>`;
 
 /** The standalone 64x64 emblem: emerald squircle + swap glyph. */
 const markSvg = () => `\
@@ -103,21 +103,21 @@ const faviconSvg = () => `\
  * lockups and the OG card; `gradientId` must be unique per embedding document.
  */
 const markGroup = ({ offsetX, offsetY, size, gradientId }) => {
-  const scale = size / CANVAS;
-  return `<g transform="translate(${offsetX} ${offsetY}) scale(${scale})">
+	const scale = size / CANVAS;
+	return `<g transform="translate(${offsetX} ${offsetY}) scale(${scale})">
   <rect width="${CANVAS}" height="${CANVAS}" rx="${SQUIRCLE_RADIUS}" fill="url(#${gradientId})" />
   ${swapGlyph(GLYPH_INK)}
 </g>`;
 };
 
 const wordmark = ({ x, y, size, palette, anchor = "start" }) =>
-  `<text x="${x}" y="${y}" font-family="${STATIC_SANS}" font-size="${size}" font-weight="700" letter-spacing="-0.5" text-anchor="${anchor}"><tspan fill="${palette.muted}">go-</tspan><tspan fill="${palette.ink}">atomic-write</tspan></text>`;
+	`<text x="${x}" y="${y}" font-family="${STATIC_SANS}" font-size="${size}" font-weight="700" letter-spacing="-0.5" text-anchor="${anchor}"><tspan fill="${palette.muted}">go-</tspan><tspan fill="${palette.ink}">atomic-write</tspan></text>`;
 
 /** Emblem left, wordmark right. One text line - for READMEs and banners. */
 const lockupHorizontal = (width, variant) => {
-  const palette = PALETTES[variant];
-  const id = `gawLh${variant}`;
-  return `\
+	const palette = PALETTES[variant];
+	const id = `gawLh${variant}`;
+	return `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} 64" width="${width}" height="64" role="img" aria-labelledby="${id}Title">
 <title id="${id}Title">go-atomic-write: the atomic swap</title>
 <defs>
@@ -131,10 +131,10 @@ ${wordmark({ x: 74, y: 42.5, size: 30, palette })}
 
 /** Emblem centered above the centered wordmark. For square-ish slots. */
 const lockupStacked = ({ width, height, baselineY, variant }) => {
-  const palette = PALETTES[variant];
-  const id = `gawLs${variant}`;
-  const centerX = width / 2;
-  return `\
+	const palette = PALETTES[variant];
+	const id = `gawLs${variant}`;
+	const centerX = width / 2;
+	return `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-labelledby="${id}Title">
 <title id="${id}Title">go-atomic-write: the atomic swap</title>
 <defs>
@@ -248,51 +248,81 @@ const LOCKUP_STACKED_HEIGHT = 117;
 const LOCKUP_STACKED_BASELINE = 106;
 
 const ARTIFACTS = [
-  { path: "assets/brand/mark.svg", content: () => GENERATED_NOTICE + markSvg() },
-  { path: "assets/brand/lockup-horizontal-light.svg", content: () => GENERATED_NOTICE + lockupHorizontal(LOCKUP_HORIZONTAL_WIDTH, "light") },
-  { path: "assets/brand/lockup-horizontal-dark.svg", content: () => GENERATED_NOTICE + lockupHorizontal(LOCKUP_HORIZONTAL_WIDTH, "dark") },
-  { path: "assets/brand/lockup-stacked-light.svg", content: () => GENERATED_NOTICE + lockupStacked({ width: LOCKUP_STACKED_WIDTH, height: LOCKUP_STACKED_HEIGHT, baselineY: LOCKUP_STACKED_BASELINE, variant: "light" }) },
-  { path: "assets/brand/lockup-stacked-dark.svg", content: () => GENERATED_NOTICE + lockupStacked({ width: LOCKUP_STACKED_WIDTH, height: LOCKUP_STACKED_HEIGHT, baselineY: LOCKUP_STACKED_BASELINE, variant: "dark" }) },
-  { path: "website/src/components/Logo.astro", content: () => logoAstro },
-  { path: "website/public/favicon.svg", content: () => GENERATED_NOTICE + faviconSvg() },
-  { path: "website/src/assets/brand.svg", content: () => faviconSvg() },
-  { path: "website/public/og-image.svg", content: () => GENERATED_NOTICE + ogImageSvg },
+	{ path: "assets/brand/mark.svg", content: () => GENERATED_NOTICE + markSvg() },
+	{
+		path: "assets/brand/lockup-horizontal-light.svg",
+		content: () => GENERATED_NOTICE + lockupHorizontal(LOCKUP_HORIZONTAL_WIDTH, "light"),
+	},
+	{
+		path: "assets/brand/lockup-horizontal-dark.svg",
+		content: () => GENERATED_NOTICE + lockupHorizontal(LOCKUP_HORIZONTAL_WIDTH, "dark"),
+	},
+	{
+		path: "assets/brand/lockup-stacked-light.svg",
+		content: () =>
+			GENERATED_NOTICE +
+			lockupStacked({
+				width: LOCKUP_STACKED_WIDTH,
+				height: LOCKUP_STACKED_HEIGHT,
+				baselineY: LOCKUP_STACKED_BASELINE,
+				variant: "light",
+			}),
+	},
+	{
+		path: "assets/brand/lockup-stacked-dark.svg",
+		content: () =>
+			GENERATED_NOTICE +
+			lockupStacked({
+				width: LOCKUP_STACKED_WIDTH,
+				height: LOCKUP_STACKED_HEIGHT,
+				baselineY: LOCKUP_STACKED_BASELINE,
+				variant: "dark",
+			}),
+	},
+	{ path: "website/src/components/Logo.astro", content: () => logoAstro },
+	{ path: "website/public/favicon.svg", content: () => GENERATED_NOTICE + faviconSvg() },
+	{ path: "website/src/assets/brand.svg", content: () => faviconSvg() },
+	{ path: "website/public/og-image.svg", content: () => GENERATED_NOTICE + ogImageSvg },
 ];
 
 const checkMode = process.argv.includes("--check");
 
 const drifted = [];
 for (const artifact of ARTIFACTS) {
-  const target = path.join(repoRoot, artifact.path);
-  const expected = artifact.content();
-  let current;
-  try {
-    current = readFileSync(target, "utf8");
-  } catch {
-    drifted.push(`${artifact.path} (missing)`);
-    continue;
-  }
-  if (current !== expected) {
-    drifted.push(artifact.path);
-  }
+	const target = path.join(repoRoot, artifact.path);
+	const expected = artifact.content();
+	let current;
+	try {
+		current = readFileSync(target, "utf8");
+	} catch {
+		drifted.push(`${artifact.path} (missing)`);
+		continue;
+	}
+	if (current !== expected) {
+		drifted.push(artifact.path);
+	}
 }
 
 if (checkMode) {
-  if (drifted.length > 0) {
-    console.error(`brand:check failed - ${drifted.length} artifact(s) drifted from scripts/generate-brand-assets.mjs:`);
-    for (const artifactPath of drifted) {
-      console.error(`  - ${artifactPath}`);
-    }
-    console.error("Run `node scripts/generate-brand-assets.mjs` to regenerate, or `pnpm run brand:generate` in website/.");
-    process.exit(1);
-  }
-  console.log(`brand:check: OK (${ARTIFACTS.length} artifacts match the generator)`);
+	if (drifted.length > 0) {
+		console.error(
+			`brand:check failed - ${drifted.length} artifact(s) drifted from scripts/generate-brand-assets.mjs:`,
+		);
+		for (const artifactPath of drifted) {
+			console.error(`  - ${artifactPath}`);
+		}
+		console.error(
+			"Run `node scripts/generate-brand-assets.mjs` to regenerate, or `pnpm run brand:generate` in website/.",
+		);
+		process.exit(1);
+	}
+	console.log(`brand:check: OK (${ARTIFACTS.length} artifacts match the generator)`);
 } else {
-  for (const artifact of ARTIFACTS) {
-    const target = path.join(repoRoot, artifact.path);
-    mkdirSync(path.dirname(target), { recursive: true });
-    writeFileSync(target, artifact.content());
-    console.log(`wrote ${artifact.path}`);
-  }
-  console.log(`brand:generate: ${ARTIFACTS.length} artifacts written from one geometry.`);
+	for (const artifact of ARTIFACTS) {
+		const target = path.join(repoRoot, artifact.path);
+		mkdirSync(path.dirname(target), { recursive: true });
+		writeFileSync(target, artifact.content());
+		console.log(`wrote ${artifact.path}`);
+	}
+	console.log(`brand:generate: ${ARTIFACTS.length} artifacts written from one geometry.`);
 }

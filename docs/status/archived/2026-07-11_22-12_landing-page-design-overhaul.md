@@ -126,15 +126,15 @@
 ### Design-Specific
 
 1. **Take screenshots** — Install a headless browser tool and actually look at the page in dark AND light mode, desktop AND mobile **→ TODO_LIST: browser verification sweep**
-~~2. **Add text alternatives to comparison table** — `aria-label="yes"` / `aria-label="no"` on table cells~~ done at `785632f`
-~~3. **Cover pulse-dot in reduced-motion** — Add `@media (prefers-reduced-motion: reduce) { .animate-pulse-dot { animation: none; } }`~~ done at `4c9ffe5`
-~~4. **Audit color contrast** — `#78716c` muted text on `#0a0908` background is ~4.2:1, borderline AA~~ done at `785632f`
-~~5. **Remove dead code** — Delete unused `comparisons` array, `ComparisonItem` interface, and `fade-in-up` animation~~ done at `4c9ffe5`
-6. **Add a subtle gradient or texture to section backgrounds** — Currently every section has the same flat dot-grid; adding alternating subtle backgrounds would create visual rhythm **→ ROADMAP: alternating backgrounds (theme 3)**
-7. **Consider a "stat bar" section** — Between hero and features, a full-width strip with large numbers (27 GB/s, 11x faster, 2 deps, 0 allocs) would add visual punch **→ ROADMAP: stat bar (theme 3)**
-~~8. **Code syntax highlighting** — The hero code uses manual `<span>` tags; consider a proper highlighter (Shiki/Starlight's ExpressiveCode) for the landing page code blocks~~ **Superseded — token-list single source kept deliberately.**
-9. **Add hover states to comparison table rows** — Currently only `hover:bg-bg-card/50` on `<tr>`, could add cursor and click-to-expand details **→ ROADMAP: matrix hover-expand (theme 3)**
-10. **Mobile how-it-works flow** — When stacked vertically, the cards lose the "flow" metaphor; consider a vertical connector line on mobile **→ ROADMAP: mobile connector (theme 3)**
+   ~~2. **Add text alternatives to comparison table** — `aria-label="yes"` / `aria-label="no"` on table cells~~ done at `785632f`
+   ~~3. **Cover pulse-dot in reduced-motion** — Add `@media (prefers-reduced-motion: reduce) { .animate-pulse-dot { animation: none; } }`~~ done at `4c9ffe5`
+   ~~4. **Audit color contrast** — `#78716c` muted text on `#0a0908` background is ~4.2:1, borderline AA~~ done at `785632f`
+   ~~5. **Remove dead code** — Delete unused `comparisons` array, `ComparisonItem` interface, and `fade-in-up` animation~~ done at `4c9ffe5`
+2. **Add a subtle gradient or texture to section backgrounds** — Currently every section has the same flat dot-grid; adding alternating subtle backgrounds would create visual rhythm **→ ROADMAP: alternating backgrounds (theme 3)**
+3. **Consider a "stat bar" section** — Between hero and features, a full-width strip with large numbers (27 GB/s, 11x faster, 2 deps, 0 allocs) would add visual punch **→ ROADMAP: stat bar (theme 3)**
+   ~~8. **Code syntax highlighting** — The hero code uses manual `<span>` tags; consider a proper highlighter (Shiki/Starlight's ExpressiveCode) for the landing page code blocks~~ **Superseded — token-list single source kept deliberately.**
+4. **Add hover states to comparison table rows** — Currently only `hover:bg-bg-card/50` on `<tr>`, could add cursor and click-to-expand details **→ ROADMAP: matrix hover-expand (theme 3)**
+5. **Mobile how-it-works flow** — When stacked vertically, the cards lose the "flow" metaphor; consider a vertical connector line on mobile **→ ROADMAP: mobile connector (theme 3)**
 
 ### Architecture/Process
 
@@ -154,18 +154,18 @@
 1. Take dark-mode desktop screenshot and audit **→ TODO_LIST: browser verification sweep**
 2. Take light-mode desktop screenshot and audit **→ TODO_LIST: browser verification sweep**
 3. Take mobile screenshot and audit **→ TODO_LIST: browser verification sweep**
-~~4. Add `aria-label` to comparison table cells for screen readers~~ done at `785632f`
-~~5. Cover `animate-pulse-dot` in `prefers-reduced-motion` media query~~ done at `4c9ffe5`
-~~6. Remove dead `comparisons` array from `sections.ts`~~ done at `4c9ffe5`
-~~7. Remove dead `ComparisonItem` interface from `types.ts`~~ done at `4c9ffe5`
-~~8. Remove unused `fade-in-up` animation from `global.css`~~ done at `4c9ffe5`
-~~9. Audit WCAG AA color contrast on all text/background combinations~~ done at `785632f`
-10. Add alternating section background tones for visual rhythm **→ ROADMAP: alternating backgrounds (theme 3)**
-11. Add a full-width stat bar section between hero and features **→ ROADMAP: stat bar (theme 3)**
-~~12. Replace manual hero code highlighting with Shiki or ExpressiveCode~~ **Superseded — token-list single source kept deliberately.**
-13. Add vertical connector line for mobile how-it-works flow **→ ROADMAP: mobile connector (theme 3)**
-14. Add subtle hover-to-expand details on comparison table rows **→ ROADMAP: matrix hover-expand (theme 3)**
-15. Animate the how-it-works flow arrows on scroll-into-view **→ ROADMAP: animate arrows on scroll (theme 3)**
+   ~~4. Add `aria-label` to comparison table cells for screen readers~~ done at `785632f`
+   ~~5. Cover `animate-pulse-dot` in `prefers-reduced-motion` media query~~ done at `4c9ffe5`
+   ~~6. Remove dead `comparisons` array from `sections.ts`~~ done at `4c9ffe5`
+   ~~7. Remove dead `ComparisonItem` interface from `types.ts`~~ done at `4c9ffe5`
+   ~~8. Remove unused `fade-in-up` animation from `global.css`~~ done at `4c9ffe5`
+   ~~9. Audit WCAG AA color contrast on all text/background combinations~~ done at `785632f`
+4. Add alternating section background tones for visual rhythm **→ ROADMAP: alternating backgrounds (theme 3)**
+5. Add a full-width stat bar section between hero and features **→ ROADMAP: stat bar (theme 3)**
+   ~~12. Replace manual hero code highlighting with Shiki or ExpressiveCode~~ **Superseded — token-list single source kept deliberately.**
+6. Add vertical connector line for mobile how-it-works flow **→ ROADMAP: mobile connector (theme 3)**
+7. Add subtle hover-to-expand details on comparison table rows **→ ROADMAP: matrix hover-expand (theme 3)**
+8. Animate the how-it-works flow arrows on scroll-into-view **→ ROADMAP: animate arrows on scroll (theme 3)**
 
 ### Landing Page Content (16-22)
 

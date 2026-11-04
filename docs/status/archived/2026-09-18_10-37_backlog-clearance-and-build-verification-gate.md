@@ -75,46 +75,47 @@ All items verified by command output in this session. Commit hashes are the auto
 
 ## b) PARTIALLY DONE
 
-| # | Item                             | What works now                                                                         | What is missing                                                                                                                                                                 | Effort to finish   |
-| - | -------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| 1 **→ TODO_LIST: landing voice pass** | **Landing page voice pass** | Hero, subheadline, feature titles, FeatureGrid subtitle, meta description, README lead | Section titles/eyebrows (`"The objections, answered."`, `"Safety you can rely on."`), hero badge (`"Crash-safe file writes for Go"`), Footer, Newsletter, CTA copy not reviewed | S |
-| 2 **→ TODO_LIST: browser verification sweep** | **Verification depth** | DOM, CSS, HTML validity, build-time parity, HTTP (prior session) | No pixels, no Lighthouse, no contrast measurement, no tab-order check — twice deferred now | M (needs chromium) |
-| ~~3~~ **Superseded — og-image.svg generator-owned since 11-03.** | ~~**OG image consistency**~~ | ~~SVG text verified against new voice; PNG/SVG share an mtime~~ | ~~PNG never rendered/compared to the SVG; no pixel assertion~~ | ~~S~~ |
-| 4 **→ TODO_LIST: build-gate hardening batch** | **Verification gate robustness** | Fails closed on drift; asserts three invariants | Regex parsing of minified HTML; only covers `dist/index.html`; no assertion for docs pages | M |
-| ~~5~~ done — AGENTS.md documents the intended pattern | ~~**Warning suppression**~~ | ~~i18n warning gone~~ | ~~Root cause never proven benign; the `{}` file could mask a future real config error~~ | ~~S~~ |
-| 6 **→ TODO_LIST: FAQ guide links** | **FAQ depth** | 6 source-verified answers | No outbound links to `guides/benchmarks` or `guides/error-handling` (items 36/37 of the predecessor list) | S |
-| ~~7~~ **Won't implement — fleet-wide daemon policy - owner decision.** | ~~**Commit hygiene**~~ | ~~Changes are on disk, committed by the daemon, and build~~ | ~~Five `chore: auto-commit … (heuristic)` commits; the reasoning lives only in CHANGELOG + this report~~ | ~~Blocked by harness~~ |
-| 8 **→ TODO_LIST: link checker + LHCI gate** | **CI gates** | Typecheck + build + html-validate | No link check, no Lighthouse budget, no post-deploy smoke check | M |
-| 9 **→ TODO_LIST: post-deploy live verification** | **Work visibility** | Local build green | Nothing pushed, nothing deployed; live site serves old content | S (decision-gated) |
+| #                                                                      | Item                             | What works now                                                                         | What is missing                                                                                                                                                                 | Effort to finish       |
+| ---------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| 1 **→ TODO_LIST: landing voice pass**                                  | **Landing page voice pass**      | Hero, subheadline, feature titles, FeatureGrid subtitle, meta description, README lead | Section titles/eyebrows (`"The objections, answered."`, `"Safety you can rely on."`), hero badge (`"Crash-safe file writes for Go"`), Footer, Newsletter, CTA copy not reviewed | S                      |
+| 2 **→ TODO_LIST: browser verification sweep**                          | **Verification depth**           | DOM, CSS, HTML validity, build-time parity, HTTP (prior session)                       | No pixels, no Lighthouse, no contrast measurement, no tab-order check — twice deferred now                                                                                      | M (needs chromium)     |
+| ~~3~~ **Superseded — og-image.svg generator-owned since 11-03.**       | ~~**OG image consistency**~~     | ~~SVG text verified against new voice; PNG/SVG share an mtime~~                        | ~~PNG never rendered/compared to the SVG; no pixel assertion~~                                                                                                                  | ~~S~~                  |
+| 4 **→ TODO_LIST: build-gate hardening batch**                          | **Verification gate robustness** | Fails closed on drift; asserts three invariants                                        | Regex parsing of minified HTML; only covers `dist/index.html`; no assertion for docs pages                                                                                      | M                      |
+| ~~5~~ done — AGENTS.md documents the intended pattern                  | ~~**Warning suppression**~~      | ~~i18n warning gone~~                                                                  | ~~Root cause never proven benign; the `{}` file could mask a future real config error~~                                                                                         | ~~S~~                  |
+| 6 **→ TODO_LIST: FAQ guide links**                                     | **FAQ depth**                    | 6 source-verified answers                                                              | No outbound links to `guides/benchmarks` or `guides/error-handling` (items 36/37 of the predecessor list)                                                                       | S                      |
+| ~~7~~ **Won't implement — fleet-wide daemon policy - owner decision.** | ~~**Commit hygiene**~~           | ~~Changes are on disk, committed by the daemon, and build~~                            | ~~Five `chore: auto-commit … (heuristic)` commits; the reasoning lives only in CHANGELOG + this report~~                                                                        | ~~Blocked by harness~~ |
+| 8 **→ TODO_LIST: link checker + LHCI gate**                            | **CI gates**                     | Typecheck + build + html-validate                                                      | No link check, no Lighthouse budget, no post-deploy smoke check                                                                                                                 | M                      |
+| 9 **→ TODO_LIST: post-deploy live verification**                       | **Work visibility**              | Local build green                                                                      | Nothing pushed, nothing deployed; live site serves old content                                                                                                                  | S (decision-gated)     |
 
 ## c) NOT STARTED
 
-| #  | Item                                                                                             | Why it has not started                                                 | Still wanted?       |
-| -- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- | ------------------- |
-| 1 **→ TODO_LIST: deploy + live verification (6 unpushed commits)** | Deploy to Firebase + live-site verification | Held deliberately: public action, predecessor Q3 unanswered | Yes — highest value |
-| 2 **→ TODO_LIST: deploy + live verification (6 unpushed commits)** | Push to `master` (nothing this session reached a remote) | Same decision; also prohibited by default rules | Yes |
-| ~~3~~ done at `3387ca9` | ~~Lighthouse CI run and recorded scores~~ | ~~No chromium on `PATH`; never tested whether `nix shell` makes it cheap~~ | ~~Yes~~ |
-| 4 **→ TODO_LIST: browser verification sweep** | Mobile-width (320px) and desktop (1440px) visual verification | No browser available; never attempted a headless screenshot | Yes |
-| 5 **→ TODO_LIST: browser verification sweep** | Accessibility sweep (contrast, focus rings, keyboard order) | Depends on a browser/axe run | Yes |
-| 6 **→ TODO_LIST: link checker** | Docs-page link checker (internal links in docs and README) | Deprioritized behind the gate | Yes |
-| 7 **→ ROADMAP: when-not-to-use docs page (theme 2)** | "When not to use this" docs page (FAQ item 2 promoted) | Deprioritized | Maybe |
-| 8 **→ TODO_LIST: FAQ guide links** | FAQ answers linked to the docs guides they duplicate | Deprioritized; needs `FaqItem` to support rich content | Yes |
-| 9 **→ TODO_LIST: surface more APIs on landing** | Surface `WriteIfChanged`, `WriteFunc`, `WriteWithPerm` on the landing page | Deprioritized | Maybe |
-| 10 **→ TODO_LIST: post-deploy live verification** | Post-deploy live-site fetch assertion in CI | Depends on deploy | Yes |
-| ~~11~~ **Superseded — de-facto decided - website changes ride [Unreleased].** | ~~Decide whether website-only changes get their own version entry or ride the next library release~~ | ~~Predecessor Q2 unanswered~~ | ~~Yes~~ |
-| 12 **→ TODO_LIST: animations.js after ClientRouter nav** | Verify `animations.js` also survives ClientRouter navigation | Same class as the copy-button fix; never checked | Yes |
-| 13 **→ TODO_LIST: sitemap lastmod** | Sitemap `lastmod` freshness check | Not investigated | Low |
-| ~~14~~ done — this pass is the harvest | ~~Stage all 50 items from (f) into `TODO_LIST.md` / `ROADMAP.md` (docs-health HARVEST)~~ | ~~Not run yet~~ | ~~Yes~~ |
+| #                                                                             | Item                                                                                                 | Why it has not started                                                     | Still wanted?       |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------- |
+| 1 **→ TODO_LIST: deploy + live verification (6 unpushed commits)**            | Deploy to Firebase + live-site verification                                                          | Held deliberately: public action, predecessor Q3 unanswered                | Yes — highest value |
+| 2 **→ TODO_LIST: deploy + live verification (6 unpushed commits)**            | Push to `master` (nothing this session reached a remote)                                             | Same decision; also prohibited by default rules                            | Yes                 |
+| ~~3~~ done at `3387ca9`                                                       | ~~Lighthouse CI run and recorded scores~~                                                            | ~~No chromium on `PATH`; never tested whether `nix shell` makes it cheap~~ | ~~Yes~~             |
+| 4 **→ TODO_LIST: browser verification sweep**                                 | Mobile-width (320px) and desktop (1440px) visual verification                                        | No browser available; never attempted a headless screenshot                | Yes                 |
+| 5 **→ TODO_LIST: browser verification sweep**                                 | Accessibility sweep (contrast, focus rings, keyboard order)                                          | Depends on a browser/axe run                                               | Yes                 |
+| 6 **→ TODO_LIST: link checker**                                               | Docs-page link checker (internal links in docs and README)                                           | Deprioritized behind the gate                                              | Yes                 |
+| 7 **→ ROADMAP: when-not-to-use docs page (theme 2)**                          | "When not to use this" docs page (FAQ item 2 promoted)                                               | Deprioritized                                                              | Maybe               |
+| 8 **→ TODO_LIST: FAQ guide links**                                            | FAQ answers linked to the docs guides they duplicate                                                 | Deprioritized; needs `FaqItem` to support rich content                     | Yes                 |
+| 9 **→ TODO_LIST: surface more APIs on landing**                               | Surface `WriteIfChanged`, `WriteFunc`, `WriteWithPerm` on the landing page                           | Deprioritized                                                              | Maybe               |
+| 10 **→ TODO_LIST: post-deploy live verification**                             | Post-deploy live-site fetch assertion in CI                                                          | Depends on deploy                                                          | Yes                 |
+| ~~11~~ **Superseded — de-facto decided - website changes ride [Unreleased].** | ~~Decide whether website-only changes get their own version entry or ride the next library release~~ | ~~Predecessor Q2 unanswered~~                                              | ~~Yes~~             |
+| 12 **→ TODO_LIST: animations.js after ClientRouter nav**                      | Verify `animations.js` also survives ClientRouter navigation                                         | Same class as the copy-button fix; never checked                           | Yes                 |
+| 13 **→ TODO_LIST: sitemap lastmod**                                           | Sitemap `lastmod` freshness check                                                                    | Not investigated                                                           | Low                 |
+| ~~14~~ done — this pass is the harvest                                        | ~~Stage all 50 items from (f) into `TODO_LIST.md` / `ROADMAP.md` (docs-health HARVEST)~~             | ~~Not run yet~~                                                            | ~~Yes~~             |
 
 ## d) TOTALLY FUCKED UP
 
 Honest list. Nothing was destroyed; these are real defects, risks, or failures of the session.
 
 ~~1. **The entire two-session body of work is invisible to every user.**~~ **Superseded — deploy unblocked 09-18; site live.**
-   - _What is broken:_ `atomicwrite.web.app` serves content from before the hero rewrite, the FAQ, the outcome-based feature titles, and the new meta description.
-   - _Severity:_ High for the project's stated goal (attract users); zero for correctness.
-   - _Root cause:_ Deploy was intentionally held pending an unanswered question, which is defensible, but the consequence is that two sessions produced no observable outcome.
-   - _Mitigation:_ Push + `firebase deploy` (or let CI do it on push to `master`).
+
+- _What is broken:_ `atomicwrite.web.app` serves content from before the hero rewrite, the FAQ, the outcome-based feature titles, and the new meta description.
+- _Severity:_ High for the project's stated goal (attract users); zero for correctness.
+- _Root cause:_ Deploy was intentionally held pending an unanswered question, which is defensible, but the consequence is that two sessions produced no observable outcome.
+- _Mitigation:_ Push + `firebase deploy` (or let CI do it on push to `master`).
 
 2. **The parity guarantee is now a regex, not a type.** **→ TODO_LIST: build-gate hardening batch**
    - _What is broken:_ `verify-build.mjs` extracts the hero code with `/<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>/` and the payload with `/code-preview[\s\S]*?<button[^>]*data-copy[^>]*data-code="([^"]*)"/`. It fails closed, but it will parse the _wrong_ `<pre>` if the landing page ever gains an earlier one, and then it either fails spuriously or silently compares the wrong pair.
@@ -123,39 +124,45 @@ Honest list. Nothing was destroyed; these are real defects, risks, or failures o
    - _Mitigation:_ Move the assertion into a real test (Vitest, or a Go test that reads `hero-code.ts`) once a runner exists.
 
 ~~3. **The auto-commit daemon owns all history for this work.**~~ **Won't implement — fleet-wide daemon policy - owner decision.**
-   - _What is broken:_ `07546e4`, `4c9ffe5`, `e765d0e`, `5726b1d` all read `chore: auto-commit 4 changed file(s) (heuristic)`. A future `git log` reader learns nothing about why the module path was consolidated or why `global.out.css` disappeared.
-   - _Severity:_ Low per se, high for maintainability — this is the second consecutive session with this outcome.
-   - _Root cause:_ Harness forbids committing without an explicit user request; the daemon commits anyway with a heuristic message.
-   - _Mitigation:_ None available to me under the current contract. It needs a user-side decision (explicit "commit" instruction per task, or daemon message quality).
+
+- _What is broken:_ `07546e4`, `4c9ffe5`, `e765d0e`, `5726b1d` all read `chore: auto-commit 4 changed file(s) (heuristic)`. A future `git log` reader learns nothing about why the module path was consolidated or why `global.out.css` disappeared.
+- _Severity:_ Low per se, high for maintainability — this is the second consecutive session with this outcome.
+- _Root cause:_ Harness forbids committing without an explicit user request; the daemon commits anyway with a heuristic message.
+- _Mitigation:_ None available to me under the current contract. It needs a user-side decision (explicit "commit" instruction per task, or daemon message quality).
 
 ~~4. **No browser has ever rendered the new UI.**~~ done at `785632f`
-   - _What is broken:_ The install bar, the FAQ two-column grid, the new live region, and the copy-button restyle are unverified at any viewport.
-   - _Severity:_ Medium — layout regressions are plausible (long `go get` command at 320px; `<details>` grid `items-start` alignment).
-   - _Root cause:_ No chromium on `PATH`; I did not test whether the Nix devShell provides it.
-   - _Mitigation:_ `nix shell nixpkgs#chromium -c pnpm run lighthouse` and a headless screenshot.
+
+- _What is broken:_ The install bar, the FAQ two-column grid, the new live region, and the copy-button restyle are unverified at any viewport.
+- _Severity:_ Medium — layout regressions are plausible (long `go get` command at 320px; `<details>` grid `items-start` alignment).
+- _Root cause:_ No chromium on `PATH`; I did not test whether the Nix devShell provides it.
+- _Mitigation:_ `nix shell nixpkgs#chromium -c pnpm run lighthouse` and a headless screenshot.
 
 ~~5. **The i18n warning was silenced, not explained.**~~ done — AGENTS.md documents the intended pattern
-   - _What is broken:_ `src/content/i18n/en.json` = `{}` exists purely to stop a warning. That is a workaround masquerading as a config.
-   - _Severity:_ Low now; could mislead later (an empty i18n collection hides future "collection missing" diagnostics).
-   - _Root cause:_ I optimized for a clean build log over root-cause certainty.
-   - _Mitigation:_ Confirm against Starlight's source/docs that the empty collection is the intended pattern (it appears to be — Starlight exports `i18nLoader`/`i18nSchema` for exactly this) and document it; already documented in `AGENTS.md`.
+
+- _What is broken:_ `src/content/i18n/en.json` = `{}` exists purely to stop a warning. That is a workaround masquerading as a config.
+- _Severity:_ Low now; could mislead later (an empty i18n collection hides future "collection missing" diagnostics).
+- _Root cause:_ I optimized for a clean build log over root-cause certainty.
+- _Mitigation:_ Confirm against Starlight's source/docs that the empty collection is the intended pattern (it appears to be — Starlight exports `i18nLoader`/`i18nSchema` for exactly this) and document it; already documented in `AGENTS.md`.
 
 ~~6. **`astro.config.mjs` now depends on Node/Astro being able to import a `.ts` file.**~~ **Won't implement — keep - the build gate fails loudly if it breaks.**
-   - _What is broken:_ `import { siteConfig } from "./src/data/config.ts"` in the Astro config. It works today (build succeeds), but it is an implicit dependency on type-stripping/bundling behavior in the config loader.
-   - _Severity:_ Low, but a build-time hard failure if it changes upstream.
-   - _Root cause:_ I preferred a single source of the description over a duplicated literal.
-   - _Mitigation:_ Keep it (the benefit outweighs the risk) but the gate would catch a break immediately on the next build; the whole build fails, loudly.
+
+- _What is broken:_ `import { siteConfig } from "./src/data/config.ts"` in the Astro config. It works today (build succeeds), but it is an implicit dependency on type-stripping/bundling behavior in the config loader.
+- _Severity:_ Low, but a build-time hard failure if it changes upstream.
+- _Root cause:_ I preferred a single source of the description over a duplicated literal.
+- _Mitigation:_ Keep it (the benefit outweighs the risk) but the gate would catch a break immediately on the next build; the whole build fails, loudly.
 
 ~~7. **One file is uncommitted at report time.**~~ done — committed by the daemon since
-   - _What is broken:_ `website/src/content/docs/changelog.mdx` is modified (regenerated) and untracked by a commit as of this writing.
-   - _Severity:_ Trivial; the daemon will pick it up.
-   - _Root cause:_ Timing between the last build and the report.
-   - _Mitigation:_ None needed.
+
+- _What is broken:_ `website/src/content/docs/changelog.mdx` is modified (regenerated) and untracked by a commit as of this writing.
+- _Severity:_ Trivial; the daemon will pick it up.
+- _Root cause:_ Timing between the last build and the report.
+- _Mitigation:_ None needed.
 
 ~~8. **The canonical output format was overridden.**~~ done — format note - no action
-   - _What is broken:_ The `status-report` skill specifies a styled HTML dashboard; the user asked for `.md`, and previous reports in this repo are `.md`. I honored the user's instruction (correct) but this report is therefore inconsistent with the skill's default.
-   - _Severity:_ None.
-   - _Mitigation:_ Flagged in the header and closing message, per the skill's own override guidance.
+
+- _What is broken:_ The `status-report` skill specifies a styled HTML dashboard; the user asked for `.md`, and previous reports in this repo are `.md`. I honored the user's instruction (correct) but this report is therefore inconsistent with the skill's default.
+- _Severity:_ None.
+- _Mitigation:_ Flagged in the header and closing message, per the skill's own override guidance.
 
 ## e) WHAT WE SHOULD IMPROVE
 
@@ -171,9 +178,9 @@ Honest list. Nothing was destroyed; these are real defects, risks, or failures o
 
 6. **Prefer a gate that fails on a type, not a regex.** The next iteration of `verify-build.mjs` should parse the DOM or, better, assert at the source level: `heroCode === stripTags(highlightedHeroCode())` in a real test. **→ TODO_LIST: build-gate hardening batch**
 7. **Extend the gate to docs pages.** The same class of split brain (a sentence maintained in two places) can appear in Starlight meta/head config; a generic "every page's meta description equals `siteConfig.description`" assertion would cover it. **→ TODO_LIST: build-gate hardening batch**
-~~8. **Keep consolidating single-source constants.** `importPath` was the second such bug in two sessions. Any string built by transforming another string is a candidate for a named derivation at the source.~~ done at `07546e4`
-9. **Add a browser-based smoke test** (Playwright) covering: copy button writes the exact payload, FAQ opens, install command is visible at 320px. This replaces three manual checks and is CI-able. **→ ROADMAP: Playwright smoke suite (theme 3)**
-10. **Consider a `?raw` or JSON projection of `siteConfig`** so build scripts and CI can consume the module path without importing TypeScript. **→ ROADMAP: siteConfig JSON projection (theme 3)**
+   ~~8. **Keep consolidating single-source constants.** `importPath` was the second such bug in two sessions. Any string built by transforming another string is a candidate for a named derivation at the source.~~ done at `07546e4`
+8. **Add a browser-based smoke test** (Playwright) covering: copy button writes the exact payload, FAQ opens, install command is visible at 320px. This replaces three manual checks and is CI-able. **→ ROADMAP: Playwright smoke suite (theme 3)**
+9. **Consider a `?raw` or JSON projection of `siteConfig`** so build scripts and CI can consume the module path without importing TypeScript. **→ ROADMAP: siteConfig JSON projection (theme 3)**
 
 **Quality gates**
 
@@ -194,88 +201,88 @@ Sorted by category, each with impact, effort, and type. Impact: C=Critical, H=Hi
 
 ### Delivery (highest value)
 
-| # | Task                                                                                                                                           | Impact | Effort | Category |
-| - | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| 1 **→ TODO_LIST: deploy + live verification** | Push `master` so the website workflow fires and CI builds the changes | C | S | Ops |
-| 2 **→ TODO_LIST: deploy + live verification** | Deploy to Firebase (`--only hosting:atomicwrite --project lars-software`) and confirm the live landing page shows the install command and FAQ | C | S | Ops |
-| 3 **→ TODO_LIST: post-deploy live verification** | Fetch the live URL after deploy and assert the install command + 6 FAQ items are present | H | S | Ops |
-| 4 **→ ROADMAP: custom domains (theme 3)** | Verify DNS for `atomicwrite.lars.software` / `go-atomic-write.lars.software` (canonical + OG URLs point there while only `*.web.app` resolves) | H | S | Ops |
-| ~~5~~ done at `c30d40b` | ~~Confirm the `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret still deploys end to end~~ | ~~H~~ | ~~S~~ | ~~Ops~~ |
-| ~~6~~ **Superseded — de-facto decided - rides [Unreleased].** | ~~Decide whether these website-only changes get their own version entry or ride the next release~~ | ~~M~~ | ~~S~~ | ~~Ops~~ |
+| #                                                             | Task                                                                                                                                           | Impact | Effort | Category |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
+| 1 **→ TODO_LIST: deploy + live verification**                 | Push `master` so the website workflow fires and CI builds the changes                                                                          | C      | S      | Ops      |
+| 2 **→ TODO_LIST: deploy + live verification**                 | Deploy to Firebase (`--only hosting:atomicwrite --project lars-software`) and confirm the live landing page shows the install command and FAQ  | C      | S      | Ops      |
+| 3 **→ TODO_LIST: post-deploy live verification**              | Fetch the live URL after deploy and assert the install command + 6 FAQ items are present                                                       | H      | S      | Ops      |
+| 4 **→ ROADMAP: custom domains (theme 3)**                     | Verify DNS for `atomicwrite.lars.software` / `go-atomic-write.lars.software` (canonical + OG URLs point there while only `*.web.app` resolves) | H      | S      | Ops      |
+| ~~5~~ done at `c30d40b`                                       | ~~Confirm the `FIREBASE_SERVICE_ACCOUNT_LARS_SOFTWARE` secret still deploys end to end~~                                                       | ~~H~~  | ~~S~~  | ~~Ops~~  |
+| ~~6~~ **Superseded — de-facto decided - rides [Unreleased].** | ~~Decide whether these website-only changes get their own version entry or ride the next release~~                                             | ~~M~~  | ~~S~~  | ~~Ops~~  |
 
 ### Verification (closes the two-session gap)
 
-| #  | Task                                                                                                                  | Impact | Effort | Category |
-| -- | --------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| ~~7~~ done at `3387ca9` | ~~Run `nix shell nixpkgs#chromium -c pnpm run lighthouse` and record all four scores against the configured budgets~~ | ~~H~~ | ~~M~~ | ~~Quality~~ |
-| 8 **→ TODO_LIST: browser verification sweep** | Headless screenshot the landing page at 320px and 1440px; inspect the install bar and FAQ grid | H | M | Quality |
-| 9 **→ TODO_LIST: browser verification sweep** | Run an axe/contrast check on `text-text-muted` over `bg-bg-card` in the FAQ | M | S | Quality |
-| 10 **→ TODO_LIST: browser verification sweep** | Verify keyboard tab order: install Copy → docs → star → code Copy, with visible focus on `<summary>` in both themes | M | S | Quality |
-| 11 **→ TODO_LIST: browser verification sweep** | Render `og-image.svg` to a temp PNG and `compare` it against `og-image.png` to prove they match | M | S | Quality |
-| ~~12~~ **Superseded — generator owns OG from one geometry.** | ~~Re-verify `[data-copy]` and the live region after a real ClientRouter navigation (landing → docs → back) in a browser~~ | ~~H~~ | ~~M~~ | ~~Quality~~ |
+| #                                                            | Task                                                                                                                      | Impact | Effort | Category    |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ----------- |
+| ~~7~~ done at `3387ca9`                                      | ~~Run `nix shell nixpkgs#chromium -c pnpm run lighthouse` and record all four scores against the configured budgets~~     | ~~H~~  | ~~M~~  | ~~Quality~~ |
+| 8 **→ TODO_LIST: browser verification sweep**                | Headless screenshot the landing page at 320px and 1440px; inspect the install bar and FAQ grid                            | H      | M      | Quality     |
+| 9 **→ TODO_LIST: browser verification sweep**                | Run an axe/contrast check on `text-text-muted` over `bg-bg-card` in the FAQ                                               | M      | S      | Quality     |
+| 10 **→ TODO_LIST: browser verification sweep**               | Verify keyboard tab order: install Copy → docs → star → code Copy, with visible focus on `<summary>` in both themes       | M      | S      | Quality     |
+| 11 **→ TODO_LIST: browser verification sweep**               | Render `og-image.svg` to a temp PNG and `compare` it against `og-image.png` to prove they match                           | M      | S      | Quality     |
+| ~~12~~ **Superseded — generator owns OG from one geometry.** | ~~Re-verify `[data-copy]` and the live region after a real ClientRouter navigation (landing → docs → back) in a browser~~ | ~~H~~  | ~~M~~  | ~~Quality~~ |
 
 ### Gate hardening
 
-| #  | Task                                                                                                                                      | Impact | Effort | Category |
-| -- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| 13 **→ TODO_LIST: build-gate hardening batch** | Replace the regex hero-parity check with a source-level assertion (`heroCode === stripTags(highlightedHeroCode())`) in a real test runner | H | M | Quality |
-| 14 **→ TODO_LIST: build-gate hardening batch** | Add an assertion that every built page's `<meta name="description">` equals `siteConfig.description` | H | M | Quality |
-| 15 **→ TODO_LIST: build-gate hardening batch** | Add an assertion that the FAQ `<details>` count equals `faqItems.length` | M | S | Quality |
-| 16 **→ TODO_LIST: build-gate hardening batch** | Add an assertion that the copy-button restyle class (`text-success`) exists in emitted CSS | L | S | Quality |
-| 17 **→ TODO_LIST: build-gate hardening batch** | Add a CSP assertion that no inline script remains unhashed after `fix-csp.mjs` | H | M | Quality |
-| 18 **→ TODO_LIST: build-gate hardening batch** | Add a check that `verify-build.mjs` found the expected number of copy buttons, not merely `>= 2` | M | S | Quality |
-| 19 **→ ROADMAP: gate testability via real runner (theme 3)** | Introduce Vitest (or a Go-side reader for the `.ts` data files) so gate logic is testable | H | L | Quality |
-| 20 **→ TODO_LIST: build-gate hardening batch** | Add a `pnpm run check` that chains typecheck → build → validate for one-command local gating | M | S | Quality |
+| #                                                            | Task                                                                                                                                      | Impact | Effort | Category |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
+| 13 **→ TODO_LIST: build-gate hardening batch**               | Replace the regex hero-parity check with a source-level assertion (`heroCode === stripTags(highlightedHeroCode())`) in a real test runner | H      | M      | Quality  |
+| 14 **→ TODO_LIST: build-gate hardening batch**               | Add an assertion that every built page's `<meta name="description">` equals `siteConfig.description`                                      | H      | M      | Quality  |
+| 15 **→ TODO_LIST: build-gate hardening batch**               | Add an assertion that the FAQ `<details>` count equals `faqItems.length`                                                                  | M      | S      | Quality  |
+| 16 **→ TODO_LIST: build-gate hardening batch**               | Add an assertion that the copy-button restyle class (`text-success`) exists in emitted CSS                                                | L      | S      | Quality  |
+| 17 **→ TODO_LIST: build-gate hardening batch**               | Add a CSP assertion that no inline script remains unhashed after `fix-csp.mjs`                                                            | H      | M      | Quality  |
+| 18 **→ TODO_LIST: build-gate hardening batch**               | Add a check that `verify-build.mjs` found the expected number of copy buttons, not merely `>= 2`                                          | M      | S      | Quality  |
+| 19 **→ ROADMAP: gate testability via real runner (theme 3)** | Introduce Vitest (or a Go-side reader for the `.ts` data files) so gate logic is testable                                                 | H      | L      | Quality  |
+| 20 **→ TODO_LIST: build-gate hardening batch**               | Add a `pnpm run check` that chains typecheck → build → validate for one-command local gating                                              | M      | S      | Quality  |
 
 ### Content and voice
 
-| #  | Task                                                                                                   | Impact | Effort | Category |
-| -- | ------------------------------------------------------------------------------------------------------ | ------ | ------ | -------- |
-| 21 **→ TODO_LIST: landing voice pass** | Audit and rewrite section titles/eyebrows (`"Safety you can rely on."`, `"The objections, answered."`) | M | S | Docs |
-| 22 **→ TODO_LIST: landing voice pass** | Review the hero badge copy (`"Crash-safe file writes for Go"`) against the new voice | M | S | Docs |
-| 23 **→ TODO_LIST: landing voice pass** | Audit Footer and Newsletter copy for the same corporate register | L | S | Docs |
-| 24 **→ TODO_LIST: FAQ guide links** | Link the cost FAQ answer to `guides/benchmarks` | M | S | Docs |
-| 25 **→ TODO_LIST: FAQ guide links** | Link the error FAQ answer to `guides/error-handling` | M | S | Docs |
-| 26 **→ ROADMAP: when-not-to-use docs page (theme 2)** | Add a "when not to use this" docs page mirroring FAQ item 2 | M | M | Docs |
-| 27 **→ TODO_LIST: surface more APIs on landing** | Surface `WriteIfChanged`, `WriteFunc`, `WriteWithPerm` on the landing page | M | M | Docs |
-| 28 **→ TODO_LIST: hero metrics benefit framing** | Reconsider the hero metrics row ("~27 GB/s hash") — lead with user benefit, not throughput | L | S | Docs |
-| 29 **→ TODO_LIST: docs/SEO hygiene batch** | Add the `go get` install command to each docs entry point | M | S | Docs |
-| 30 **→ TODO_LIST: docs/SEO hygiene batch** | Add the FAQ content to the docs so the site search index covers it | M | M | Docs |
-| 31 **→ TODO_LIST: config-reloader use case** | Add a config-reloader example to Use Cases | L | S | Docs |
-| 32 **→ TODO_LIST: docs/SEO hygiene batch** | Explain the "partial" atomic-rename cell for DIY in the comparison matrix | L | S | Docs |
-| 33 **→ ROADMAP: social proof (theme 3)** | Consider a "who uses this" / testimonial slot | L | M | Feature |
+| #                                                     | Task                                                                                                   | Impact | Effort | Category |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------ | ------ | -------- |
+| 21 **→ TODO_LIST: landing voice pass**                | Audit and rewrite section titles/eyebrows (`"Safety you can rely on."`, `"The objections, answered."`) | M      | S      | Docs     |
+| 22 **→ TODO_LIST: landing voice pass**                | Review the hero badge copy (`"Crash-safe file writes for Go"`) against the new voice                   | M      | S      | Docs     |
+| 23 **→ TODO_LIST: landing voice pass**                | Audit Footer and Newsletter copy for the same corporate register                                       | L      | S      | Docs     |
+| 24 **→ TODO_LIST: FAQ guide links**                   | Link the cost FAQ answer to `guides/benchmarks`                                                        | M      | S      | Docs     |
+| 25 **→ TODO_LIST: FAQ guide links**                   | Link the error FAQ answer to `guides/error-handling`                                                   | M      | S      | Docs     |
+| 26 **→ ROADMAP: when-not-to-use docs page (theme 2)** | Add a "when not to use this" docs page mirroring FAQ item 2                                            | M      | M      | Docs     |
+| 27 **→ TODO_LIST: surface more APIs on landing**      | Surface `WriteIfChanged`, `WriteFunc`, `WriteWithPerm` on the landing page                             | M      | M      | Docs     |
+| 28 **→ TODO_LIST: hero metrics benefit framing**      | Reconsider the hero metrics row ("~27 GB/s hash") — lead with user benefit, not throughput             | L      | S      | Docs     |
+| 29 **→ TODO_LIST: docs/SEO hygiene batch**            | Add the `go get` install command to each docs entry point                                              | M      | S      | Docs     |
+| 30 **→ TODO_LIST: docs/SEO hygiene batch**            | Add the FAQ content to the docs so the site search index covers it                                     | M      | M      | Docs     |
+| 31 **→ TODO_LIST: config-reloader use case**          | Add a config-reloader example to Use Cases                                                             | L      | S      | Docs     |
+| 32 **→ TODO_LIST: docs/SEO hygiene batch**            | Explain the "partial" atomic-rename cell for DIY in the comparison matrix                              | L      | S      | Docs     |
+| 33 **→ ROADMAP: social proof (theme 3)**              | Consider a "who uses this" / testimonial slot                                                          | L      | M      | Feature  |
 
 ### Architecture and debt
 
-| #  | Task                                                                                                            | Impact | Effort | Category |
-| -- | --------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| 34 **→ TODO_LIST: CopyButton.astro extraction** | Extract a `CopyButton.astro` to hold the repeated ~300-char Tailwind class string | M | M | Cleanup |
-| ~~35~~ done — AGENTS.md documents the intended pattern | ~~Reprove (in a comment or test) that the empty i18n collection is Starlight's intended pattern, not a workaround~~ | ~~L~~ | ~~S~~ | ~~Quality~~ |
-| ~~36~~ **Won't implement — config.ts import works; gate fails loudly if it breaks.** | ~~Evaluate whether `astro.config.mjs` should import `config.ts` or consume a JSON projection instead~~ | ~~L~~ | ~~M~~ | ~~Cleanup~~ |
-| ~~37~~ **Won't implement — unverifiable; artifact gitignored.** | ~~Re-verify that no repo-external process referenced the deleted `global.out.css`~~ | ~~L~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~38~~ done at `3387ca9` | ~~Check for other stale generated artifacts (`*.out.*`, committed build output) repo-wide~~ | ~~M~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~39~~ done — verified in-session + gitignored | ~~Confirm `dist/` remains gitignored after the workflow changes~~ | ~~L~~ | ~~S~~ | ~~Cleanup~~ |
-| ~~40~~ done at `3387ca9` | ~~Verify `typescript` stays pinned at `^6` against Dependabot~~ | ~~M~~ | ~~S~~ | ~~Cleanup~~ |
+| #                                                                                    | Task                                                                                                                | Impact | Effort | Category    |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ----------- |
+| 34 **→ TODO_LIST: CopyButton.astro extraction**                                      | Extract a `CopyButton.astro` to hold the repeated ~300-char Tailwind class string                                   | M      | M      | Cleanup     |
+| ~~35~~ done — AGENTS.md documents the intended pattern                               | ~~Reprove (in a comment or test) that the empty i18n collection is Starlight's intended pattern, not a workaround~~ | ~~L~~  | ~~S~~  | ~~Quality~~ |
+| ~~36~~ **Won't implement — config.ts import works; gate fails loudly if it breaks.** | ~~Evaluate whether `astro.config.mjs` should import `config.ts` or consume a JSON projection instead~~              | ~~L~~  | ~~M~~  | ~~Cleanup~~ |
+| ~~37~~ **Won't implement — unverifiable; artifact gitignored.**                      | ~~Re-verify that no repo-external process referenced the deleted `global.out.css`~~                                 | ~~L~~  | ~~S~~  | ~~Cleanup~~ |
+| ~~38~~ done at `3387ca9`                                                             | ~~Check for other stale generated artifacts (`*.out.*`, committed build output) repo-wide~~                         | ~~M~~  | ~~S~~  | ~~Cleanup~~ |
+| ~~39~~ done — verified in-session + gitignored                                       | ~~Confirm `dist/` remains gitignored after the workflow changes~~                                                   | ~~L~~  | ~~S~~  | ~~Cleanup~~ |
+| ~~40~~ done at `3387ca9`                                                             | ~~Verify `typescript` stays pinned at `^6` against Dependabot~~                                                     | ~~M~~  | ~~S~~  | ~~Cleanup~~ |
 
 ### CI and integration
 
-| #  | Task                                                                                                                                                                                                                                                                                                              | Impact | Effort | Category |
-| -- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| 41 **→ TODO_LIST: link checker** | Add an internal link checker for docs and README | M | M | Quality |
-| 42 **→ TODO_LIST: docs/SEO hygiene batch** | Add the parity/validate steps to any documentation of the release checklist | M | S | Docs |
-| 43 **→ TODO_LIST: Lighthouse CI gate (browser batch)** | Add a Lighthouse budget step to `website.yml` once chromium is available on runners | M | M | Quality |
-| 44 **→ TODO_LIST: animations.js after ClientRouter nav** | Verify `animations.js` re-runs after ClientRouter navigation (same class as the copy fix) | M | M | Bug |
-| ~~45~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod | ~~Fix the Website workflow path filter: it triggers on `website/**` only, but the build reads root `CHANGELOG.md` (via `sync-changelog.mjs`) and root `go.mod` (via the new parity gate), so root-only changes silently leave the live site stale — exactly the freeze class that already bit this repo for 7 weeks~~ | ~~H~~ | ~~S~~ | ~~Bug~~ |
-| ~~46~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod | ~~Add `CHANGELOG.md`, `README.md`, and `go.mod` to the Website workflow's `paths` (or drop the path filter for deploying)~~ | ~~H~~ | ~~S~~ | ~~Bug~~ |
+| #                                                                         | Task                                                                                                                                                                                                                                                                                                                  | Impact | Effort | Category |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
+| 41 **→ TODO_LIST: link checker**                                          | Add an internal link checker for docs and README                                                                                                                                                                                                                                                                      | M      | M      | Quality  |
+| 42 **→ TODO_LIST: docs/SEO hygiene batch**                                | Add the parity/validate steps to any documentation of the release checklist                                                                                                                                                                                                                                           | M      | S      | Docs     |
+| 43 **→ TODO_LIST: Lighthouse CI gate (browser batch)**                    | Add a Lighthouse budget step to `website.yml` once chromium is available on runners                                                                                                                                                                                                                                   | M      | M      | Quality  |
+| 44 **→ TODO_LIST: animations.js after ClientRouter nav**                  | Verify `animations.js` re-runs after ClientRouter navigation (same class as the copy fix)                                                                                                                                                                                                                             | M      | M      | Bug      |
+| ~~45~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod | ~~Fix the Website workflow path filter: it triggers on `website/**` only, but the build reads root `CHANGELOG.md` (via `sync-changelog.mjs`) and root `go.mod` (via the new parity gate), so root-only changes silently leave the live site stale — exactly the freeze class that already bit this repo for 7 weeks~~ | ~~H~~  | ~~S~~  | ~~Bug~~  |
+| ~~46~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod | ~~Add `CHANGELOG.md`, `README.md`, and `go.mod` to the Website workflow's `paths` (or drop the path filter for deploying)~~                                                                                                                                                                                           | ~~H~~  | ~~S~~  | ~~Bug~~  |
 
 ### Tracking
 
-| #  | Task                                                                                           | Impact | Effort | Category |
-| -- | ---------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| ~~47~~ done — this pass is the harvest | ~~Run `docs-health` HARVEST to pull this report's section (f) into `TODO_LIST.md` / `ROADMAP.md`~~ | ~~H~~ | ~~M~~ | ~~Docs~~ |
-| ~~48~~ done — this pass annotates the predecessor reports | ~~Annotate the two predecessor reports with what this session resolved, inline~~ | ~~M~~ | ~~S~~ | ~~Docs~~ |
-| ~~49~~ done at `23-11 report` | ~~Schedule a follow-up status report after the next deploy~~ | ~~L~~ | ~~S~~ | ~~Docs~~ |
-| 50 **→ TODO_LIST: sitemap lastmod** | Check sitemap `lastmod` freshness after the deploy | L | S | Ops |
+| #                                                         | Task                                                                                               | Impact | Effort | Category |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
+| ~~47~~ done — this pass is the harvest                    | ~~Run `docs-health` HARVEST to pull this report's section (f) into `TODO_LIST.md` / `ROADMAP.md`~~ | ~~H~~  | ~~M~~  | ~~Docs~~ |
+| ~~48~~ done — this pass annotates the predecessor reports | ~~Annotate the two predecessor reports with what this session resolved, inline~~                   | ~~M~~  | ~~S~~  | ~~Docs~~ |
+| ~~49~~ done at `23-11 report`                             | ~~Schedule a follow-up status report after the next deploy~~                                       | ~~L~~  | ~~S~~  | ~~Docs~~ |
+| 50 **→ TODO_LIST: sitemap lastmod**                       | Check sitemap `lastmod` freshness after the deploy                                                 | L      | S      | Ops      |
 
 ## g) QUESTIONS I CAN NOT ANSWER MYSELF
 

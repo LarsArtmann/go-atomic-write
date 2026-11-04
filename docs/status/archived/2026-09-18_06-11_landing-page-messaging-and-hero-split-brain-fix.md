@@ -15,18 +15,18 @@
 ### What did I forget?
 
 1. **The OG image.** I rewrote `siteConfig.description`, which feeds `og:description`, `twitter:description`, the JSON-LD block, and the meta description. I never opened `public/og-image.svg` / `og-image.png`. If that image contains the old mechanism-first sentence ("TOCTOU-safe writes via fingerprint verification..."), the social card now contradicts the page it links to. Unverified, likely inconsistent. **→ TODO_LIST: OG tagline/CTA voice**
-~~2. **Every other surface carrying the same old sentence.** `README.md` and the 9 Starlight doc pages were not audited for the mechanism-first framing I just removed from the landing page. The site may now speak two voices.~~ done at `4c9ffe5`
-3. **Browser-level verification.** I verified the DOM, CSS, and served HTML. I never rendered a pixel. Layout regressions in the new install bar (320px width) and the FAQ grid are unverified. **→ TODO_LIST: browser verification sweep**
-~~4. **A regression guard for the exact bug I fixed.** The single-source design makes drift structurally impossible, but nothing asserts `displayed === clipboard` after a future refactor. I fixed the class of bug and left it untested.~~ done at `e765d0e`
-~~5. **Meaningful commit messages.** The auto-commit daemon wrote two `chore: auto-commit N changed file(s) (heuristic)` commits for work that spanned 13 files. The history now says nothing.~~ done — retrospective - daemon gotcha in AGENTS.md
+   ~~2. **Every other surface carrying the same old sentence.** `README.md` and the 9 Starlight doc pages were not audited for the mechanism-first framing I just removed from the landing page. The site may now speak two voices.~~ done at `4c9ffe5`
+2. **Browser-level verification.** I verified the DOM, CSS, and served HTML. I never rendered a pixel. Layout regressions in the new install bar (320px width) and the FAQ grid are unverified. **→ TODO_LIST: browser verification sweep**
+   ~~4. **A regression guard for the exact bug I fixed.** The single-source design makes drift structurally impossible, but nothing asserts `displayed === clipboard` after a future refactor. I fixed the class of bug and left it untested.~~ done at `e765d0e`
+   ~~5. **Meaningful commit messages.** The auto-commit daemon wrote two `chore: auto-commit N changed file(s) (heuristic)` commits for work that spanned 13 files. The history now says nothing.~~ done — retrospective - daemon gotcha in AGENTS.md
 
 ### What could I have done better?
 
 1. **Follow the messaging change to its edges.** A description change is a multi-surface change. I treated it as a one-line edit. **→ TODO_LIST: landing voice pass**
-~~2. **Centralize `importPath`.** It is derived twice (in `HeroSection.astro` and in `hero-code.ts`) from the same `siteConfig.github`. That is a mini split-brain, the same pattern as the bug I just fixed.~~ done at `07546e4`
-3. **Verify visually.** A headless screenshot at 320px and 1440px would have cost one command and covered the highest residual risk. **→ TODO_LIST: browser verification sweep**
-~~4. **Run Lighthouse.** `pnpm run lighthouse` exists with budgets configured. Chromium was not confirmed available and I chose not to find out.~~ done at `3387ca9`
-~~5. **Audit the whole page, not the sections I promised.** I rewrote feature titles but left the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity") in corporate register, directly against the clarity rule I was applying.~~ done at `07546e4`
+   ~~2. **Centralize `importPath`.** It is derived twice (in `HeroSection.astro` and in `hero-code.ts`) from the same `siteConfig.github`. That is a mini split-brain, the same pattern as the bug I just fixed.~~ done at `07546e4`
+2. **Verify visually.** A headless screenshot at 320px and 1440px would have cost one command and covered the highest residual risk. **→ TODO_LIST: browser verification sweep**
+   ~~4. **Run Lighthouse.** `pnpm run lighthouse` exists with budgets configured. Chromium was not confirmed available and I chose not to find out.~~ done at `3387ca9`
+   ~~5. **Audit the whole page, not the sections I promised.** I rewrote feature titles but left the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity") in corporate register, directly against the clarity rule I was applying.~~ done at `07546e4`
 
 ### What could I still improve?
 
@@ -128,12 +128,12 @@ Honest list. Nothing was destroyed, but three things were genuinely wrong at ses
 **Consistency (highest value)**
 
 1. Audit `public/og-image.svg`; rewrite its copy if it carries the old mechanism sentence; regenerate `og-image.png` at 1200x630. **→ TODO_LIST: OG tagline/CTA voice**
-~~2. Rewrite `README.md` to lead with the consequence, matching the new landing page.~~ done at `4c9ffe5`
-~~3. Audit all 9 Starlight docs pages for the old mechanism-first sentence.~~ done — grep clean across docs pages
-~~4. Rewrite the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity").~~ done at `07546e4`
-5. Consider rewording the FeatureGrid title ("Safety you can rely on."). **→ TODO_LIST: landing voice pass**
-6. Review the hero badge ("Crash-safe file writes for Go") against the new hero voice. **→ TODO_LIST: landing voice pass**
-7. Check the Footer and Newsletter copy for the same register problem. **→ TODO_LIST: landing voice pass**
+   ~~2. Rewrite `README.md` to lead with the consequence, matching the new landing page.~~ done at `4c9ffe5`
+   ~~3. Audit all 9 Starlight docs pages for the old mechanism-first sentence.~~ done — grep clean across docs pages
+   ~~4. Rewrite the FeatureGrid subtitle ("Every decision optimized for crash safety and concurrent-write integrity").~~ done at `07546e4`
+2. Consider rewording the FeatureGrid title ("Safety you can rely on."). **→ TODO_LIST: landing voice pass**
+3. Review the hero badge ("Crash-safe file writes for Go") against the new hero voice. **→ TODO_LIST: landing voice pass**
+4. Check the Footer and Newsletter copy for the same register problem. **→ TODO_LIST: landing voice pass**
 
 **Architecture / debt**
 ~~8. Export one `modulePath` (or `importPath`) from `config.ts`; consume it in both `hero-code.ts` and `HeroSection.astro`.~~ done at `07546e4`

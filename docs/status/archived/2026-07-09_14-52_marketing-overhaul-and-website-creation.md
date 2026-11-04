@@ -214,9 +214,9 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 ### Content Quality
 
 10. **Docs are thin** — 9 pages but mostly reference material. No tutorials, no "why" essays, no deep-dives. Gogenfilter has more guide content. **→ ROADMAP: docs depth essays (theme 2)**
-~~11. **No FAQ page** — Common questions (permissions, network filesystems, NFS, etc.) not addressed.~~ **Superseded — landing FAQ shipped 09-18; docs port is theme 2.**
-12. **No migration guide** — For users coming from naive write patterns. **→ ROADMAP: migration guide (theme 2)**
-13. **Benchmarks page has no live dashboard** — Gogenfilter links to a GitHub Pages benchmark dashboard. **→ ROADMAP: benchmark dashboard (theme 3)**
+    ~~11. **No FAQ page** — Common questions (permissions, network filesystems, NFS, etc.) not addressed.~~ **Superseded — landing FAQ shipped 09-18; docs port is theme 2.**
+11. **No migration guide** — For users coming from naive write patterns. **→ ROADMAP: migration guide (theme 2)**
+12. **Benchmarks page has no live dashboard** — Gogenfilter links to a GitHub Pages benchmark dashboard. **→ ROADMAP: benchmark dashboard (theme 3)**
 
 ---
 
@@ -281,8 +281,8 @@ The `overrides` block was stripped to only `brace-expansion` during version debu
 ### Dependents & Social Proof
 
 36. Create `/dependents` page (GitHub code search for importers) **→ ROADMAP: dependents page (theme 3)**
-~~37. Add GitHub Sponsors button once FUNDING.yml exists~~ **Won't implement — owner decision - not requested since.**
-38. Add "Used by" section once dependents exist **→ ROADMAP: social proof (theme 3)**
+    ~~37. Add GitHub Sponsors button once FUNDING.yml exists~~ **Won't implement — owner decision - not requested since.**
+37. Add "Used by" section once dependents exist **→ ROADMAP: social proof (theme 3)**
 
 ### Code Quality
 

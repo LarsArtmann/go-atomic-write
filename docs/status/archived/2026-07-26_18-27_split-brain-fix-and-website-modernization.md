@@ -144,9 +144,9 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 ### On the codebase (found this session, not mine to fix silently)
 
 8. **Meta-CSP is the wrong layer for `frame-ancestors`.** Move CSP to `firebase.json` headers (stronger, supports all directives) or drop unsupported directives from the meta. **→ TODO_LIST: CSP header-vs-meta architecture**
-~~9. **`website/flake.nix` puts developers in a Node 22 shell while docs say Node 24.** Split brain between the flake and AGENTS.md. Trivial fix, real confusion for the next contributor.~~ done at `785632f`
-10. **Build scripts have no regression tests.** A future changelog `<` or a script-attribute `>` could silently break `pnpm run build`. The project's "all tests automated" mandate should cover build tooling too. **→ TODO_LIST: build-script regression tests**
-~~11. **The website teaches an un-tagged API.** `WriteVerified`/`WriteIfChanged` exist only on `master`, not in any release. A user on the latest tag (v0.3.0) gets the old API; the new docs will mislead them. (Carried forward from the prior report's g.2 — still unresolved.)~~ done at `5557d5c`
+   ~~9. **`website/flake.nix` puts developers in a Node 22 shell while docs say Node 24.** Split brain between the flake and AGENTS.md. Trivial fix, real confusion for the next contributor.~~ done at `785632f`
+9. **Build scripts have no regression tests.** A future changelog `<` or a script-attribute `>` could silently break `pnpm run build`. The project's "all tests automated" mandate should cover build tooling too. **→ TODO_LIST: build-script regression tests**
+   ~~11. **The website teaches an un-tagged API.** `WriteVerified`/`WriteIfChanged` exist only on `master`, not in any release. A user on the latest tag (v0.3.0) gets the old API; the new docs will mislead them. (Carried forward from the prior report's g.2 — still unresolved.)~~ done at `5557d5c`
 
 ---
 
@@ -156,8 +156,8 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 
 1. **Move CSP to `firebase.json` headers** (or drop `frame-ancestors`/`report-uri` from the meta). Decide the meta-vs-header architecture; document the tradeoff. (§d.6, §g.1) **→ TODO_LIST: CSP header-vs-meta architecture**
 2. **Verify CSP in a real browser** — load the built site, confirm zero console violations (view transitions, theme toggle, Starlight search, copy-code, pagefind). **→ TODO_LIST: browser verification sweep**
-~~3. **Tag v0.4.0 OR gate the doc rewrite on a tag.** The website now teaches `master`-only API. Resolve the release-strategy question (§g.2) before this misleads a tagged-release user.~~ done at `5557d5c`
-~~4. **Re-verify FEATURES.md line-number citations** (`commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`) against current `atomicwrite.go` — open the file, confirm or fix.~~ done — fixed in-audit - FEATURES.md refs re-derived 2026-11-03
+   ~~3. **Tag v0.4.0 OR gate the doc rewrite on a tag.** The website now teaches `master`-only API. Resolve the release-strategy question (§g.2) before this misleads a tagged-release user.~~ done at `5557d5c`
+   ~~4. **Re-verify FEATURES.md line-number citations** (`commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`) against current `atomicwrite.go` — open the file, confirm or fix.~~ done — fixed in-audit - FEATURES.md refs re-derived 2026-11-03
 
 ### High — finish what I deferred or left partial
 
@@ -188,34 +188,34 @@ FEATURES rows cite `commitVerified:249`, `cleanupTmp:334`, `writeAndSync:302`. I
 ### Lower — polish & resilience
 
 22. Add a `pnpm run check` aggregate script (typecheck + build + csp + lint) for a single pre-merge gate. **→ TODO_LIST: build-gate hardening batch**
-~~23. Add `html-validate` to the website CI step (dep is already in `devDependencies` but not wired).~~ done at `5726b1d`
-24. Document the meta-vs-header CSP decision in `AGENTS.md` website gotchas (once §f.1 is decided). **→ TODO_LIST: CSP header-vs-meta architecture**
-25. Add a `CONTRIBUTING.md` note that doc code examples MUST compile (link to the temp-module method I used, or add a `make doccheck`). **→ TODO_LIST: docs/SEO hygiene batch**
-~~26. Sweep the daemon-authored commit messages for typos (`ore(ci)`) — cosmetic, history-only, low priority.~~ **Won't implement — immutable history - cosmetic daemon messages.**
-~~27. Consider a `renovate.json` / Dependabot config now that CI exists (keeps `golangci-lint action` + Astro deps current).~~ done at `25ae518`
-28. Add a CSP `report-to`/`report-uri` endpoint (or a strict `report-only` mode) to catch violations without breaking the page. **→ TODO_LIST: CSP header-vs-meta architecture**
-29. Audit Starlight's bundled inline scripts for any that execute `eval`/`Function` (would need `'unsafe-eval'` — confirm none do). **→ TODO_LIST: browser verification sweep**
-30. Add an integration test that builds the website and greps the output for the string `Write(path, data, fp)` (fails if stale API ever returns to the docs — prevents regression of this session's core fix). **→ TODO_LIST: build-gate hardening batch**
-~~31. Pin `golangci-lint` version in `ci.yml` to a specific tag (currently `latest` — reproducibility risk if a new linter release adds a rule).~~ done at `8172e7b`
-~~32. Add `go test -bench=. -benchmem` to the CI workflow (benchmarks currently run only manually).~~ **Won't implement — benchmarks informational - re-measured manually (README dated).**
-~~33. Verify the `website.yml` `paths:` filter covers `CHANGELOG.md` (it triggers the changelog sync — currently only `website/**` is watched; a root CHANGELOG edit won't rebuild the site).~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod
-34. Add a deploy-preview channel (per-PR Firebase preview URL) instead of only `live` deploys. **→ ROADMAP: PR preview channel (website polish)**
-~~35. Document the release/tagging process (how `v0.4.0` gets cut — there's no RELEASE.md).~~ **Superseded — AGENTS.md Release Checklist supersedes.**
-~~36. Add a `docs/status/` README explaining the status-report convention for new contributors.~~ done — docs/status/README.md index created in-audit
-37. Confirm `atomicwrite.lars.software` DNS is live (AGENTS.md says "pending") — close out the DNS thread. **→ ROADMAP: custom domains (theme 3)**
-38. Add structured `og:title`/`og:description` per-page (currently site-wide only in `LandingLayout`). **→ TODO_LIST: brand system batch**
-39. Audit the `404.html` Starlight ships — confirm it links back to the landing page (not just docs). **→ TODO_LIST: docs/SEO hygiene batch**
-~~40. Add a `skip-to-content` link to the Starlight docs layout (landing page has one; docs may not).~~ **NOT-DO — Starlight ships skip link - landing has one.**
-41. Verify `prefers-color-scheme` is respected on first paint (no FOUC) for the docs pages. **→ TODO_LIST: browser verification sweep**
-~~42. Add `lang` attribute audit (confirm all pages are `lang="en"`).~~ **NOT-DO — Starlight/Astro emit lang=en - builds green.**
-43. Add a stale-doc-detector: a script that diffs doc code examples against `atomicwrite.go` exports and flags mismatches (the structural fix for the original split brain). **→ TODO_LIST: build-gate hardening batch**
-~~44. Run `pnpm audit` on the website and fix any high-severity findings.~~ done at `3387ca9`
-45. Add a `.nvmrc`/`engines.node` field to `website/package.json` (currently only AGENTS.md documents Node 24). **→ TODO_LIST: docs/SEO hygiene batch**
-46. Confirm `firebase.json` `cleanUrls: true` doesn't break the `/docs/* → /*` redirect (potential redirect chain). **→ TODO_LIST: browser verification sweep**
-~~47. Add a changelog entry for the `website.yml` `paths` fix once §f.33 is done.~~ done — fixed in-audit with the paths-filter fix
-48. Consider splitting `fix-csp.mjs` into a tested library function + thin CLI wrapper (testability). **→ TODO_LIST: build-script regression tests**
-~~49. Add a `Makefile`-equivalent `just`/flake task for `doccheck` (compile all doc examples) — **no**, per AGENTS.md, use flake.nix, not justfile.~~ **Won't implement — pnpm run validate + Website CI already cover it.**
-~~50. Schedule a recurring (weekly) docs-health run to catch the next split brain early.~~ **Won't implement — cadence is an owner policy decision.**
+    ~~23. Add `html-validate` to the website CI step (dep is already in `devDependencies` but not wired).~~ done at `5726b1d`
+23. Document the meta-vs-header CSP decision in `AGENTS.md` website gotchas (once §f.1 is decided). **→ TODO_LIST: CSP header-vs-meta architecture**
+24. Add a `CONTRIBUTING.md` note that doc code examples MUST compile (link to the temp-module method I used, or add a `make doccheck`). **→ TODO_LIST: docs/SEO hygiene batch**
+    ~~26. Sweep the daemon-authored commit messages for typos (`ore(ci)`) — cosmetic, history-only, low priority.~~ **Won't implement — immutable history - cosmetic daemon messages.**
+    ~~27. Consider a `renovate.json` / Dependabot config now that CI exists (keeps `golangci-lint action` + Astro deps current).~~ done at `25ae518`
+25. Add a CSP `report-to`/`report-uri` endpoint (or a strict `report-only` mode) to catch violations without breaking the page. **→ TODO_LIST: CSP header-vs-meta architecture**
+26. Audit Starlight's bundled inline scripts for any that execute `eval`/`Function` (would need `'unsafe-eval'` — confirm none do). **→ TODO_LIST: browser verification sweep**
+27. Add an integration test that builds the website and greps the output for the string `Write(path, data, fp)` (fails if stale API ever returns to the docs — prevents regression of this session's core fix). **→ TODO_LIST: build-gate hardening batch**
+    ~~31. Pin `golangci-lint` version in `ci.yml` to a specific tag (currently `latest` — reproducibility risk if a new linter release adds a rule).~~ done at `8172e7b`
+    ~~32. Add `go test -bench=. -benchmem` to the CI workflow (benchmarks currently run only manually).~~ **Won't implement — benchmarks informational - re-measured manually (README dated).**
+    ~~33. Verify the `website.yml` `paths:` filter covers `CHANGELOG.md` (it triggers the changelog sync — currently only `website/**` is watched; a root CHANGELOG edit won't rebuild the site).~~ done — fixed in-audit - paths now include root CHANGELOG.md/go.mod
+28. Add a deploy-preview channel (per-PR Firebase preview URL) instead of only `live` deploys. **→ ROADMAP: PR preview channel (website polish)**
+    ~~35. Document the release/tagging process (how `v0.4.0` gets cut — there's no RELEASE.md).~~ **Superseded — AGENTS.md Release Checklist supersedes.**
+    ~~36. Add a `docs/status/` README explaining the status-report convention for new contributors.~~ done — docs/status/README.md index created in-audit
+29. Confirm `atomicwrite.lars.software` DNS is live (AGENTS.md says "pending") — close out the DNS thread. **→ ROADMAP: custom domains (theme 3)**
+30. Add structured `og:title`/`og:description` per-page (currently site-wide only in `LandingLayout`). **→ TODO_LIST: brand system batch**
+31. Audit the `404.html` Starlight ships — confirm it links back to the landing page (not just docs). **→ TODO_LIST: docs/SEO hygiene batch**
+    ~~40. Add a `skip-to-content` link to the Starlight docs layout (landing page has one; docs may not).~~ **NOT-DO — Starlight ships skip link - landing has one.**
+32. Verify `prefers-color-scheme` is respected on first paint (no FOUC) for the docs pages. **→ TODO_LIST: browser verification sweep**
+    ~~42. Add `lang` attribute audit (confirm all pages are `lang="en"`).~~ **NOT-DO — Starlight/Astro emit lang=en - builds green.**
+33. Add a stale-doc-detector: a script that diffs doc code examples against `atomicwrite.go` exports and flags mismatches (the structural fix for the original split brain). **→ TODO_LIST: build-gate hardening batch**
+    ~~44. Run `pnpm audit` on the website and fix any high-severity findings.~~ done at `3387ca9`
+34. Add a `.nvmrc`/`engines.node` field to `website/package.json` (currently only AGENTS.md documents Node 24). **→ TODO_LIST: docs/SEO hygiene batch**
+35. Confirm `firebase.json` `cleanUrls: true` doesn't break the `/docs/* → /*` redirect (potential redirect chain). **→ TODO_LIST: browser verification sweep**
+    ~~47. Add a changelog entry for the `website.yml` `paths` fix once §f.33 is done.~~ done — fixed in-audit with the paths-filter fix
+36. Consider splitting `fix-csp.mjs` into a tested library function + thin CLI wrapper (testability). **→ TODO_LIST: build-script regression tests**
+    ~~49. Add a `Makefile`-equivalent `just`/flake task for `doccheck` (compile all doc examples) — **no**, per AGENTS.md, use flake.nix, not justfile.~~ **Won't implement — pnpm run validate + Website CI already cover it.**
+    ~~50. Schedule a recurring (weekly) docs-health run to catch the next split brain early.~~ **Won't implement — cadence is an owner policy decision.**
 
 ---
 

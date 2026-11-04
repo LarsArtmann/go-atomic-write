@@ -46,6 +46,7 @@
     "check:hero": "node scripts/check-hero-source.mjs",
     "check:links": "node scripts/check-links.mjs",
     "test:scripts": "node --test scripts/test/*.test.mjs",
+    "test:ui": "playwright test",
     "check": "pnpm run build && pnpm run check:hero && pnpm run audit:contrast && pnpm run validate && pnpm run test:scripts && pnpm run check:links && pnpm run typecheck"
   },
   "dependencies": {

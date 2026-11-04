@@ -218,7 +218,7 @@ const ogImageSvg = `\
   <g transform="translate(100, 400)" font-family="'Noto Sans','DejaVu Sans',sans-serif" font-size="24" font-weight="500">
     <g>
       <rect width="200" height="48" rx="24" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-      <text x="100" y="32" text-anchor="middle" fill="#6ee7b7">TOCTOU-safe</text>
+      <text x="100" y="32" text-anchor="middle" fill="#6ee7b7">No lost updates</text>
     </g>
     <g transform="translate(220, 0)">
       <rect width="200" height="48" rx="24" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
@@ -231,7 +231,7 @@ const ogImageSvg = `\
   </g>
 
   <!-- Bottom URL -->
-  <text x="100" y="540" font-family="'JetBrains Mono','DejaVu Sans Mono',monospace" font-size="22" font-weight="400" fill="#8b827a">github.com/larsartmann/go-atomic-write</text>
+  <text x="100" y="540" font-family="'JetBrains Mono','DejaVu Sans Mono',monospace" font-size="22" font-weight="400" fill="#8b827a">pkg.go.dev/github.com/larsartmann/go-atomic-write</text>
 
   <!-- Accent line -->
   <rect x="0" y="624" width="1200" height="6" fill="url(#emerald)"/>

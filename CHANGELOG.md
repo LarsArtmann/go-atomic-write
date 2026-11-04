@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed (website)
+
+- **OG card voice aligned with the landing page** — the generated social-share card still said "TOCTOU-safe" (the pre-September mechanism voice) and pointed at the GitHub URL on every Slack/X/Facebook preview. The brand generator now emits "No lost updates" (consequence voice) and the pkg.go.dev URL; `og-image.svg`/`png`, the lockups, and `favicon.ico` were regenerated from the same geometry (`brand:check` gates the SVGs).
+
 ## [0.6.1] - 2026-11-04
 
 ### Changed (Go module)

@@ -13,11 +13,13 @@
  *
  *   node scripts/generate-brand-assets.mjs           rewrite the artifacts
  *   node scripts/generate-brand-assets.mjs --check   exit 1 if any artifact drifted
+ *   node scripts/generate-brand-assets.mjs --png     rasterize favicon.ico, og-image.png, app icons (needs ImageMagick 7)
  *
  * Never hand-edit the generated files; edit this script and regenerate.
  * Run from anywhere: paths resolve relative to this file, not the cwd.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 
 const repoRoot = path.join(import.meta.dirname, "..");
@@ -286,6 +288,49 @@ const ARTIFACTS = [
 ];
 
 const checkMode = process.argv.includes("--check");
+const pngMode = process.argv.includes("--png");
+
+const svgTagPattern =
+	/<(?<close>\/?)(?<name>[a-zA-Z][a-zA-Z0-9-]*)(?<attrs>(?:"[^"]*"|'[^']*'|[^>])*?)(?<self>\/?)>/gu;
+
+function scanSvgTags(svg) {
+	const stack = [];
+	for (const tag of svg.matchAll(svgTagPattern)) {
+		if (tag.groups.close) {
+			const open = stack.pop();
+			if (open !== tag.groups.name) {
+				return `mismatched closing tag </${tag.groups.name}> (open: ${open ?? "none"})`;
+			}
+		} else if (!tag.groups.self) {
+			stack.push(tag.groups.name);
+		}
+	}
+	return stack.length > 0 ? `unclosed tag(s): ${stack.join(", ")}` : null;
+}
+
+// Well-formedness gate for the generated SVGs: tags balance, no stray markup
+// outside tags. Not a full XML parser - the generator owns the input style -
+// but it catches hand-edits and template bugs before browsers or ImageMagick
+// render garbage (magick fails silently on some malformed SVGs).
+function svgWellFormed(svg) {
+	const problem = scanSvgTags(svg);
+	if (problem) {
+		return problem;
+	}
+	const commentFree = svg.replaceAll(/<!--[\s\S]*?-->/gu, "");
+	const tagVolume = [...commentFree.matchAll(svgTagPattern)].reduce((sum, tag) => sum + tag[0].length, 0);
+	return commentFree.trim().length > tagVolume * 2 ? "unaccounted markup outside tags" : null;
+}
+
+function magick(args) {
+	try {
+		execFileSync("magick", args, { stdio: "pipe" });
+	} catch (error) {
+		console.error(`brand:png: magick failed (${args.join(" ")}): ${error.message}`);
+		console.error("ImageMagick 7 is required (nix shell nixpkgs#imagemagick provides it).");
+		process.exit(1);
+	}
+}
 
 const drifted = [];
 for (const artifact of ARTIFACTS) {
@@ -300,10 +345,37 @@ for (const artifact of ARTIFACTS) {
 	}
 	if (current !== expected) {
 		drifted.push(artifact.path);
+		continue;
+	}
+	if (artifact.path.endsWith(".svg")) {
+		const problem = svgWellFormed(current);
+		if (problem) {
+			drifted.push(`${artifact.path} (${problem})`);
+		}
 	}
 }
 
-if (checkMode) {
+if (pngMode) {
+	const site = (rel) => path.join(repoRoot, "website", rel);
+	const quantize = (file) => magick([file, "-colors", "256", "-define", "png:compression-level=9", file]);
+
+	magick(["-background", "none", site("public/favicon.svg"), "-define", "icon:auto-resize=16,32,48", site("public/favicon.ico")]);
+	console.log("wrote website/public/favicon.ico");
+
+	magick(["-background", "none", site("public/og-image.svg"), "-resize", "1200x630!", site("public/og-image.png")]);
+	quantize(site("public/og-image.png"));
+	console.log("wrote website/public/og-image.png (256-color quantized)");
+
+	for (const size of [180, 192, 512]) {
+		const icon = site(`public/icon-${size}.png`);
+		magick(["-background", "#0c0a09", path.join(repoRoot, "assets/brand/mark.svg"), "-resize", `${size}x${size}!`, icon]);
+		quantize(icon);
+		console.log(`wrote website/public/icon-${size}.png`);
+	}
+	execFileSync("cp", [site("public/icon-180.png"), site("public/apple-touch-icon.png")]);
+	console.log("wrote website/public/apple-touch-icon.png");
+	console.log("brand:png: rasters regenerated from the generated SVGs.");
+} else if (checkMode) {
 	if (drifted.length > 0) {
 		console.error(
 			`brand:check failed - ${drifted.length} artifact(s) drifted from scripts/generate-brand-assets.mjs:`,

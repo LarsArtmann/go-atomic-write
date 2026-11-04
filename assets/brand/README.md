@@ -55,30 +55,19 @@ pnpm run brand:check      # exit 1 if any text artifact drifted
 `brand:check` compares exact bytes, so it is deterministic across machines. It
 runs as the first step of the CI drift-guard job and in the Website workflow,
 so hand-edits to any generated artifact fail CI. The binary artifacts
-(`favicon.ico`, `og-image.png`) are NOT gated by `brand:check` (raster
-encoders are not byte-stable across platforms); regenerate them with
-ImageMagick after changing the source SVGs:
+(`favicon.ico`, `og-image.png`, `icon-*.png`, `apple-touch-icon.png`) are NOT
+gated by `brand:check` (raster encoders are not byte-stable across platforms);
+regenerate them from the generated SVGs with ImageMagick 7 in one command:
 
 ```bash
-magick -background none website/public/favicon.svg \
-  -define icon:auto-resize=16,32,48 website/public/favicon.ico
-magick -background none website/public/og-image.svg \
-  -resize 1200x630! website/public/og-image.png
-# 256-color palette keeps the card at ~28 KB (62 KB raw) with no visible
-# banding on the flat-design gradients (0.3% pixel delta, text areas exact):
-magick website/public/og-image.png -colors 256 \
-  -define png:compression-level=9 website/public/og-image.png
-
-# App icons (apple-touch 180 + PWA 192/512) — mark on the site background
-# color (iOS renders transparency black), then 256-color quantize:
-for size in 180 192 512; do
-  magick -background '#0c0a09' assets/brand/mark.svg -resize ${size}x${size}! \
-    website/public/icon-${size}.png
-  magick website/public/icon-${size}.png -colors 256 \
-    -define png:compression-level=9 website/public/icon-${size}.png
-done
-cp website/public/icon-180.png website/public/apple-touch-icon.png
+cd website && pnpm run brand:png
 ```
+
+That codifies (and replaces) the previous manual pipeline: favicon.ico at
+16/32/48, the OG card at 1200×630, the 180/192/512 app icons on the site
+background color, and the apple-touch copy — each PNG 256-color quantized
+(the OG card lands at ~28 KB instead of 62 KB raw, with no visible banding
+on the flat-design gradients and exact text areas).
 
 ## Palette
 

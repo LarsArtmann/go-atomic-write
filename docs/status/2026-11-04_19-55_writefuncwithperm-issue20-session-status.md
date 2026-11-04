@@ -99,7 +99,7 @@ Nothing else qualifies as fucked up: no test regressions, no lint debt, no broke
 
 1. `[T]` Push `master` (`46c9f8f`, `e62fcbc`) so issue #20's fix is visible remotely.
 2. `[T]` Verify issue #20's inherited CRM claims (`syncfile.go:57`, `crm-server/main.go:179`) against CRM source, then migrate the journal export to `WriteFuncWithPerm(…, 0o600)` — the actual user-facing goal of #20.
-3. `[T]` Add `WriteFuncWithPerm` to `CTASection.astro:19` symbol list (+ smoke-test the landing page after).
+3. ~~`[T]` Add `WriteFuncWithPerm` to `CTASection.astro:19` symbol list (+ smoke-test the landing page after).~~ done — 2026-11-04 — WriteFuncWithPerm added to the CTA symbol list in the landing redesign; verify-build green after the change
 4. `[T]` docs-health HARVEST: this report's §f items + v062 report items 29/33 into TODO_LIST/ROADMAP — clears both red gates.
 5. `[D]` Release v0.7.0 (minor: new API): full go-release checklist, changelog move = tag commit, CI green first, then deploy website.
 6. `[D]` Umask contract: document umask behavior in both `*WithPerm` godocs, or add post-create `f.Chmod(perm)` for exact-mode guarantee (changes `WriteWithPerm`'s effective contract — owner call).

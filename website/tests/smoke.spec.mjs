@@ -39,3 +39,58 @@ test("animations bind via astro:page-load (the navigation-rebind contract)", asy
 	const total = await page.locator("[data-animate]").count();
 	expect(boundCount).toBe(total);
 });
+
+test("keyboard tab order starts at the skip link, then header nav", async ({ page }) => {
+	await page.goto("/");
+	const seq = [];
+	for (let i = 0; i < 4; i++) {
+		await page.keyboard.press("Tab");
+		seq.push(
+			await page.evaluate(() => {
+				const el = document.activeElement;
+				if (!el) return "none";
+				const label = el.getAttribute("aria-label") ?? el.textContent?.trim().slice(0, 24) ?? "";
+				return `${el.tagName.toLowerCase()}:${label}`;
+			}),
+		);
+	}
+	expect(seq[0]).toContain("Skip to content");
+	expect(seq[1]).toMatch(/^(a|button):/);
+	expect(seq.some((s) => s.includes("Docs"))).toBe(true);
+});
+
+test("theme applies before first paint and the theme-color pair matches the tokens", async ({ browser }) => {
+	// Light stored: the .light class must be on <html> at domcontentloaded —
+	// theme-init.js runs before paint, so no wrong-theme flash is possible.
+	const lightCtx = await browser.newContext();
+	await lightCtx.addInitScript(() => {
+		localStorage.setItem("theme", "light");
+	});
+	const lightPage = await lightCtx.newPage();
+	await lightPage.goto("/", { waitUntil: "domcontentloaded" });
+	expect(
+		await lightPage.evaluate(() => document.documentElement.classList.contains("light")),
+	).toBe(true);
+
+	// Dark stored (system-pref default or explicit): no .light class.
+	const darkCtx = await browser.newContext();
+	await darkCtx.addInitScript(() => {
+		localStorage.setItem("theme", "dark");
+	});
+	const darkPage = await darkCtx.newPage();
+	await darkPage.goto("/", { waitUntil: "domcontentloaded" });
+	expect(
+		await darkPage.evaluate(() => !document.documentElement.classList.contains("light")),
+	).toBe(true);
+
+	// The theme-color pair must mirror the token values exactly.
+	const themeColors = await darkPage.evaluate(() =>
+		[...document.querySelectorAll('meta[name="theme-color"]')].map((m) => m.getAttribute("content")),
+	);
+	expect(themeColors).toContain("#0a0f0d");
+	expect(themeColors).toContain("#f4f3ee");
+
+	await lightCtx.close();
+	await darkCtx.close();
+});
+

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed (website)
 
+- **Newsletter form worked again** — the hash-based CSP declared `form-action 'self'`, which silently blocked the footer form's POST to `https://buttondown.email` on every page since the CSP shipped (v0.4.0); clicking Subscribe did nothing. The CSP now allows `form-action 'self' https://buttondown.email` (the only cross-origin form target on the site).
 - **OG card voice aligned with the landing page** — the generated social-share card still said "TOCTOU-safe" (the pre-September mechanism voice) and pointed at the GitHub URL on every Slack/X/Facebook preview. The brand generator now emits "No lost updates" (consequence voice) and the pkg.go.dev URL; `og-image.svg`/`png`, the lockups, and `favicon.ico` were regenerated from the same geometry (`brand:check` gates the SVGs).
 
 ## [0.6.1] - 2026-11-04

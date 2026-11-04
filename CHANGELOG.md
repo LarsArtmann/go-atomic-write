@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-11-04
+
 ### Changed (Go module)
 
 - **Source split into focused files** — the single `atomicwrite.go` had grown past BuildFlow's 350-line file budget (391 lines) while mixing four concerns. Same flat single package, now four files: `atomicwrite.go` (public write API), `fingerprint.go` (xxhash64 fingerprinting), `commit.go` (verification + locking + rename commit), `stage.go` (temp-file staging + fsync). Test files split to mirror them. No API or behavior change; all 31 tests moved verbatim.
@@ -32,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - **`astro check` requires TypeScript 6.x** — `website` pinned `typescript` `^7.0.2` → `^6.0.3` (and regenerated `pnpm-lock.yaml`). TS7's native compiler dropped the programmatic API that `astro check` depends on. Shipped in the v0.5.2 tag but missed from its changelog section. **Re-fixed 2026-11-03 with a self-healing guard**: the fleet npm sweep re-bumped the manifest to `^7.0.2` twice more; a `typescript@>=7 → ^6.0.3` override in `pnpm-workspace.yaml` now resolves any future major bump back to 6.x automatically.
 - **golangci-lint GitHub Action upgraded v6 → v7** (SHA-pinned, `version: v2.13.2` explicit) — action v6 cannot install golangci-lint v2, and `version: latest` resolves to the ancient v1.x line. Shipped in the v0.5.2 tag but missed from its changelog section.
+- **golangci-lint pin bumped `v2.13.2` → `v2.14.0`** — the v2.13.2 binary is built with go1.26 and cannot typecheck the Go 1.27 stdlib (`export data version 5 > maximum supported 4`), so master CI failed at lint while build/test passed. Lesson recorded: the pinned lint binary must be built with the repo's Go generation; bump the pin when the toolchain minor rises.
 
 ### Added (CI)
 
@@ -257,7 +260,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - xxhash64 vs SHA-256 benchmarks demonstrating ~11× speed advantage
 - Unit tests, permission preservation tests, and concurrent writer contention test
 
-[Unreleased]: https://github.com/LarsArtmann/go-atomic-write/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/LarsArtmann/go-atomic-write/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/LarsArtmann/go-atomic-write/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/LarsArtmann/go-atomic-write/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/LarsArtmann/go-atomic-write/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/LarsArtmann/go-atomic-write/compare/v0.5.0...v0.5.1

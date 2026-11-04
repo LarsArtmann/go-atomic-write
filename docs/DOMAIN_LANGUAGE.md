@@ -26,17 +26,17 @@ Every term below should mean the **same thing** to everyone who reads it.
 The API is **split by intent**. A plain write is crash-durable but performs no
 TOCTOU check; a `*Verified` write adds fingerprint verification under an exclusive lock.
 
-| Term                 | Definition                                                                  | Context                                                                   |
-| -------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Write                | Stage `.tmp` → fsync → atomic rename. No TOCTOU check.                      | Common case: temp files, first-time creation, single-writer scenarios     |
-| WriteWithPerm        | Like `Write` but with an explicit `fs.FileMode` instead of preserve/default | Installs, fixtures, or any caller that must not inherit the old mode      |
-| WriteVerified        | Stage `.tmp` → fsync → lock → re-read → verify fingerprint → atomic rename  | TOCTOU protection. Zero-value fingerprint means "file must not yet exist" |
-| WriteIfChanged       | Fingerprint disk → skip if unchanged, else `Write`/`WriteVerified`          | Idempotent writes for config files and code generators                    |
-| WriteFunc            | Like `Write` but streams content via a callback (64KB buffer)               | Large or incrementally-produced content                                   |
+| Term                 | Definition                                                                      | Context                                                                   |
+| -------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Write                | Stage `.tmp` → fsync → atomic rename. No TOCTOU check.                          | Common case: temp files, first-time creation, single-writer scenarios     |
+| WriteWithPerm        | Like `Write` but with an explicit `fs.FileMode` instead of preserve/default     | Installs, fixtures, or any caller that must not inherit the old mode      |
+| WriteVerified        | Stage `.tmp` → fsync → lock → re-read → verify fingerprint → atomic rename      | TOCTOU protection. Zero-value fingerprint means "file must not yet exist" |
+| WriteIfChanged       | Fingerprint disk → skip if unchanged, else `Write`/`WriteVerified`              | Idempotent writes for config files and code generators                    |
+| WriteFunc            | Like `Write` but streams content via a callback (64KB buffer)                   | Large or incrementally-produced content                                   |
 | WriteFuncWithPerm    | Like `WriteFunc` but with an explicit `fs.FileMode` instead of preserve/default | Streaming exports that must land with a pinned mode (e.g. 0600 PII dumps) |
-| WriteFuncVerified    | Like `WriteFunc` but with TOCTOU fingerprint verification                   | Streaming content that must be race-safe                                  |
-| FingerprintFile      | Compute an xxhash64 digest of a file's current content                      | Returns zero-value for nonexistent files                                  |
-| FingerprintFromBytes | Compute an xxhash64 digest from raw bytes                                   | Used when caller already has content in memory                            |
+| WriteFuncVerified    | Like `WriteFunc` but with TOCTOU fingerprint verification                       | Streaming content that must be race-safe                                  |
+| FingerprintFile      | Compute an xxhash64 digest of a file's current content                          | Returns zero-value for nonexistent files                                  |
+| FingerprintFromBytes | Compute an xxhash64 digest from raw bytes                                       | Used when caller already has content in memory                            |
 
 ## Events
 

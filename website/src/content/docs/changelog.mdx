@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Nothing yet.
+- **`WriteFuncWithPerm(path, fn, perm)`** — streaming atomic writes with an explicit file permission. `WriteFunc` always inherited the existing file's mode (or the 0o644 default for new files), so streamed exports like a PII journal dump could only land 0644 unless callers chmod'd after the fact (racy, or leaves a visible wrong-mode window). The variant creates the staged temp file with the requested mode, so the final file appears atomically with the correct permissions — mirroring what `WriteWithPerm` does for byte-slice writes. Parameter order follows the package convention of putting the distinguishing argument last (`WriteFuncVerified(path, fn, fp)`, `WriteWithPerm(path, data, perm)`).
+- **Website docs now cover the `*Perm` variants** — `WriteWithPerm` shipped in v0.5.0 but was absent from the API reference; both permission variants are now documented (sections, decision table, API summary).
 
 ### Fixed
 

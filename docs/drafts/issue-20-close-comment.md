@@ -1,0 +1,1 @@
+Fixed on master — `WriteFuncWithPerm(path, fn, perm)`, temp file is created at the requested mode so there is no chmod window. Perm sits last to match `WriteFuncVerified`/`WriteWithPerm` (issue body had it in the middle). In CHANGELOG [Unreleased], ships with the next release.

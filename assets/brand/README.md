@@ -68,6 +68,16 @@ magick -background none website/public/og-image.svg \
 # banding on the flat-design gradients (0.3% pixel delta, text areas exact):
 magick website/public/og-image.png -colors 256 \
   -define png:compression-level=9 website/public/og-image.png
+
+# App icons (apple-touch 180 + PWA 192/512) — mark on the site background
+# color (iOS renders transparency black), then 256-color quantize:
+for size in 180 192 512; do
+  magick -background '#0c0a09' assets/brand/mark.svg -resize ${size}x${size}! \
+    website/public/icon-${size}.png
+  magick website/public/icon-${size}.png -colors 256 \
+    -define png:compression-level=9 website/public/icon-${size}.png
+done
+cp website/public/icon-180.png website/public/apple-touch-icon.png
 ```
 
 ## Palette

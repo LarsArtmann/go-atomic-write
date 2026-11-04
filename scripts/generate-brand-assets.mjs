@@ -164,7 +164,7 @@ export interface Props {
 const { width = 28, height = 28, class: className } = Astro.props;
 ---
 
-<svg class={className} width={width} height={height} viewBox="0 0 ${CANVAS} ${CANVAS}" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="go-atomic-write logo">
+<svg class={className} width={width} height={height} viewBox="0 0 ${CANVAS} ${CANVAS}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <rect width="${CANVAS}" height="${CANVAS}" rx="${SQUIRCLE_RADIUS}" class="fill-[var(--color-accent)]" />
   <path d="${SWAP_ARROWS[0].shaft}" stroke-width="${GLYPH_STROKE_WIDTH}" stroke-linecap="round" class="stroke-[var(--color-on-accent)]" fill="none" />
   <polygon points="${SWAP_ARROWS[0].head}" class="fill-[var(--color-on-accent)]" />

@@ -57,6 +57,11 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Source + dist gates (hero parity, contrast)
+        run: |
+          pnpm run check:hero
+          pnpm run audit:contrast
+
       - name: Validate HTML
         run: pnpm run validate
 

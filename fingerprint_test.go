@@ -68,3 +68,31 @@ func TestFingerprintFileNonexistent(t *testing.T) {
 		t.Error("nonexistent file should return zero fingerprint")
 	}
 }
+
+func TestFingerprintFileDirectory(t *testing.T) {
+	t.Parallel()
+
+	fingerprint, err := FingerprintFile(t.TempDir())
+	if err == nil {
+		t.Fatal("FingerprintFile on a directory should return an error, not silently succeed")
+	}
+
+	if !fingerprint.IsZero() {
+		t.Error("failed FingerprintFile should return the zero fingerprint")
+	}
+}
+
+func TestFingerprintMatchesNil(t *testing.T) {
+	t.Parallel()
+
+	emptyContentFingerprint := FingerprintFromBytes(nil)
+
+	if !emptyContentFingerprint.Matches(nil) {
+		t.Error("Matches(nil) should match the fingerprint of empty content — nil is a valid, empty input, not a panic")
+	}
+
+	fileFingerprint := FingerprintFromBytes([]byte("content"))
+	if fileFingerprint.Matches(nil) {
+		t.Error("Matches(nil) should not match a non-empty content fingerprint")
+	}
+}

@@ -12,11 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Nothing yet.
+
+### Fixed
+
+- Nothing yet.
+
+## [0.6.2] - 2026-11-04
+
 ### Added (website)
 
 - **Declarative copy buttons** — a `CopyButton.astro` component now backs both landing-page copy actions; the displayed code and the copied payload derive from one source, a single delegated listener (`/js/copy-code.js`) serves every `[data-copy]` element and rebinds across client-side navigations, and success/failure is announced through a polite live region.
 - **PNG raster pipeline** — `pnpm run brand:png` rasterizes the generated SVGs into `favicon.ico`, the 1200×630 OG card, PWA icons (180/192/512), and `apple-touch-icon.png` via ImageMagick (quantized where file size matters). Brand colors now live in `assets/brand/brand-tokens.json` as the single source, and the generator's check mode fails if the SVG mirrors drift from those tokens or if any emitted SVG has unbalanced tags.
 - **"When not to use" guide + FAQ page** — the docs tree gains an honest anti-recommendations page (situations where go-atomic-write is the wrong tool) and a full FAQ (ported from the landing section), both wired into the docs sidebar.
+- **Brand raster pipeline + usage rules** — `pnpm run brand:png` now also writes the five brand compositions as 2× PNG rasters (`assets/brand/png/`) for SVG-less slots, the GitHub social preview card (`assets/brand/social-preview.png`, 1280×640, owner uploads once via repo Settings — no API exists), and a labeled `contact-sheet.png` overview grid. The brand README documents usage rules: clear space (25% of mark height), minimum sizes (16/150/170 px), composition-by-slot selection, tokenized colors only, and background-matched variants.
 
 ### Added (CI)
 

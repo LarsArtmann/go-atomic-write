@@ -132,3 +132,18 @@ jobs:
       - name: pnpm lockfile matches package.json
         working-directory: website
         run: pnpm install --frozen-lockfile
+
+  gitleaks:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # full history: gitleaks scans commits, not snapshots
+
+      - name: Scan git history for secrets
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Locally, BuildFlow runs gitleaks on demand (`buildflow -s gitleaks`);
+        # baseline on 2026-11-04 was clean, so any CI finding is new and real.

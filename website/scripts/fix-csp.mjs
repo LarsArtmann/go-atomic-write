@@ -12,7 +12,8 @@ import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 
 const here = import.meta.dirname;
-const distDir = resolve(here, "../dist");
+// Overridable for the regression tests (website/scripts/test/); production uses dist/.
+const distDir = resolve(process.env.CSP_DIST_DIR ?? resolve(here, "../dist"));
 
 // Matches inline <script> blocks: must have content and NOT be external (src=)
 // or JSON-LD data (type="application/ld+json"). Captures the inner script text.

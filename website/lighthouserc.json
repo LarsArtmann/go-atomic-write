@@ -8,7 +8,13 @@
         "http://localhost/index.html",
         "http://localhost/getting-started/installation/index.html",
         "http://localhost/getting-started/quick-start/index.html",
-        "http://localhost/api-reference/index.html"
+        "http://localhost/guides/error-handling/index.html",
+        "http://localhost/guides/platform-support/index.html",
+        "http://localhost/guides/benchmarks/index.html",
+        "http://localhost/api-reference/index.html",
+        "http://localhost/changelog/index.html",
+        "http://localhost/contributing/index.html",
+        "http://localhost/related-tools/index.html"
       ],
       "settings": {
         "preset": "desktop"
@@ -16,12 +22,11 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "categories:performance": ["error", { "minScore": 0.9 }],
         "categories:accessibility": ["error", { "minScore": 0.95 }],
-        "categories:best-practices": ["warn", { "minScore": 0.9 }],
+        "categories:best-practices": ["error", { "minScore": 0.9 }],
         "categories:seo": ["error", { "minScore": 0.95 }],
-        "dom-size": ["warn", { "maxNumericValue": 1500 }],
-        "total-byte-weight": ["warn", { "maxNumericValue": 900000 }],
+        "total-byte-weight": ["error", { "maxNumericValue": 75000 }],
         "uses-responsive-images": "off",
         "csp-xss": "off",
         "errors-in-console": "off"

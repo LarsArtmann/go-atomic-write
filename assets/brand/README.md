@@ -82,7 +82,7 @@ padded to 1280×640 on the card background — the padding is invisible), and
 `montage` binary that ships with ImageMagick).
 
 The social preview must be uploaded once by an owner:
-**GitHub → repo Settings → Social preview → upload `social-preview.png`**.
+**GitHub → repo Settings → Social preview → upload `social-preview.png`** — the full owner-actions checklist (OG previewers, Buttondown, apple-touch-icon, SA-key cleanup, billing) lives in `docs/owner-actions-checklist.md`.
 There is no API for it.
 
 ## Usage rules

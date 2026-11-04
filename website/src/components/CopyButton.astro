@@ -16,6 +16,6 @@ const { code, label, class: className = '' } = Astro.props;
   type="button"
   data-copy
   data-code={code}
-  class={`bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 ${className}`}
+  class={`bg-editor-chrome border border-editor-border rounded-md text-editor-muted px-2 py-1 cursor-pointer text-xs font-mono hover:text-editor-text hover:border-editor-border/80 transition-all duration-150 ${className}`}
   aria-label={label}
 >Copy</button>

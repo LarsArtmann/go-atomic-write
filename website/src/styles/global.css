@@ -1,20 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  /* Dark mode (default) */
-  --color-bg-primary: #0a0908;
-  --color-bg-card: rgba(28, 25, 23, 0.4);
-  --color-bg-card-solid: #161413;
-  --color-bg-code: rgba(20, 18, 17, 0.9);
-  --color-bg-elevated: #1c1917;
+  /* Dark mode (default) — green-tinted ink */
+  --color-bg-primary: #0a0f0d;
+  --color-bg-card: #131a17;
+  --color-bg-card-solid: #161e1b;
+  --color-bg-elevated: #1b2420;
 
-  --color-border: rgba(41, 37, 36, 0.5);
-  --color-border-hover: rgba(68, 62, 58, 0.8);
-  --color-border-accent: rgba(16, 185, 129, 0.3);
+  --color-border: rgba(58, 74, 67, 0.5);
+  --color-border-hover: rgba(88, 110, 100, 0.7);
+  --color-border-accent: rgba(16, 185, 129, 0.35);
 
   --color-text-primary: #f5f5f4;
   --color-text-secondary: #a8a29e;
-  --color-text-muted: #8b827a;
+  --color-text-muted: #8b968f;
 
   --color-accent: #10b981;
   --color-accent-hover: #34d399;
@@ -26,12 +25,22 @@
   --color-danger: #f87171;
   --color-danger-dim: rgba(248, 113, 113, 0.08);
 
-  --color-code-inline-bg: #1c1917;
-  --color-code-dot: #44403c;
-  --color-code-comment: #9c948c;
+  --color-code-inline-bg: #1a231f;
   --color-success: #4ade80;
 
-  --color-grid-dot: rgba(231, 229, 228, 0.025);
+  /* The editor is the page's artifact: fixed dark chrome in BOTH themes.
+     These tokens are never overridden by :root.light. */
+  --color-editor-surface: #101614;
+  --color-editor-chrome: #151d1a;
+  --color-editor-border: #26312c;
+  --color-editor-text: #e7ece9;
+  --color-editor-muted: #8fa19a;
+  --color-editor-fn: #34d399;
+  --color-editor-path: #6ee7b7;
+  --color-editor-string: #fbbf24;
+  --color-editor-comment: #8d9993;
+
+  --color-grid-dot: rgba(110, 231, 183, 0.045);
 
   --font-sans:
     var(--font-space-grotesk), -apple-system, BlinkMacSystemFont, sans-serif;
@@ -47,15 +56,14 @@
 
 :root.light {
   color-scheme: light;
-  --color-bg-primary: #fafaf9;
-  --color-bg-card: rgba(255, 255, 255, 0.6);
-  --color-bg-card-solid: #ffffff;
-  --color-bg-code: rgba(255, 255, 255, 0.9);
-  --color-bg-elevated: #f5f5f4;
+  --color-bg-primary: #f4f3ee;
+  --color-bg-card: #ffffff;
+  --color-bg-card-solid: #fbfaf6;
+  --color-bg-elevated: #f6f5f0;
 
-  --color-border: rgba(228, 228, 231, 0.8);
-  --color-border-hover: rgba(161, 161, 170, 0.5);
-  --color-border-accent: rgba(5, 150, 105, 0.25);
+  --color-border: rgba(28, 36, 32, 0.16);
+  --color-border-hover: rgba(28, 36, 32, 0.32);
+  --color-border-accent: rgba(5, 150, 105, 0.3);
 
   --color-text-primary: #1c1917;
   --color-text-secondary: #57534e;
@@ -63,7 +71,7 @@
 
   --color-accent: #047857;
   --color-accent-hover: #047857;
-  --color-accent-dim: rgba(5, 150, 105, 0.06);
+  --color-accent-dim: rgba(5, 150, 105, 0.07);
   --color-accent-light: #047857;
   --color-on-accent: #ffffff;
 
@@ -71,12 +79,10 @@
   --color-danger-dim: rgba(220, 38, 38, 0.05);
   --color-amber: #b45309;
 
-  --color-code-inline-bg: #f5f5f4;
-  --color-code-dot: #a8a29e;
-  --color-code-comment: #6e6762;
+  --color-code-inline-bg: #eae8e0;
   --color-success: #15803d;
 
-  --color-grid-dot: rgba(28, 25, 23, 0.03);
+  --color-grid-dot: rgba(4, 120, 87, 0.06);
 }
 
 body {

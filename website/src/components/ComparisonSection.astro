@@ -19,15 +19,15 @@ const readableValue = (value: string): string => {
 };
 ---
 
-<SectionHeader eyebrow="Comparison" title="Why go-atomic-write?" subtitle="os.WriteFile handles none of this. A naive temp+rename handles one." />
+<SectionHeader title="Why go-atomic-write?" subtitle="os.WriteFile handles none of this. A naive temp+rename handles one." />
 
-<div class="overflow-x-auto">
+<div class="overflow-x-auto rounded-lg border border-border">
   <table class="w-full border-collapse text-sm">
     <thead>
       <tr>
-        <th scope="col" class="py-3 px-4 font-medium text-text-muted text-xs uppercase tracking-wider border-b border-border">Feature</th>
+        <th scope="col" class="py-3 px-4 font-medium text-text-muted text-xs border-b border-border text-left">Feature</th>
         {comparisonMatrix.columns.map((col, index) => (
-          <th scope="col" class={`py-3 px-4 font-semibold text-center border-b border-border ${index === 2 ? 'text-accent' : 'text-text-secondary'}`}>
+          <th scope="col" class={`py-3 px-4 font-semibold text-center border-b border-border ${index === 2 ? 'text-accent bg-accent-dim' : 'text-text-secondary'}`}>
             {col}
           </th>
         ))}
@@ -35,7 +35,7 @@ const readableValue = (value: string): string => {
     </thead>
     <tbody>
       {comparisonMatrix.rows.map((row) => (
-        <tr class="border-b border-border/50 hover:bg-bg-card/50 transition-colors">
+        <tr class="border-b border-border/50 last:border-b-0 hover:bg-bg-card/60 transition-colors">
           <th scope="row" class="py-3 px-4 text-text-secondary font-medium text-left">{row.feature}</th>
           {row.values.map((value, valueIndex) => (
             <td

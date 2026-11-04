@@ -4,7 +4,7 @@
   "description": "Crash-safe, race-free file writes for Go",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0c0a09",
+  "background_color": "#0a0f0d",
   "theme_color": "#10b981",
   "icons": [
     {

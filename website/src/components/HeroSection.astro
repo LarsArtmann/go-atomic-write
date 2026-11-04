@@ -29,17 +29,16 @@ const { installCommand } = siteConfig;
 const highlightedCode = highlightedHeroCode();
 
 const metrics = [
-  { value: '2', label: 'Dependencies' },
-  { value: '~23', label: 'GB/s hash' },
-  { value: '0', label: 'Allocations' },
-  { value: '0', label: 'Lost updates' },
+  { value: '2', label: 'Dependencies', accent: false },
+  { value: '~23', label: 'GB/s hash', accent: false },
+  { value: '0', label: 'Allocations', accent: false },
+  { value: '0', label: 'Lost updates', accent: true },
 ];
 ---
 
 <section class="relative flex items-center justify-center overflow-hidden pt-36 pb-20">
-  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/5 blur-[140px] rounded-full pointer-events-none"></div>
   <div class="relative max-w-3xl xl:max-w-7xl mx-auto px-6 text-center min-w-0 w-full">
-    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card-solid text-xs font-mono text-text-secondary mb-8 backdrop-blur-sm">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-bg-card text-xs font-mono text-text-secondary mb-8">
       <span class="relative flex w-2 h-2">
         <span class="animate-pulse-dot absolute inline-flex w-full h-full rounded-full bg-accent"></span>
         <span class="relative inline-flex rounded-full w-2 h-2 bg-accent"></span>
@@ -48,23 +47,23 @@ const metrics = [
     </div>
 
     <h1 class="text-[clamp(2.75rem,8vw,4.5rem)] font-bold tracking-tighter leading-[1.05] mb-6 text-text-primary">
-      Never lose a <span class="text-accent">byte</span> to a crash.
+      Never lose a <span class="font-mono font-medium bg-accent/25 px-2 rounded-[4px]">byte</span> to a crash.
     </h1>
 
     <p class="text-[clamp(1.0625rem,2.5vw,1.25rem)] text-text-secondary max-w-2xl mx-auto mb-8 leading-relaxed">
       If two processes write the same file, one silently wins and the other silently loses data. This makes that impossible, in three lines of Go.
     </p>
 
-    <div class="relative max-w-md mx-auto mb-8">
-      <div class="flex items-center gap-3 px-4 py-3 rounded-lg border border-border-accent bg-bg-card-solid text-left font-mono text-sm">
-        <span class="text-accent select-none" aria-hidden="true">$</span>
-        <code tabindex="0" class="flex-1 min-w-0 overflow-x-auto whitespace-nowrap text-text-primary">{installCommand}</code>
+    <div class="relative max-w-lg mx-auto mb-8">
+      <div class="flex items-center gap-3 px-4 py-3 rounded-lg border border-editor-border bg-editor-surface text-left font-mono text-[0.8125rem] shadow-[0_16px_40px_-20px_rgba(3,10,8,0.5)]">
+        <span class="text-editor-fn select-none" aria-hidden="true">$</span>
+        <code tabindex="0" class="flex-1 min-w-0 overflow-x-auto whitespace-nowrap text-editor-text">{installCommand}</code>
         <CopyButton code={installCommand} label="Copy install command" class="shrink-0" />
       </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
-      <a href="/getting-started/installation/" data-astro-prefetch class="px-6 py-3 border border-border text-text-secondary font-medium rounded-lg text-sm hover:border-border-hover hover:text-text-primary transition-all duration-200 inline-flex items-center gap-2 no-underline hover:-translate-y-0.5">
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
+      <a href="/getting-started/installation/" data-astro-prefetch class="px-6 py-3 bg-accent text-on-accent font-semibold rounded-lg text-sm hover:bg-accent-hover transition-all duration-200 inline-flex items-center gap-2 border-none cursor-pointer hover:-translate-y-0.5">
         Read the docs
         <Icon name="arrow-right" size={16} />
       </a>
@@ -74,30 +73,30 @@ const metrics = [
       </a>
     </div>
 
-    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:gap-x-10 mb-16 max-w-xl mx-auto">
+    <div class="relative max-w-2xl mx-auto text-left">
+      <div class="relative rounded-xl border border-editor-border bg-editor-surface overflow-hidden code-preview shadow-[0_32px_80px_-32px_rgba(3,10,8,0.55)]">
+        <div class="flex items-center gap-1.5 px-4 py-3 border-b border-editor-border bg-editor-chrome">
+          {Array(3).fill(null).map(() => (
+            <span class="w-2.5 h-2.5 rounded-full bg-editor-border"></span>
+          ))}
+          <span class="ml-3 text-xs text-editor-muted font-mono">main.go</span>
+          <span class="ml-auto text-[0.6875rem] font-mono text-editor-muted border border-editor-border rounded px-1.5 py-0.5">Go</span>
+          <CopyButton code={heroCode} label="Copy code to clipboard" class="ml-2" />
+        </div>
+        <pre tabindex="0" class="p-5 text-left text-[0.8125rem] font-mono leading-[1.75] overflow-x-auto relative"><code set:html={highlightedCode} /></pre>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:gap-x-10 mt-12 py-6 border-y border-border max-w-2xl mx-auto">
       {metrics.map((metric, index) => (
         <>
-          {index > 0 && <div class="w-px h-10 bg-border shrink-0"></div>}
+          {index > 0 && <div class="w-px h-12 bg-border shrink-0"></div>}
           <div class="text-center">
-            <div class="text-xl font-bold text-text-primary font-mono">{metric.value}</div>
-            <div class="text-xs text-text-muted mt-0.5">{metric.label}</div>
+            <div class:list={["text-2xl font-bold font-mono tabular-nums", metric.accent ? "text-accent" : "text-text-primary"]}>{metric.value}</div>
+            <div class="text-xs text-text-muted mt-1">{metric.label}</div>
           </div>
         </>
       ))}
-    </div>
-
-    <div class="relative max-w-xl mx-auto">
-      <div class="absolute -inset-4 bg-gradient-to-r from-accent/8 via-transparent to-accent/8 rounded-2xl pointer-events-none"></div>
-      <div class="relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview">
-        <div class="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-bg-card-solid/50">
-          {Array(3).fill(null).map(() => (
-            <span class="w-2.5 h-2.5 rounded-full bg-code-dot"></span>
-          ))}
-          <span class="ml-3 text-xs text-text-muted font-mono">main.go</span>
-        </div>
-        <pre tabindex="0" class="p-5 text-left text-[0.8125rem] font-mono leading-[1.7] overflow-x-auto relative"><code set:html={highlightedCode} /></pre>
-        <CopyButton code={heroCode} label="Copy code to clipboard" class="absolute top-2 right-2 opacity-0 [.code-preview:hover_&]:opacity-100" />
-      </div>
     </div>
   </div>
 </section>

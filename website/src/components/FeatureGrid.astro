@@ -6,15 +6,17 @@ import { features } from '../data/features';
 ---
 
 <div>
-  <SectionHeader eyebrow="Features" title="What can go wrong, and what can't." subtitle="Six ways a plain file write loses data. This library closes every one of them." />
+  <SectionHeader title="What can go wrong, and what can't." subtitle="Six ways a plain file write loses data. This library closes every one of them." />
 
   <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature) => (
       <Card variant="feature" padding="lg" class="group hover:border-border-accent">
-        <div class="w-11 h-11 rounded-lg bg-accent-dim border border-border-accent flex items-center justify-center text-accent mb-4 transition-colors duration-200 group-hover:bg-accent group-hover:text-bg-primary">
-          <Icon name={feature.icon} size={20} />
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-md bg-accent-dim border border-border-accent flex items-center justify-center text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-bg-primary">
+            <Icon name={feature.icon} size={16} />
+          </div>
+          <h3 class="font-semibold text-text-primary text-base">{feature.title}</h3>
         </div>
-        <h3 class="font-semibold text-text-primary mb-2 text-base">{feature.title}</h3>
         <p class="text-sm text-text-muted leading-relaxed">{feature.desc}</p>
       </Card>
     ))}

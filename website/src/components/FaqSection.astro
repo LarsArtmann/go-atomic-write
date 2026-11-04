@@ -4,20 +4,20 @@ import SectionHeader from './SectionHeader.astro';
 import { faqItems } from '../data/sections';
 ---
 
-<SectionHeader eyebrow="Questions" title="The objections, answered." subtitle="Including when this library is the wrong tool for the job." />
+<SectionHeader title="The objections, answered." subtitle="Including when this library is the wrong tool for the job." />
 
-<div class="grid gap-3 md:grid-cols-2 items-start">
+<div class="max-w-4xl mx-auto border-t border-border">
   {faqItems.map((item) => (
-    <details class="group rounded-xl border border-border bg-bg-card backdrop-blur-sm p-5 transition-colors duration-200 open:border-border-accent">
-      <summary class="flex items-start justify-between gap-4 cursor-pointer list-none font-semibold text-text-primary text-sm [&::-webkit-details-marker]:hidden">
+    <details class="group border-b border-border transition-colors duration-200 open:border-border-accent">
+      <summary class="flex items-start justify-between gap-4 cursor-pointer list-none font-semibold text-text-primary text-sm py-4 [&::-webkit-details-marker]:hidden">
         <span>{item.question}</span>
         <span class="shrink-0 mt-0.5 text-text-muted transition-transform duration-200 group-open:rotate-45">
           <Icon name="plus" size={16} />
         </span>
       </summary>
-      <p class="mt-3 text-sm text-text-muted leading-relaxed">{item.answer}</p>
+      <p class="pb-4 text-sm text-text-muted leading-relaxed">{item.answer}</p>
       {item.links && (
-        <p class="mt-2 text-sm">
+        <p class="pb-4 text-sm">
           {item.links.map((link) => (
             <a href={link.href} class="text-accent hover:text-accent-hover underline underline-offset-2 transition-colors duration-150">{link.label}</a>
           ))}

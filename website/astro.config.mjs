@@ -20,7 +20,7 @@ export default defineConfig({
 			provider: fontProviders.google(),
 			name: "Space Grotesk",
 			cssVariable: "--font-space-grotesk",
-			weights: [300, 400, 500, 600, 700],
+			weights: [400, 500, 600, 700],
 			styles: ["normal"],
 			subsets: ["latin"],
 			fallbacks: ["sans-serif"],
@@ -153,7 +153,7 @@ export default defineConfig({
 					tag: "meta",
 					attrs: {
 						name: "theme-color",
-						content: "#0a0908",
+						content: "#0a0f0d",
 					},
 				},
 			],

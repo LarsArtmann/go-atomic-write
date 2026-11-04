@@ -87,7 +87,7 @@
 4. Identify the fleet npm sweep tool and teach it the TS6 constraint or exclude this repo.
 5. Verify Dependabot alerts actually close after push + rescan; reconcile against the TODO's stale "10 high".
 6. Deploy the website (next push) and re-run `lighthouse:deployed`; confirm ~23 GB/s claims live.
-7. ANNOTATE `docs/status/2026-09-17_14-22_v0.5.2-release-session.md` (all §f items resolved).
+7. ~~ANNOTATE `docs/status/2026-09-17_14-22_v0.5.2-release-session.md` (all §f items resolved).~~ done at `eec3cd6`
 8. ANNOTATE `docs/status/2026-11-03_20-42_…` once its temp-leak fix ships in v0.6.0.
 9. Add **real-OS test matrix**: run `go test` on windows-latest + macos-latest runners (build-only matrix exists today).
 10. Add `actionlint` as a CI step (workflow YAML validation gate).
@@ -111,10 +111,10 @@
 28. Schedule triggers (`schedule:`) for the govulncheck + drift-guard jobs weekly.
 29. Branch protection: require the new CI jobs (test, cross-compile, govulncheck, drift-guard) on master — GitHub settings, user action.
 30. ROADMAP.md refresh against post-sweep reality.
-31. FEATURES.md verify/refresh (untouched this session).
+31. ~~FEATURES.md verify/refresh (untouched this session).~~ done at `88c4c3b`, `9b717a9`
 32. Convert the TODO_LIST 22-repo fleet row into a per-repo checkable table.
 33. Add `example_test.go` for pkg.go.dev front page (sales surface, currently example-less).
-34. Investigate the `reports/` dir (old jscpd-report.json) — still referenced by anything?
+34. ~~Investigate the `reports/` dir (old jscpd-report.json) — still referenced by anything?~~ done — reports/ is gitignored build output — stale jscpd-report.json trashed 2026-11-04, coverage.out is live BuildFlow output, nothing references either
 35. Verify the `.crush` symlink target (`/mnt/hot/crush/go-atomic-write`) still exists (dangling-symlink risk).
 36. Reconcile `git-town.toml` accuracy (untouched; master config claimed).
 37. SECURITY.md freshness check (untouched).

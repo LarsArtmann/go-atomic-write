@@ -16,6 +16,11 @@ every item carries a disposition. Living documents live at the repo root
 | `2026-11-03_23-11_brand-identity-atomic-swap-logo.md`                                  | Brand identity build log ("the atomic swap")                                                                              |
 | `2026-11-03_23-29_brand-identity-atomic-swap-comprehensive-status.md`                  | Brand verdict + gaps (prime HARVEST source for the current TODO_LIST)                                                     |
 | `2026-11-03_23-44_oxlint-cleanup-and-config-tuning.md`                                 | oxlint cleanup + config tuning                                                                                            |
+| `2026-11-04_00-14_buildflow-file-size-split-refactor-status.md`                        | BuildFlow file-size budget: the Go source split that shipped in v0.6.1                                                    |
+| `2026-11-04_02-06_docs-health-audit-annotation-archive-and-living-doc-rebuild.md`      | docs-health audit: archive sweep + living-doc rebuild (source of the 02-12 Pareto plan)                                   |
+| `2026-11-04_05-36_release-fleet-and-website-quality-execution-status.md`               | v0.6.1 release + 17-repo fleet bump + website quality execution (T01–T19); §f is the T20–T34 seed                         |
+| `2026-11-04_06-15_fleet-bump-v0.6.1-summary.md`                                        | Fleet bump ledger: 17 repos × hashes, 4 skips + reasons, 4 filed consumer issues                                          |
+| `2026-11-04_07-09_lane-4-5-gates-brand-seo-docs-landing-execution-status.md`           | Lane 4–5 execution: gates, brand pipeline, SEO, docs, landing (T20–T31); WAIT handoff report                              |
 | `2026-06-28_03-32_atomicity-durability-overhaul.html`                                  | LEAVE-ALONE (v0.2.0 release dashboard; referenced by `CHANGELOG.md` [0.2.0] — moving it would break that historical link) |
 
 ## Archived (resolved — every item carries an inline verdict)

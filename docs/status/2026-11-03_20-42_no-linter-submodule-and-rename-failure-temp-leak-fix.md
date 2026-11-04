@@ -168,7 +168,7 @@ Ranked by impact. S = <30 min, M = 30 min–2 h, L = >2 h.
 | 6  | Replace all `file:NNN` citations in FEATURES.md with symbol + test names                   | Medium   | S      | Docs          |
 | 7  | Audit README.md for temp-cleanup / failure-semantics claims                                | Medium   | S      | Docs          |
 | 8  | Add commitRename/commitVerified to the AGENTS.md structure table (row is stale)            | Low      | S      | Docs          |
-| 9  | Run the new test on real Windows once (or add a windows CI leg)                            | Low      | M      | Test          |
+| 9  | Run the new test on real Windows once (or add a windows CI leg) **→ routed to TODO_LIST Low (Real-Windows test run of rename_windows retry + FlushFileBuffers)** | Low      | M      | Test          |
 | 10 | Check `flake.nix` Go pin vs the `go 1.27` directive                                        | Low      | S      | Build         |
 | 11 | Document the syncDir-failure contract (rename done, dir-fsync failed, error returned)      | Medium   | S      | Docs          |
 | 12 | HARVEST this report's section (f) into TODO_LIST.md / ROADMAP.md (docs-health)             | High     | S      | Documentation |

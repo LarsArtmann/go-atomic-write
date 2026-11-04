@@ -44,12 +44,12 @@
 
 ## b) PARTIALLY DONE
 
-1. **T19 animations.js `astro:page-load` re-bind** — rewritten (delegated `astro:page-load` listener, `data-animate-bound` guard, reduced-motion path preserved), lint warnings fixed (`dataset` over `setAttribute`), build green. Committed by the daemon (`41f636e`); **push state unverified and post-navigation behavior verified by construction only, not by an interactive navigation test** (that belongs to T32's Playwright suite).
+1. ~~**T19 animations.js `astro:page-load` re-bind** — rewritten (delegated `astro:page-load` listener, `data-animate-bound` guard, reduced-motion path preserved), lint warnings fixed (`dataset` over `setAttribute`), build green. Committed by the daemon (`41f636e`); **push state unverified and post-navigation behavior verified by construction only, not by an interactive navigation test** (that belongs to T32's Playwright suite).~~ done at `41f636e`, `bb3c47b`
 2. **Website deploys of this session's ~12 pushes** — several Website runs were observed queued/in-progress during the session; the final live state (new OG card live, `[0.6.1]` on the changelog page, newsletter CSP live) is **expected but not yet re-fetched**.
 3. **Real-client OG previewer checks (T08's Slack/Twitter/Facebook leg)** — mechanically impossible for me: the previewer caches need the deployed URL and real clients. The card's content (consequence voice + pkg.go.dev URL) is verified at the artifact level.
-4. **TODO_LIST currency** — release/fleet/deploy rows are updated with evidence, but the browser/contrast/Lighthouse/voice/FAQ/logo/icon rows still read 🔴 TODO even though T09–T15 closed them.
-5. **CHANGELOG completeness for [Unreleased]** — the contrast fix, OG voice, newsletter CSP, and gate hardening have entries; the **CSP-quoting incident and the mobile-overflow fixes do not** (they exist only in commit `6ce67ba`'s message).
-6. **New gates in CI** — `check:hero`, `audit:contrast`, and `pnpm run check` exist but are **local-only**; `website.yml` runs none of them yet (only the Lighthouse job was added).
+4. ~~**TODO_LIST currency** — release/fleet/deploy rows are updated with evidence, but the browser/contrast/Lighthouse/voice/FAQ/logo/icon rows still read 🔴 TODO even though T09–T15 closed them.~~ done — TODO_LIST rebuilt 2026-11-04 docs-health sweep
+5. ~~**CHANGELOG completeness for [Unreleased]** — the contrast fix, OG voice, newsletter CSP, and gate hardening have entries; the **CSP-quoting incident and the mobile-overflow fixes do not** (they exist only in commit `6ce67ba`'s message).~~ done at `0e7e010`
+6. ~~**New gates in CI** — `check:hero`, `audit:contrast`, and `pnpm run check` exist but are **local-only**; `website.yml` runs none of them yet (only the Lighthouse job was added).~~ done at `939738b`
 7. **Fleet bump of the remaining 4 repos** (crm, BuildFlow, index, clean-wizard) — skipped with documented reasons (concurrent sessions / pre-existing broken go.mod / staged in-flight work), not retried.
 
 ## c) NOT STARTED
@@ -77,56 +77,56 @@ T20 (gitleaks CI), T21 (fix-csp/sync-changelog regression tests), T22 (CopyButto
 
 ## f) TOP 50 NEXT (impact-sorted; items 1–8 are this session's loose ends, 9+ map to plan tasks T20–T34)
 
-1. **Commit/push T19 animations.js** — daemon committed it (`41f636e`); confirm push and CI green on that commit.
+1. ~~**Commit/push T19 animations.js** — daemon committed it (`41f636e`); confirm push and CI green on that commit.~~ done at `41f636e`
 2. **Verify the live site post-deploy**: `[0.6.1]` on the changelog page, new OG card (28 KB, "No lost updates"), `form-action … buttondown.email` CSP live, quoted-hash CSP metas on docs pages.
-3. **Wire `check:hero` + `audit:contrast` (+ `pnpm run check`) into `website.yml`** — the new gates are local-only today; one day unwired is one day they can regress.
-4. **CHANGELOG `[Unreleased]` entries for the CSP-quoting incident + mobile-overflow fixes** (currently only in commit messages).
-5. **Update the remaining TODO_LIST rows** (browser/contrast/Lighthouse/voice/FAQ/logo/icons → ✅ DONE with evidence) to kill the doc-vs-reality split brain.
-6. **Observe the first CI run of the new `lighthouse` job** on a real push (Chrome install + assertions on GH runners is unproven).
+3. ~~**Wire `check:hero` + `audit:contrast` (+ `pnpm run check`) into `website.yml`** — the new gates are local-only today; one day unwired is one day they can regress.~~ done at `939738b`
+4. ~~**CHANGELOG `[Unreleased]` entries for the CSP-quoting incident + mobile-overflow fixes** (currently only in commit messages).~~ done at `0e7e010`
+5. ~~**Update the remaining TODO_LIST rows** (browser/contrast/Lighthouse/voice/FAQ/logo/icons → ✅ DONE with evidence) to kill the doc-vs-reality split brain.~~ done — TODO_LIST rebuilt 2026-11-04 (docs-gates routing pass green)
+6. ~~**Observe the first CI run of the new `lighthouse` job** on a real push (Chrome install + assertions on GH runners is unproven).~~ done — Lighthouse CI job success on first run (run 41777150125)
 7. **Retry the 4 skipped fleet repos** (crm, BuildFlow, index, clean-wizard) once the concurrent storm session lands — the runner now has all four guards.
-8. **Write the fleet-bump summary doc** (17 repos × commit hashes, 4 skips + reasons, issues filed) into `docs/status/` — it currently lives only in this report and TODO_LIST row.
-9. T20: gitleaks CI step (baseline run first, on-demand semantics documented).
-10. T21: regression tests for `fix-csp.mjs` idempotency and `sync-changelog.mjs` `<`-escaping (both are load-bearing postbuild scripts with zero tests).
-11. T22: extract `CopyButton.astro` (the markup is duplicated across Hero + docs pages).
-12. T23: `brand:png` script — codify the og-image/apple-touch/PWA magick pipelines (currently README-persisted manual steps) + SVG well-formedness inside `brand:check`.
-13. T24: `brand-tokens.json` single palette source feeding generator + `global.css` (the contrast fixes just touched ~8 tokens in two places by hand).
-14. T25: SEO hygiene batch (sitemap `lastmod`, `go get` in remaining docs entries, `theme-color` light variant, `og:image:type/alt`, `engines.node`, flake.lock update).
-15. T26: internal link checker script (docs + README hrefs) as a CI-able step.
-16. T27: CONTRIBUTING release-cutting + deploy/secret recipe sections (mirror AGENTS.md checklist).
-17. T28: deploy-secret posture doc (WIF-vs-rotation decision + the 7 stale `firebase-adminsdk` keys list for owner deletion).
-18. T29: fleet npm sweep tracker (identify the sweep that force-bumps devDeps; propose constraint).
-19. T30: "when not to use" docs page + port the landing FAQ into the docs tree.
-20. T31: platform-matrix + error-flow-diagram landing sections + config-reloader use case.
-21. T32: Firebase PR preview channel + Playwright smoke suite (copy payload, FAQ count, 320px bar) — this also closes T09's interactive-nav gap properly.
-22. T33: PNG raster lockups @2×, GitHub social preview upload, brand usage rules + contact sheet.
-23. T34: ANNOTATE the 11-03/11-04 reports once their items land; refresh `docs/status/README.md` index.
-24. File the **CV Go-test chronic red** (10/10 jobs failing on every master commit) — after confirming the storm session doesn't already own it.
+8. ~~**Write the fleet-bump summary doc** (17 repos × commit hashes, 4 skips + reasons, issues filed) into `docs/status/` — it currently lives only in this report and TODO_LIST row.~~ done at `0e7e010`
+9. ~~T20: gitleaks CI step (baseline run first, on-demand semantics documented).~~ done at `939738b`
+10. ~~T21: regression tests for `fix-csp.mjs` idempotency and `sync-changelog.mjs` `<`-escaping (both are load-bearing postbuild scripts with zero tests).~~ done at `939738b`
+11. ~~T22: extract `CopyButton.astro` (the markup is duplicated across Hero + docs pages).~~ done at `88fc65f`
+12. ~~T23: `brand:png` script — codify the og-image/apple-touch/PWA magick pipelines (currently README-persisted manual steps) + SVG well-formedness inside `brand:check`.~~ done at `4ff12a9`, `b668898`
+13. ~~T24: `brand-tokens.json` single palette source feeding generator + `global.css` (the contrast fixes just touched ~8 tokens in two places by hand).~~ done at `85df1cd`
+14. ~~T25: SEO hygiene batch (sitemap `lastmod`, `go get` in remaining docs entries, `theme-color` light variant, `og:image:type/alt`, `engines.node`, flake.lock update).~~ done at `7366e9c`, `59aa0d7`
+15. ~~T26: internal link checker script (docs + README hrefs) as a CI-able step.~~ done at `c5f36ff`
+16. ~~T27: CONTRIBUTING release-cutting + deploy/secret recipe sections (mirror AGENTS.md checklist).~~ done at `6142c78`
+17. ~~T28: deploy-secret posture doc (WIF-vs-rotation decision + the 7 stale `firebase-adminsdk` keys list for owner deletion).~~ done at `6142c78`
+18. ~~T29: fleet npm sweep tracker (identify the sweep that force-bumps devDeps; propose constraint).~~ done at `15eda1f`
+19. ~~T30: "when not to use" docs page + port the landing FAQ into the docs tree.~~ done at `f1aa3ab`
+20. ~~T31: platform-matrix + error-flow-diagram landing sections + config-reloader use case.~~ done at `2d86b9d`
+21. ~~T32: Firebase PR preview channel + Playwright smoke suite (copy payload, FAQ count, 320px bar) — this also closes T09's interactive-nav gap properly.~~ done at `bb3c47b`, `011e0bc`
+22. ~~T33: PNG raster lockups @2×, GitHub social preview upload, brand usage rules + contact sheet.~~ done at `a6fbb9e`
+23. ~~T34: ANNOTATE the 11-03/11-04 reports once their items land; refresh `docs/status/README.md` index.~~ done — executed by this T34 sweep
+24. File the **CV Go-test chronic red** (10/10 jobs failing on every master commit) — after confirming the storm session doesn't already own it. **→ routed to TODO_LIST Low rows (CV chronic red)**
 25. Fix the four filed consumer issues if asked: samber-do-auditlog#62 (undici override in pnpm-workspace.yaml), go-checker-helpers#3, project-meta#3, DiscordSync#18.
-26. Reconcile the **`.hermes` ghost entry** in the plan/TODO docs (repo does not exist on disk).
-27. Decide release cadence for the Lane 2–3 fixes (v0.6.2 now vs. after T20–T24) — the plan's guardrail says they ride the _next_ release; that decision is now due.
-28. Add a deterministic collision test for `tempPathFor` (inject/seed `randomSuffix`) — the current test is statistical at 200 writers.
-29. Verify the Windows cross-compile still passes with the new test files (`os.ReadFile` directory semantics differ on Windows; CI matrix will tell).
-30. Run `pnpm run lighthouse:deployed` against the live site after deploys settle (config exists since v0.6.0, never observed in this session).
-31. Human OG preview check in Slack/X/Discord (needs the deployed URL + real clients; owner action).
-32. Real Buttondown subscribe test (owner action — sends an actual email).
-33. apple-touch-icon visual check on a real iOS device (owner action).
-34. Confirm `go get github.com/larsartmann/go-atomic-write@latest` resolves v0.6.1 (proxy `@latest` endpoint not explicitly fetched — the pinned `@v0.6.1` was).
-35. Check Dependabot state on go-atomic-write post-release (v0.6.1 may trigger consumer PRs).
+26. ~~Reconcile the **`.hermes` ghost entry** in the plan/TODO docs (repo does not exist on disk).~~ done — plan-doc ghost rows annotated this sweep
+27. ~~Decide release cadence for the Lane 2–3 fixes (v0.6.2 now vs. after T20–T24) — the plan's guardrail says they ride the _next_ release; that decision is now due.~~ done — resolved — batched v0.6.2 cut mandated and executing
+28. Add a deterministic collision test for `tempPathFor` (inject/seed `randomSuffix`) — the current test is statistical at 200 writers. **→ routed to TODO_LIST Low (deterministic collision test)**
+29. ~~Verify the Windows cross-compile still passes with the new test files (`os.ReadFile` directory semantics differ on Windows; CI matrix will tell).~~ done — CI windows/amd64 build green on PR 22 run 41786622321
+30. Run `pnpm run lighthouse:deployed` against the live site after deploys settle (config exists since v0.6.0, never observed in this session). **→ routed to TODO_LIST Low (lighthouse deployed run)**
+31. Human OG preview check in Slack/X/Discord (needs the deployed URL + real clients; owner action). **→ routed to TODO_LIST owner-actions bundle**
+32. Real Buttondown subscribe test (owner action — sends an actual email). **→ routed to TODO_LIST owner-actions bundle**
+33. apple-touch-icon visual check on a real iOS device (owner action). **→ routed to TODO_LIST owner-actions bundle**
+34. ~~Confirm `go get github.com/larsartmann/go-atomic-write@latest` resolves v0.6.1 (proxy `@latest` endpoint not explicitly fetched — the pinned `@v0.6.1` was).~~ done — go get @latest resolves v0.6.1 (verified 2026-11-04)
+35. ~~Check Dependabot state on go-atomic-write post-release (v0.6.1 may trigger consumer PRs).~~ done — post-release Dependabot checked 2026-11-04 — actions bumps only (PR 21 gitleaks-action, PR 7 svgo), no Go-module consumer PRs
 36. Record the BuildFlow result-cache release-gate lesson (`BUILDFLOW_NO_RESULT_CACHE=1` for gates) in the project's AGENTS.md or as a BuildFlow issue — the 1.18 ms "pass" would have failed the release had the cache been stale.
 37. Consider filing the `nix build` vendorHash mismatch pattern (library-policy dirty-tree build) as a documented limitation of building trees with in-flight dependency edits.
-38. Mark T34's input: this report + the 02:06/02:12 docs are now the ANNOTATE queue.
-39. `pnpm run typecheck` after the FAQ `links` type change — ran green this session, but re-run after any further `types.ts` edits.
-40. Move the Lighthouse baseline evidence (`.lighthouseci/` is gitignored) into a committed doc or the FEATURES row's link target.
-41. Sweep `docs/status/` index for the new report + the 02:06/02:12 entries.
+38. ~~Mark T34's input: this report + the 02:06/02:12 docs are now the ANNOTATE queue.~~ done — this sweep is that queue
+39. ~~`pnpm run typecheck` after the FAQ `links` type change — ran green this session, but re-run after any further `types.ts` edits.~~ done — Website typecheck green in CI (PR 22 run 41786622321)
+40. ~~Move the Lighthouse baseline evidence (`.lighthouseci/` is gitignored) into a committed doc or the FEATURES row's link target.~~ done — budgets committed in website/lighthouserc.json (88c4c3b)
+41. ~~Sweep `docs/status/` index for the new report + the 02:06/02:12 entries.~~ done — this sweep updates the index
 42. Review the 5 daemon single-file commits from the session for message quality (squash opportunity if ever re-written; low priority).
-43. `go-atomic-write` ROADMAP harvest: T30–T33 themes are still raw ideas — confirm ROADMAP reflects the plan's batches.
-44. Verify `sum.golang.org` has the v0.6.1 checksum (explicit GONOSUMDB-free fetch; the scratch module did verify transitively).
-45. Consider a `fleet-bump.sh` home: persist the hardened runner (with the four guards) in a tools repo instead of `/tmp` — it will be needed again for v0.6.2.
+43. ~~`go-atomic-write` ROADMAP harvest: T30–T33 themes are still raw ideas — confirm ROADMAP reflects the plan's batches.~~ done — ROADMAP pruned 2026-11-04 (shipped ideas removed)
+44. ~~Verify `sum.golang.org` has the v0.6.1 checksum (explicit GONOSUMDB-free fetch; the scratch module did verify transitively).~~ done — sum.golang.org carries the v0.6.1 checksum (fetched 2026-11-04)
+45. ~~Consider a `fleet-bump.sh` home: persist the hardened runner (with the four guards) in a tools repo instead of `/tmp` — it will be needed again for v0.6.2.~~ done at `b4b217f`
 46. Check whether `library-policy`'s flake build still fails on the concurrent session's huma bump (their lane; revisit after their commit).
-47. Regenerate `pnpm-lock.yaml` if `package.json` script additions drifted the lockfile (frozen-lockfile drift guard).
-48. Add `docs/status/README.md` index entry for this report.
-49. Keep `verify-build.mjs`'s FAQ-count assertion in sync when T30 ports the FAQ into docs (the count is landing-page-specific).
-50. Re-run the full `pnpm run check` battery after items 3–5 land, as the plan's "every lane closes with evidence" rule requires.
+47. ~~Regenerate `pnpm-lock.yaml` if `package.json` script additions drifted the lockfile (frozen-lockfile drift guard).~~ done — lockfile in sync (frozen-lockfile drift guard green on PR 22)
+48. ~~Add `docs/status/README.md` index entry for this report.~~ done — this sweep adds it
+49. ~~Keep `verify-build.mjs`'s FAQ-count assertion in sync when T30 ports the FAQ into docs (the count is landing-page-specific).~~ done — verify-build FAQ assertion intact — landing still renders 6, docs FAQ shipped as a separate page
+50. ~~Re-run the full `pnpm run check` battery after items 3–5 land, as the plan's "every lane closes with evidence" rule requires.~~ done — pnpm run check green + PR 22 CI all-pass (2026-11-04)
 
 ## g) QUESTIONS I CANNOT ANSWER MYSELF
 

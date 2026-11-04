@@ -140,8 +140,8 @@ Ranked: impact first. (HARVEST already landed the High/Medium/Low survivors in `
 | 35 | `engines.node` field + `website/flake.lock` update                                                                                        | Low    | S      |
 | 36 | `CopyButton.astro` extraction (repeated ~300-char class string)                                                                           | Low    | S      |
 | 37 | Unique-temp-file invariant test (`stage.go`)                                                                                              | Low    | S      |
-| 38 | "When not to use this" docs page (promote FAQ item)                                                                                       | Low    | M      |
-| 39 | Port the landing FAQ into docs (site-search coverage)                                                                                     | Low    | M      |
+| ~~38~~ | ~~"When not to use this" docs page (promote FAQ item)~~ done at `f1aa3ab` | ~~Low~~ | ~~M~~ |
+| ~~39~~ | ~~Port the landing FAQ into docs (site-search coverage)~~ done at `f1aa3ab` | ~~Low~~ | ~~M~~ |
 | 40 | Surface `WriteIfChanged`/`WriteFunc`/`WriteWithPerm` on the landing page                                                                  | Low    | M      |
 | 41 | Playwright smoke suite (copy payload, FAQ opens, install bar at 320px)                                                                    | Low    | M      |
 | 42 | PR preview channel (Firebase preview per PR)                                                                                              | Low    | M      |

@@ -17,7 +17,7 @@ that it worked. Worked top to bottom; tick as you go.
 
 The static OG image (`website/public/og-image.png`, 1200×630) is deployed;
 real previewers cache aggressively, so verify with each platform's debug
-tool *after* any deploy that changes it:
+tool _after_ any deploy that changes it:
 
 1. https://www.opengraph.xyz/url/https%3A%2F%2Fatomicwrite.lars.software
    (or LinkedIn PostInspector: https://www.linkedin.com/post-inspector/).

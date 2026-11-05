@@ -580,7 +580,9 @@ if (pngMode) {
 		for (const problem of inkProblems) {
 			console.error(`  - ${problem}`);
 		}
-		console.error("Every stroke/fill must be a brand-tokens.json value; fix the generator, not the artifact.");
+		console.error(
+			"Every stroke/fill must be a brand-tokens.json value; fix the generator, not the artifact.",
+		);
 		process.exit(1);
 	}
 	console.log(

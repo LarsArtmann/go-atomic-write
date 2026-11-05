@@ -22,9 +22,9 @@ every item carries a disposition. Living documents live at the repo root
 | `2026-11-04_07-09_lane-4-5-gates-brand-seo-docs-landing-execution-status.md`           | Lane 4–5 execution: gates, brand pipeline, SEO, docs, landing (T20–T31); WAIT handoff report                              |
 | `2026-11-04_19-55_writefuncwithperm-issue20-session-status.md`                         | Concurrent session: WriteFuncWithPerm feature (issue #20) + website deps hardening; §f brainstorm                         |
 | `2026-11-04_20-45_fleet-bump-v062-summary.md`                                          | Fleet bump ledger v0.6.2: 17 repos × hashes, vendor-ordering bug + fix, skips + reasons (crm#7 filed)                     |
-| `2026-11-04_20-46_fleet-v062-closeout-status.md`                                      | v0.6.2 closeout: a-g status + self-critique; §f survivors routed (20-45/20-45 pair)                       |
-| `2026-11-05_00-40_landing-redesign-and-fleet-closure-status.md`                       | Pareto-plan execution: landing redesign shipped, docs-gates CI, fleet repairs, crm#7 closed               |
-| `2026-11-05_01-15_pareto-execution-self-review-status.md`                             | Adversarial self-review: forgotten items, botched mechanics, 25 routed next-steps                         |
+| `2026-11-04_20-46_fleet-v062-closeout-status.md`                                       | v0.6.2 closeout: a-g status + self-critique; §f survivors routed (20-45/20-45 pair)                                       |
+| `2026-11-05_00-40_landing-redesign-and-fleet-closure-status.md`                        | Pareto-plan execution: landing redesign shipped, docs-gates CI, fleet repairs, crm#7 closed                               |
+| `2026-11-05_01-15_pareto-execution-self-review-status.md`                              | Adversarial self-review: forgotten items, botched mechanics, 25 routed next-steps                                         |
 | `2026-06-28_03-32_atomicity-durability-overhaul.html`                                  | LEAVE-ALONE (v0.2.0 release dashboard; referenced by `CHANGELOG.md` [0.2.0] — moving it would break that historical link) |
 
 ## Archived (resolved — every item carries an inline verdict)
@@ -33,21 +33,21 @@ every item carries a disposition. Living documents live at the repo root
 
 ### docs/status/archived/ — 2026-11-03 sweep manifest
 
-| File                                                                  | Classification      | Deciding reason                                                                     |
-| --------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
-| `2026-07-09_14-52_marketing-overhaul-and-website-creation.md`         | ANNOTATE → ARCHIVED | All 50 backlog items + findings resolved (shipped, superseded, routed, or declined) |
-| `2026-07-11_22-12_landing-page-design-overhaul.md`                    | ANNOTATE → ARCHIVED | Design-overhaul backlog fully resolved by 09-18/11-03 sessions                      |
-| `2026-07-26_17-53_docs-health-run-and-brutal-self-review.md`          | ANNOTATE → ARCHIVED | First docs-health run; every §e/§f/§g item closed by the same-day 18-27 session     |
-| `2026-07-26_18-27_split-brain-fix-and-website-modernization.md`       | ANNOTATE → ARCHIVED | 50-item list resolved: CI/CSP leftovers routed to TODO_LIST, rest done/moot         |
-| `2026-07-26_18-49_todo-list-clearance-and-brutal-self-review.md`      | ANNOTATE → ARCHIVED | 8 cleared TODOs verified; 50-item list resolved (Lighthouse/brand items routed)     |
-| `2026-07-26_19-59_v0.4.0-release-session-review.md`                   | ANNOTATE → ARCHIVED | Release completed in-file; all follow-ups resolved or routed                        |
-| `2026-09-17_14-22_v0.5.2-release-session.md`                          | ANNOTATE → ARCHIVED | 15-item harvest cleared 11-03; release shipped                                      |
-| `2026-09-17_20-57_website-unfreeze-and-ci-deploy-repair.md`           | ANNOTATE → ARCHIVED | 50-item list: CI hardening done 11-03; remainder routed                             |
-| `2026-09-18_06-11_landing-page-messaging-and-hero-split-brain-fix.md` | ANNOTATE → ARCHIVED | Messaging shipped in v0.6.0; residuals routed (voice pass, FAQ links)               |
-| `2026-09-18_10-37_backlog-clearance-and-build-verification-gate.md`   | ANNOTATE → ARCHIVED | 50-item §f fully dispositioned in the 2026-11-03 docs-health sweep                  |
+| File                                                                   | Classification      | Deciding reason                                                                     |
+| ---------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
+| `2026-07-09_14-52_marketing-overhaul-and-website-creation.md`          | ANNOTATE → ARCHIVED | All 50 backlog items + findings resolved (shipped, superseded, routed, or declined) |
+| `2026-07-11_22-12_landing-page-design-overhaul.md`                     | ANNOTATE → ARCHIVED | Design-overhaul backlog fully resolved by 09-18/11-03 sessions                      |
+| `2026-07-26_17-53_docs-health-run-and-brutal-self-review.md`           | ANNOTATE → ARCHIVED | First docs-health run; every §e/§f/§g item closed by the same-day 18-27 session     |
+| `2026-07-26_18-27_split-brain-fix-and-website-modernization.md`        | ANNOTATE → ARCHIVED | 50-item list resolved: CI/CSP leftovers routed to TODO_LIST, rest done/moot         |
+| `2026-07-26_18-49_todo-list-clearance-and-brutal-self-review.md`       | ANNOTATE → ARCHIVED | 8 cleared TODOs verified; 50-item list resolved (Lighthouse/brand items routed)     |
+| `2026-07-26_19-59_v0.4.0-release-session-review.md`                    | ANNOTATE → ARCHIVED | Release completed in-file; all follow-ups resolved or routed                        |
+| `2026-09-17_14-22_v0.5.2-release-session.md`                           | ANNOTATE → ARCHIVED | 15-item harvest cleared 11-03; release shipped                                      |
+| `2026-09-17_20-57_website-unfreeze-and-ci-deploy-repair.md`            | ANNOTATE → ARCHIVED | 50-item list: CI hardening done 11-03; remainder routed                             |
+| `2026-09-18_06-11_landing-page-messaging-and-hero-split-brain-fix.md`  | ANNOTATE → ARCHIVED | Messaging shipped in v0.6.0; residuals routed (voice pass, FAQ links)               |
+| `2026-09-18_10-37_backlog-clearance-and-build-verification-gate.md`    | ANNOTATE → ARCHIVED | 50-item §f fully dispositioned in the 2026-11-03 docs-health sweep                  |
 | `2026-11-04_17-05_consumer-fixes-t34-gates-preview-channels-status.md` | ANNOTATE → ARCHIVED | T32–T34 closed, previews live, 4 consumer fixes landed (same-day)                   |
 | `2026-11-04_19-35_v062-release-fleet-bump-inflight-status.md`          | ANNOTATE → ARCHIVED | Superseded by 20-45 ledger + 20-46 closeout; release + bump done                    |
-| `2026-11-03_23-11_brand-identity-atomic-swap-logo.md`                  | ANNOTATE → ARCHIVED | Brand system shipped in v0.6.2; ink pixel-QA extended 2026-11-05                                    |
+| `2026-11-03_23-11_brand-identity-atomic-swap-logo.md`                  | ANNOTATE → ARCHIVED | Brand system shipped in v0.6.2; ink pixel-QA extended 2026-11-05                    |
 
 ### docs/planning/archived/
 

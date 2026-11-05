@@ -59,7 +59,9 @@ test("keyboard tab order starts at the skip link, then header nav", async ({ pag
 	expect(seq.some((s) => s.includes("Docs"))).toBe(true);
 });
 
-test("theme applies before first paint and the theme-color pair matches the tokens", async ({ browser }) => {
+test("theme applies before first paint and the theme-color pair matches the tokens", async ({
+	browser,
+}) => {
 	// Light stored: the .light class must be on <html> at domcontentloaded —
 	// theme-init.js runs before paint, so no wrong-theme flash is possible.
 	const lightCtx = await browser.newContext();
@@ -68,9 +70,9 @@ test("theme applies before first paint and the theme-color pair matches the toke
 	});
 	const lightPage = await lightCtx.newPage();
 	await lightPage.goto("/", { waitUntil: "domcontentloaded" });
-	expect(
-		await lightPage.evaluate(() => document.documentElement.classList.contains("light")),
-	).toBe(true);
+	expect(await lightPage.evaluate(() => document.documentElement.classList.contains("light"))).toBe(
+		true,
+	);
 
 	// Dark stored (system-pref default or explicit): no .light class.
 	const darkCtx = await browser.newContext();
@@ -79,13 +81,15 @@ test("theme applies before first paint and the theme-color pair matches the toke
 	});
 	const darkPage = await darkCtx.newPage();
 	await darkPage.goto("/", { waitUntil: "domcontentloaded" });
-	expect(
-		await darkPage.evaluate(() => !document.documentElement.classList.contains("light")),
-	).toBe(true);
+	expect(await darkPage.evaluate(() => !document.documentElement.classList.contains("light"))).toBe(
+		true,
+	);
 
 	// The theme-color pair must mirror the token values exactly.
 	const themeColors = await darkPage.evaluate(() =>
-		[...document.querySelectorAll('meta[name="theme-color"]')].map((m) => m.getAttribute("content")),
+		[...document.querySelectorAll('meta[name="theme-color"]')].map((m) =>
+			m.getAttribute("content"),
+		),
 	);
 	expect(themeColors).toContain("#0a0f0d");
 	expect(themeColors).toContain("#f4f3ee");
@@ -93,4 +97,3 @@ test("theme applies before first paint and the theme-color pair matches the toke
 	await lightCtx.close();
 	await darkCtx.close();
 });
-

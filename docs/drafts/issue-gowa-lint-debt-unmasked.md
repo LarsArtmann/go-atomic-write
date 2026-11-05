@@ -15,14 +15,14 @@
 ## Problem
 
 CI on `master` is red at `623fd38` (run 41926688745). The golangci-lint pin moved v2.13.2 → v2.14.0 (22:33 tonight) to fix the Go 1.27 export-data typecheck failure — the toolchain problem is fixed, and v2.14.0 now reports four real findings that v2.13.2 never surfaced because it died in typecheck first:
-
 ```
+
 report_builder.go:201:3: missing cases in switch of type auditlog.EventType: auditlog.EventTypeSystem (exhaustive)
 report_builder.go:233:3: missing cases in switch of type auditlog.EventType: auditlog.EventTypeSystem (exhaustive)
 plugin.go:144:1: godoc should start with symbol name ("Record") (godoclint)
 record_api_test.go:14:1: Function TestAuditorRecord_InjectsSyntheticEvent missing the call to method parallel (paralleltest)
-```
 
+```
 ## Why now
 
 The typecheck failure masked everything since the repo's `go` directive crossed 1.27 (golangci-lint v2.13.2 is built with go1.26 and cannot read Go 1.27 stdlib export data — same incident as go-atomic-write's CI, fixed there by pinning v2.14.0). The pin upgrade is the right fix; these four findings are pre-existing debt it exposed, not regressions.

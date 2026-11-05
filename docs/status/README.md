@@ -13,7 +13,6 @@ every item carries a disposition. Living documents live at the repo root
 | `2026-11-03_20-42_no-linter-submodule-and-rename-failure-temp-leak-fix.md`             | Linter sub-module rejected; rename-failure temp-file leak fixed                                                           |
 | `2026-11-03_22-20_todo-sweep-ci-hardening-vuln-sweep-ts-self-heal-benchmark-ranges.md` | TODO sweep, CI hardening, npm vuln sweep, TS6 self-heal, benchmarks                                                       |
 | `2026-11-03_22-21_buildflow-gate-red-to-green-audit-typecheck-jscpd-fixes.md`          | BuildFlow gate audit: typecheck/jscpd fixes                                                                               |
-| `2026-11-03_23-11_brand-identity-atomic-swap-logo.md`                                  | Brand identity build log ("the atomic swap")                                                                              |
 | `2026-11-03_23-29_brand-identity-atomic-swap-comprehensive-status.md`                  | Brand verdict + gaps (prime HARVEST source for the current TODO_LIST)                                                     |
 | `2026-11-03_23-44_oxlint-cleanup-and-config-tuning.md`                                 | oxlint cleanup + config tuning                                                                                            |
 | `2026-11-04_00-14_buildflow-file-size-split-refactor-status.md`                        | BuildFlow file-size budget: the Go source split that shipped in v0.6.1                                                    |
@@ -23,6 +22,9 @@ every item carries a disposition. Living documents live at the repo root
 | `2026-11-04_07-09_lane-4-5-gates-brand-seo-docs-landing-execution-status.md`           | Lane 4–5 execution: gates, brand pipeline, SEO, docs, landing (T20–T31); WAIT handoff report                              |
 | `2026-11-04_19-55_writefuncwithperm-issue20-session-status.md`                         | Concurrent session: WriteFuncWithPerm feature (issue #20) + website deps hardening; §f brainstorm                         |
 | `2026-11-04_20-45_fleet-bump-v062-summary.md`                                          | Fleet bump ledger v0.6.2: 17 repos × hashes, vendor-ordering bug + fix, skips + reasons (crm#7 filed)                     |
+| `2026-11-04_20-46_fleet-v062-closeout-status.md`                                      | v0.6.2 closeout: a-g status + self-critique; §f survivors routed (20-45/20-45 pair)                       |
+| `2026-11-05_00-40_landing-redesign-and-fleet-closure-status.md`                       | Pareto-plan execution: landing redesign shipped, docs-gates CI, fleet repairs, crm#7 closed               |
+| `2026-11-05_01-15_pareto-execution-self-review-status.md`                             | Adversarial self-review: forgotten items, botched mechanics, 25 routed next-steps                         |
 | `2026-06-28_03-32_atomicity-durability-overhaul.html`                                  | LEAVE-ALONE (v0.2.0 release dashboard; referenced by `CHANGELOG.md` [0.2.0] — moving it would break that historical link) |
 
 ## Archived (resolved — every item carries an inline verdict)
@@ -45,6 +47,7 @@ every item carries a disposition. Living documents live at the repo root
 | `2026-09-18_10-37_backlog-clearance-and-build-verification-gate.md`   | ANNOTATE → ARCHIVED | 50-item §f fully dispositioned in the 2026-11-03 docs-health sweep                  |
 | `2026-11-04_17-05_consumer-fixes-t34-gates-preview-channels-status.md` | ANNOTATE → ARCHIVED | T32–T34 closed, previews live, 4 consumer fixes landed (same-day)                   |
 | `2026-11-04_19-35_v062-release-fleet-bump-inflight-status.md`          | ANNOTATE → ARCHIVED | Superseded by 20-45 ledger + 20-46 closeout; release + bump done                    |
+| `2026-11-03_23-11_brand-identity-atomic-swap-logo.md`                  | ANNOTATE → ARCHIVED | Brand system shipped in v0.6.2; ink pixel-QA extended 2026-11-05                                    |
 
 ### docs/planning/archived/
 

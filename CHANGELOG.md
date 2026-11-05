@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **Missing parent directories are created on write** — every write entrypoint now `MkdirAll`s the target's parent directory before staging, so a first write into a fresh cache or config directory succeeds instead of failing with `no such file or directory` at temp-file creation. Found via mr-sync: two on-disk caches (`sizes.json`, `github-listings.json`) silently ENOENT'd on every save for weeks because the NixOS unit pre-created the dir but bare machines did not. Concurrent `MkdirAll` on the same directory is safe (`TestTempPathsNeverCollide` now exercises 200 concurrent writers through the real path).
 - **`fleet-bump.sh` vendor sync ordering** — the vendor directory was resynced at the end of each consumer bump, after the after-build/after-test hooks ran; consumers that build with `-mod=vendor` saw a stale vendor tree mid-bump. The sync now runs directly after `go mod tidy`, before any build or test step.
 - **Website CI lockfile drift recovery** — daemon-committed manifest changes without their `pnpm-lock.yaml` counterpart broke `pnpm install --frozen-lockfile` repeatedly; the drift-guard job now fails fast on a missing lockfile update, and lockfiles are regenerated in the same change as any manifest edit.
 

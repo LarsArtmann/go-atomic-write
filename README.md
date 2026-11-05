@@ -204,6 +204,7 @@ if fp.Matches(currentData) {
 - **`flock`, not mutexes** — file locks protect across processes, not just goroutines. `flock(2)` on Unix, `LockFileEx` on Windows.
 - **Single `rename(2)` on POSIX** — one atomic syscall replaces the target. No two-rename window where the file could be missing.
 - **fsync before and after** — temp file is synced before rename (data durability); target directory is synced after rename (metadata durability, POSIX only).
+- **Missing parent directories are created** — every write entrypoint stages through `tempPathFor`, which `MkdirAll`s the target's parent (`0755`, umask-narrowed) before creating the temp file. A first write into a fresh cache or config directory succeeds instead of failing with a bare ENOENT — the failure mode that once left two real consumers' caches silently dead for weeks (mr-sync 2026-11 incident).
 - **Minimal dependencies** — only [xxhash](https://github.com/cespare/xxhash) for hashing and [flock](https://github.com/gofrs/flock) for locking. Both are intentional and not candidates for replacement.
 
 ## Error contract
@@ -211,6 +212,7 @@ if fp.Matches(currentData) {
 - All errors are wrapped with `fmt.Errorf` and `%w` — use `errors.Is` / `errors.As` to inspect
 - `ErrConcurrentModification` is a sentinel error you can check with `errors.Is`
 - Temp files (`.tmp`) are cleaned up on any failure
+- Missing parent directories of the target path are created on demand (`MkdirAll`, `0755`); failures wrap the original error
 - File permissions are preserved from the existing file (defaults to `0644` for new files)
 - Data is fsync'd before rename; the directory is fsync'd after (POSIX) for crash durability
 

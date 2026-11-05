@@ -280,3 +280,54 @@ func TestWriteWithPerm_LeavesNoTempFiles(t *testing.T) {
 		t.Errorf("dir contains leftover temp files: %v", names)
 	}
 }
+
+func TestWriteCreatesMissingParentDir(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "cache", "nested", "file.json")
+
+	err := Write(path, []byte("hello"))
+	if err != nil {
+		t.Fatalf("Write into a missing parent dir: %v", err)
+	}
+
+	assertFileContent(t, path, "hello")
+}
+
+func TestWriteVerifiedCreatesMissingParentDir(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "cache", "file.json")
+
+	err := WriteVerified(path, []byte("first"), Fingerprint{})
+	if err != nil {
+		t.Fatalf("WriteVerified into a missing parent dir: %v", err)
+	}
+
+	assertFileContent(t, path, "first")
+}
+
+func TestWriteWithPermCreatesMissingParentDir(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "conf", "file.json")
+
+	err := WriteWithPerm(path, []byte("hello"), 0o600)
+	if err != nil {
+		t.Fatalf("WriteWithPerm into a missing parent dir: %v", err)
+	}
+
+	assertFileContent(t, path, "hello")
+
+	info, statErr := os.Stat(path)
+	if statErr != nil {
+		t.Fatalf("stat written file: %v", statErr)
+	}
+
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Errorf("perm = %o, want 600", got)
+	}
+}

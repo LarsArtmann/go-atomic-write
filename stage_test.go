@@ -2,6 +2,7 @@ package atomicwrite
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -16,7 +17,7 @@ func TestTempPathsNeverCollide(t *testing.T) {
 
 	const writers = 200
 
-	path := "/mnt/data/config.json"
+	path := filepath.Join(t.TempDir(), "config.json")
 
 	var mutex sync.Mutex
 

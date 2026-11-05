@@ -1,6 +1,8 @@
 // Package atomicwrite provides TOCTOU-safe file writes using xxhash64
 // fingerprint verification, cross-platform file locking via gofrs/flock,
 // atomic rename, and fsync for crash durability.
+//
+// Missing parent directories of the target path are created on demand.
 package atomicwrite
 
 import (

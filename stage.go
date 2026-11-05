@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path/filepath"
 )
 
 // prepareTempPath computes the file mode (preserving the existing file's
@@ -31,7 +32,15 @@ func prepareTempPath(path string) (string, fs.FileMode, error) {
 }
 
 // tempPathFor returns a unique temp file path alongside the target file.
+// The target's parent directory is created (MkdirAll) when missing, so a
+// first write into a fresh cache or config directory succeeds instead of
+// failing at temp-file creation with a bare ENOENT. All public write
+// entrypoints stage through this function.
 func tempPathFor(path string) (string, error) {
+	if mkdirErr := os.MkdirAll(filepath.Dir(path), parentDirPerm); mkdirErr != nil {
+		return "", fmt.Errorf("creating parent directory for %s: %w", path, mkdirErr)
+	}
+
 	suffix, suffixErr := randomSuffix()
 	if suffixErr != nil {
 		return "", fmt.Errorf("generating temp file suffix: %w", suffixErr)
@@ -39,6 +48,11 @@ func tempPathFor(path string) (string, error) {
 
 	return path + "." + suffix + ".tmp", nil
 }
+
+// parentDirPerm is the permission for parent directories created on demand.
+// 0o755 matches the default of the standard tools that create cache and
+// config directories; the process umask narrows it further as usual.
+const parentDirPerm = fs.FileMode(0o755)
 
 // randomSuffix is a var so tests can inject a fixed suffix and pin the
 // temp-path format (and the collision precondition) deterministically.

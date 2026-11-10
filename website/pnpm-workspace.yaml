@@ -27,3 +27,5 @@ minimumReleaseAgeExclude:
   - "@tailwindcss/vite@4.3.4"
   - tailwindcss@4.3.4
   - "@astrojs/starlight@0.42.9"
+  - astro@7.4.8
+  - html-validate@11.21.0

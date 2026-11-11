@@ -4,7 +4,7 @@ go 1.27
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0
-	github.com/gofrs/flock v0.13.1
+	github.com/gofrs/flock v0.13.2
 )
 
 require golang.org/x/sys v0.49.0 // indirect

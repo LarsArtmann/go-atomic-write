@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Nothing yet.
+
+### Fixed
+
+- Nothing yet.
+
+## [0.7.0] - 2026-11-23
+
+### Added
+
 - **`WriteFuncWithPerm(path, fn, perm)`** — streaming atomic writes with an explicit file permission. `WriteFunc` always inherited the existing file's mode (or the 0o644 default for new files), so streamed exports like a PII journal dump could only land 0644 unless callers chmod'd after the fact (racy, or leaves a visible wrong-mode window). The variant creates the staged temp file with the requested mode, so the final file appears atomically with the correct permissions — mirroring what `WriteWithPerm` does for byte-slice writes. Parameter order follows the package convention of putting the distinguishing argument last (`WriteFuncVerified(path, fn, fp)`, `WriteWithPerm(path, data, perm)`).
 - **Website docs now cover the `*Perm` variants** — `WriteWithPerm` shipped in v0.5.0 but was absent from the API reference; both permission variants are now documented (sections, decision table, API summary).
 - **Deterministic collision test for the temp-path contract** — `randomSuffix` became an injectable seam so the uniqueness guarantee is pinned from both sides: 512 concurrent real writers derive distinct, correctly-shaped temp paths, and a fixed injected suffix reproduces the collision precondition and the wrapped suffix-failure path deterministically (previously only a statistical 200-writer test existed).
@@ -22,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- **Missing parent directories are created on write** — every write entrypoint now runs `MkdirAll` on the target's parent directory before staging, so a first write into a fresh cache or config directory succeeds instead of failing with `no such file or directory` at temp-file creation. Found via mr-sync: two on-disk caches (`sizes.json`, `github-listings.json`) silently ENOENT'd on every save for weeks because the NixOS unit pre-created the dir but bare machines did not. Concurrent `MkdirAll` on the same directory is safe (`TestTempPathsNeverCollide` now exercises 200 concurrent writers through the real path).
 - **`fleet-bump.sh` vendor sync ordering** — the vendor directory was resynced at the end of each consumer bump, after the after-build/after-test hooks ran; consumers that build with `-mod=vendor` saw a stale vendor tree mid-bump. The sync now runs directly after `go mod tidy`, before any build or test step.
 - **Website CI lockfile drift recovery** — daemon-committed manifest changes without their `pnpm-lock.yaml` counterpart broke `pnpm install --frozen-lockfile` repeatedly; the drift-guard job now fails fast on a missing lockfile update, and lockfiles are regenerated in the same change as any manifest edit.
 

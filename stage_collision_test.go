@@ -2,6 +2,7 @@ package atomicwrite
 
 import (
 	"errors"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -68,7 +69,10 @@ func TestTempPathForFixedSuffixIsDeterministic(t *testing.T) { //nolint:parallel
 		return "cafe0000", nil
 	}
 
-	path := "/data/config.json"
+	// Under t.TempDir(): tempPathFor creates the target's parent directory on
+	// demand, so an absolute path outside the sandbox would mkdir at the
+	// filesystem root (fatal on CI runners where / is not writable).
+	path := filepath.Join(t.TempDir(), "config.json")
 
 	first, firstErr := tempPathFor(path)
 	if firstErr != nil {
